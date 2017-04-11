@@ -62,6 +62,9 @@ else {
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Select CSS -->
+    <link href="css/bootstrap-select.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
@@ -76,6 +79,29 @@ else {
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+
+
+<style type="text/css">
+    .bs-example{
+    	margin: 20px;
+    }
+    .icon-input-btn{
+        display: inline-block;
+        position: relative;
+    }
+    .icon-input-btn input[type="submit"]{
+        padding-left: 2em;
+    }
+    .icon-input-btn .glyphicon{
+        display: inline-block;
+        position: absolute;
+        left: 0.65em;
+        top: 30%;
+    }
+</style>
+
+
+    
 </head>
 
 <body>
@@ -138,24 +164,76 @@ else {
 
                         <form class="inline-form" role="form" action="" method="post">
 
+                            <!-- ** ASIAKKAAN NIMI ** -->
                             <div class="form-group">
                                 <label>Asiakkaan nimi</label>
-                                <input name="asiakkaanNimi" class="form-control" type="text" placeholder="Neste Oy">
-                            </div>
 
+                             <?php if (($lisaa->getVirhe($asiakkaanNimiVirhe)) == null) {
+                             	echo '<div class="input-group">';                                           	
+                             } else {
+                             	echo '<div class="input-group has-error">';                           	
+                             }?>  
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                                     
+                            <input name="asiakkaanNimi" class="form-control" type="text" <?php 
+                            if (($lisaa->getVirhe($asiakkaanNimiVirhe)) == null) {echo ' value="'.$lisaa->getAsiakkaanNimi().'"';} ?>placeholder="Neste Oy"></input>
+                           
+                            </div> <!-- ./input-group -->
+                            <p><?php print ('<span style="color:red";>' . $lisaa->getVirhe($asiakkaanNimiVirhe) . "</span>");?></p>
+							</div> <!-- ./form-group -->
+							
                             <div class="form-group">
                                 <label>Sähköpostiosoite</label>
-                                <input name="sahkopostiosoite" class="form-control" type="email" placeholder="nimi@esimerkki.fi"></input>
-                            </div>
                             
+                              <?php if (($lisaa->getVirhe($sahkopostiosoiteVirhe)) == null) {
+                             	echo '<div class="input-group">';                                           	
+                             } else {
+                             	echo '<div class="input-group has-error">';                           	
+                             }?> 
+                            
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                                
+                                
+                                <input name="sahkopostiosoite" class="form-control" type="email" <?php 
+                            if (($lisaa->getVirhe($sahkopostiosoiteVirhe)) == null) {echo ' value="'.$lisaa->getSahkopostiosoite().'"';} ?>placeholder="nimi@esimerkki.fi"></input>
+                           
+                            </div> <!-- ./input-group -->
+                            <p><?php print ('<span style="color:red";>' . $lisaa->getVirhe($sahkopostiosoiteVirhe) . "</span>");?></p>
+							</div> <!-- ./form-group -->
+                            
+                              <!-- ** PUHELINNUMERO ** -->
                             <div class="form-group">
                                 <label>Puhelinnumero</label>
-                                <input name="puhelinNumero" class="form-control" type="tel" placeholder="040-3493384"></input>
-                            </div>
-
-                            <div class="form-inline">
+                                
+                              <?php if (($lisaa->getVirhe($puhelinNumeroVirhe)) == null) {
+                             	echo '<div class="input-group">';                                           	
+                             } else {
+                             	echo '<div class="input-group has-error">';                           	
+                             }?> 
                             
-                            <label>Asennuspäivämäärä PP.KK.VVVV</label>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-phone"></i></span>
+                                
+                                
+                                <input name="puhelinNumero" class="form-control" type="tel" <?php 
+                            if (($lisaa->getVirhe($puhelinNumeroVirhe)) == null) {echo ' value="'.$lisaa->getPuhelinNumero().'"';} ?>placeholder="040-3493384"></input>
+                            </div> <!-- ./input-group -->
+                            <p><?php print ('<span style="color:red";>' . $lisaa->getVirhe($puhelinNumeroVirhe) . "</span>");?></p>
+							</div> <!-- ./form-group -->
+
+							  <!-- ** ASENNUSPÄIVÄMÄÄRÄ ** -->
+                            <div class="input-group">
+                            	<span class="glyphicon glyphicon-calendar"></span>
+                            	<label>Asennuspäivämäärä</label>
+                           	</div> <!-- ./input-group -->
+                            	
+                             <?php if (($lisaa->getVirhe($asennusPaivamaaraVirhe)) == null) {
+                             	echo '<div class="form-inline">';                                           	
+                             } else {
+                             	echo '<div class="form-inline has-error">';                           	
+                             }?> 
+							
+                            		
+                           		
                             <br>
                             <!--  Asennuspäivämäärien PHP lomakkeet  -->
                             	<?php
@@ -171,33 +249,34 @@ else {
                             		$format = preg_replace('(%e)', '%d', $format);
                             	}
                             	// Päivä alasvetovalikko, loopataan päivät 1-31 ilman etunollia.
-                            	echo "<div class='form-group'>";
-                            	echo "<p>Päivä: ";
-                            	echo "<select name=paiva>";
+                            	echo "<div class='input-group'>";
+                            		
+                            	echo "<label>Päivä: ";
+                            	echo '<select class="selectpicker" data-width="auto" name="paiva">';
                             	for($i=1;$i<=31;$i++){
 									$pv=strftime($format, mktime(0,0,0,0,$i));
-									echo "<option value='". $i."'>".$pv."</option>";
+									echo '<option value='. $i.'>'.$pv.'</option>';
                             	}
-                            	echo "</select></p>";
+                            	echo "</select></label>";
                             	echo "</div>";
                             	
                             	// Kuukausi alasvetovalikko, loopataan kuukaudet 1-12 ilman etunollia
-                            	echo "<div class='form-group' style='margin-left:5%;'>";
-                            	echo "<p>Kuukausi: ";
-								echo "<select name=kuukausi>";
+                            	echo "<div class='input-group' style='margin-left:5%;'>";
+                            	echo "<label>Kuukausi: ";
+								echo '<select class="selectpicker" data-width="auto" name=kuukausi>';
 								for($i=1;$i<=12;$i++){
 									$kk=strftime('%B', mktime(0,0,0,$i));
 									echo "<option value='". $i."'>".$kk."</option>";
 								}
-								echo "</select></p>";
+								echo "</select></label>";
 								echo "</div>";
 								
 								// Vuosi alasvetovalikko, loopataan vuodet 1990-2030
 								// Mutta ei laiteta vuosilistaan uudempaa vuotta kuin nykyvuosi
 								// Nykyinen systeemi lisää automaattisesti vuoteen 2030 asti
 								echo "<div class='form-group' style='margin-left:5%;'>";
-								echo "<p>Vuosi: ";
-								echo "<select name=vuosi>";
+								echo "<label>Vuosi: ";
+								echo '<select class="selectpicker" data-width="auto" name=vuosi>';
 									$nykyVuosi = (new DateTime)->format("Y");
 									
 										for($i=1991;$i<=2031;$i++){
@@ -207,42 +286,91 @@ else {
 											}
 										
 									}
-								echo "</select></p>";
+								echo "</select></label>";
 								echo "</div>";
 								?>
                                 
-                            </div>
+                           </div> <!-- ./form-inline -->
                             
+                              <!-- ** LEVYTILA ** -->
                             <div class="form-group">
                                 <label>Levytila (Gt)</label>
-                                <input name="levytila" class="form-control" type="number" placeholder="100"></input>
-                            </div>
+                                
+                             <?php if (($lisaa->getVirhe($levytilaVirhe)) == null) {
+                             	echo '<div class="input-group">';                                           	
+                             } else {
+                             	echo '<div class="input-group has-error">';                           	
+                             }?> 
+                                
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-hdd"></i></span>
+                                
+                                
+                                <input name="levytila" class="form-control" type="number"<?php 
+                            if (($lisaa->getVirhe($levytilaVirhe)) == null) {echo ' value="'.$lisaa->getLevytila().'"';} ?> placeholder="100"></input>
+                            </div> <!-- ./input-group -->
+                            <p><?php print ('<span style="color:red";>' . $lisaa->getVirhe($levytilaVirhe) . "</span>");?></p>
+							</div> <!-- ./form-group -->
 
+							  <!-- ** KÄYTTÖJÄRJESTELMÄ ** -->
                             <div class="form-group">
                                 <label>Käyttöjärjestelmä</label>
-                                <select name="kayttoJarjestelma" class="form-control">
-                                	<option>Valitse käyttöjärjestelmä</option>
-                                    <option>Windows Server 2008</option>
-                                    <option>Windows Server 2008 R2</option>
-                                    <option>Windows Server 2012 R2</option>
-                                    <option>Windows Server 2016</option>
-                                </select>
-                            </div>
+                                
+                             <?php if (($lisaa->getVirhe($kayttoJarjestelmaVirhe)) == null) {
+                             	echo '<div class="input-group">';                                           	
+                             } else {
+                             	echo '<div class="input-group has-error">';                           	
+                             }?> 
+                                
 
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-cog"></i></span>
+                                
+                                <select name="kayttoJarjestelma" class="form-control">
+							<?php echo '<option value="none"', ($lisaa->getKayttoJarjestelma() == 'none') 
+							? 'selected':'' ,'>Valitse käyttöjärjestelmä</option>'; ?>                    
+                            <?php echo '<option ', ($lisaa->getKayttoJarjestelma() == 'Windows Server 2008') 
+                            ? 'selected':'' ,'>Windows Server 2008</option>'; ?>
+                            <?php echo '<option ', ($lisaa->getKayttoJarjestelma() == 'Windows Server 2008 R2') 
+                            ? 'selected':'' ,'>Windows Server 2008 R2</option>'; ?>
+                            <?php echo '<option ', ($lisaa->getKayttoJarjestelma() == 'Windows Server 2012') 
+                            ? 'selected':'' ,'>Windows Server 2012</option>'; ?>
+                            <?php echo '<option ', ($lisaa->getKayttoJarjestelma() == 'Windows Server 2016') 
+                            ? 'selected':'' ,'>Windows Server 2016</option>'; ?>
+                                </select>
+                            </div> <!-- ./input-group -->
+                            <p><?php print ('<span style="color:red";>' . $lisaa->getVirhe($kayttoJarjestelmaVirhe) . "</span>");?></p>
+							</div> <!-- ./form-group -->
+
+							  <!-- ** LISÄTIETOA ** -->
                             <div class="form-group">
                                 <label>Lisätietoa</label>
-                                <textarea name="lisatietoa" class="form-control" rows="3"></textarea>
-                            </div>
+                                
+                             <?php if (($lisaa->getVirhe($lisatietoaVirhe)) == null) {
+                             	echo '<div class="input-group">';                                           	
+                             } else {
+                             	echo '<div class="input-group has-error">';                           	
+                             }?> 
+
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>  
+                                
+                                              
+                                <textarea name="lisatietoa" class="form-control" rows="3"><?php 
+                            if (($lisaa->getVirhe($lisatietoaVirhe)) == null) {echo $lisaa->getLisatietoa();} ?></textarea>
+                            </div> <!-- ./input-group -->
+                            <p><?php print ('<span style="color:red";>' . $lisaa->getVirhe($lisatietoaVirhe) . "</span>");?></p>
+							</div> <!-- ./form-group -->
                           
-                          
+                            <!-- ** TALLENNA JA PERUUTA PAINIKKEET ** -->
                           	<div class="form-group">
-                          	<div class="pull-left">
-                            <input name="tallenna" type="submit" class="btn btn-primary px-2" value="Tallenna"></input>                        
-                 			</div>
-                 			<div class="pull-right">
-                            <input name="peruuta" type="submit" class="btn btn-danger" value="Peruuta"></input>
-                             </div>
-                            </div>
+                          		<div class="pull-left">
+	                          	 <span class="icon-input-btn"><span class="glyphicon glyphicon-ok"></span>
+	                             <input name="tallenna" type="submit" class="btn btn-primary px-2" value="Tallenna"></span>                                                   
+                 				</div> <!-- ./pull-left -->
+                 			
+                 				<div class="pull-right">
+	                 			 <span class="icon-input-btn"><span class="glyphicon glyphicon-remove"></span>
+	                             <input name="peruuta" type="submit" class="btn btn-danger" value="Peruuta"></span>
+                            	</div> <!-- ./pull-right -->
+                            </div><!-- ./form-group -->
                            
                          
                         </form>
@@ -301,6 +429,30 @@ else {
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+    
+    <!-- Bootstrap select picker JavaScript -->
+    <script type="text/javascript" src="js/bootstrap-select.min.js"></script>
+        
+<!-- Bootstrap selectpicker & glyphicons to input buttons -->
+<script type="text/javascript">
+$(document).ready(function( {
+    $('.selectpicker').selectpicker();
+    style: 'btn-default',
+    size: false
+  });
+  
+$(document).ready(function(){
+	$(".icon-input-btn").each(function(){
+        var btnFont = $(this).find(".btn").css("font-size");
+        var btnColor = $(this).find(".btn").css("color");
+		$(this).find(".glyphicon").css("font-size", btnFont);
+        $(this).find(".glyphicon").css("color", btnColor);
+        if($(this).find(".btn-xs").length){
+            $(this).find(".glyphicon").css("top", "24%");
+        }
+	}); 
+}); 
+</script>
 
 </body>
 

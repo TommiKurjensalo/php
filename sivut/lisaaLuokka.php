@@ -11,7 +11,7 @@ class Lisaa {
 			4 => "Sähköpostiosoite ei voi olla tyhjä",
 			5 => "Sähköpostiosoite on virheellinen",
 			6 => "Puhelinnumero ei voi olla tyhjä",
-			7 => "Puhelinnumerossa voi olla vain numeroita ja '-' merkki",
+			7 => "Puhelinnumerossa voi olla vain numeroita ja '-' (väliviiva)",
 			8 => "Asennuspäivämäärä ei voi olla tyhjä",
 			9 => "Asennuspäivämäärä ei voi olla tulevaisuudessa",
 			10 => "Levytilan määritys ei voi olla tyhjä",
@@ -19,7 +19,7 @@ class Lisaa {
 			12 => "Käyttöjärjestelmää ei ole valittu",
 			13 => "Lisatietoa ei voi olla tyhjä",
 			14 => "Lisatietoa on liian lyhyt (min 10 merkkiä) tai liia pitkä (max 500 merkkiä)",
-			20 => "Puhelinnumero on liian lyhyt (min 5) tai liian pitkä (max 20)",
+			20 => "Puhelinnumero on liian lyhyt (min 8 merkkiä) tai liian pitkä (max 20 merkkiä)",
 	);
 	
 	// Metodi palauttaa virhekoodia vastaavan tekstin
@@ -30,19 +30,26 @@ class Lisaa {
 		return self::$virhelista[-1];
 	}
 	
+	// Metodi palauttaa true(1) tai false(0) arvon, riippuen onko syöttötiedoissa ollut virhe
+	public function isVirhe() {
+		return $this->boolVirhe;
+	}
+	
 	// luokan attribuutit
-	private $asiakkaanNimi;
-	private $sahkopostiosoite;
-	private $puhelinNumero;
-	private $asennusPaivamaara;
-	private $paiva;
-	private $kuukausi;
-	private $vuosi;
-	private $levytila;
-	private $kayttoJarjestelma;
-	private $lisatietoa;
-	private $id;
-	private $NykyHetki;
+	private $asiakkaanNimi = "";
+	private $sahkopostiosoite = "";
+	private $puhelinNumero = "";
+	private $asennusPaivamaara = "";
+	private $paiva = "";
+	private $kuukausi = "";
+	private $vuosi = "";
+	private $levytila = "";
+	private $kayttoJarjestelma = "";
+	private $lisatietoa = "";
+	private $id = 0;
+	private $NykyHetki = "";
+	private $boolVirhe = false;
+	
 	
 	// Luokan konstruktori
 	function __construct($uusiAsiakkaanNimi = "", $uusiSahkopostiosoite = "", $uusiPuhelinNumero = "", 
@@ -79,22 +86,27 @@ class Lisaa {
 	public function checkAsiakkaanNimi($required = true, $min=3, $max=35) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == false && strlen($this->asiakkaanNimi) == 0)
+		if ($required == false && strlen($this->asiakkaanNimi) == 0) {
+			
 			return 0;
-	
+		}
 		// Jos kenttä on tyhjä
-		if (strlen($this->asiakkaanNimi) == 0)
+		if (strlen($this->asiakkaanNimi) == 0) {
+		
 			return 1;
-	
+		}
 		// Jos kentässä on liian vähän tai liikaa merkkejä
 		if (strlen($this->asiakkaanNimi) < $min || strlen($this->asiakkaanNimi) > $max)
+		
 			return 2;
 	
 		// Jos kentässä on sinne kuulumattomia merkkejä
 		if (preg_match("/[^a-zåäöA-ZÅÄÖ \-]/", $this->asiakkaanNimi))
+
 			return 3;
 	
 		// Ei ollut virheitä
+		
 		return 0;
 	}
 	
@@ -112,17 +124,25 @@ class Lisaa {
 	public function checkSahkopostiosoite($required = true) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == false && strlen($this->sahkopostiosoite) == 0)
+		if ($required == false && strlen($this->sahkopostiosoite) == 0) {
+			
 			return 0;
-		
+		}
 		// Jos kenttä on tyhjä
-		if (strlen($this->sahkopostiosoite) == 0)
+		if (strlen($this->sahkopostiosoite) == 0) {
+			
 			return 4;
-	
+		}
 		// Jos kentässä on sinne kuulumattomia merkkejä
-		if (preg_match("[^a-zA-Z\.@0-9]", $this->sahkopostiosoite) || ! strstr($this->sahkopostiosoite, "@"))
+		//if (preg_match("[^a-zA-Z\.@0-9]", $this->sahkopostiosoite) || ! strstr($this->sahkopostiosoite, "@"))		
+		// Remove all illegal characters from email
+		$email = filter_var($this->sahkopostiosoite, FILTER_SANITIZE_EMAIL);
+		
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			
 			return 5;
-	
+		}
+			
 		return 0;
 	}
 	
@@ -137,23 +157,31 @@ class Lisaa {
 		return $this->puhelinNumero;
 	}
 	
-	public function checkPuhelinNumero($required = true, $min = 5, $max = 20) {
+	public function checkPuhelinNumero($required = true, $min = 8, $max = 20) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
 		if ($required == false && strlen($this->puhelinNumero) == 0)
+		
 			return 0;
 	
 		// Jos kenttä on tyhjä
 		if (strlen($this->puhelinNumero) == 0)
+		
 			return 6;
 	
-		// Jos kentässä on sinne kuulumattomia merkkejä
-		if (preg_match("[\d{3-4}-\.-0-9]", $this->puhelinNumero))
-			return 7;
-		
 		// Jos kentässä on liian vähän merkkejä/numeroita
-		if (strlen($this->puhelinNumero) < $min || strlen($this->puhelinNumero) > $max)
+		if (strlen($this->puhelinNumero) < $min || strlen($this->puhelinNumero) > $max) {
+		
 			return 20;
+		}
+		// Jos kentässä on sinne kuulumattomia merkkejä
+		// Sallittu vain numerot 0-9 ja välimerkki '-'
+		elseif (!preg_match('/^(\d){0,4}[-]{1}(\d){0,17}$/D', $this->puhelinNumero)) {
+		
+			return 7;
+		}
+		
+
 	
 		return 0;
 	}
@@ -284,7 +312,7 @@ class Lisaa {
 			return 0;
 	
 		// Jos käyttöjärjestelmää ei ole valittu
-		if (strpos($this->kayttoJarjestelma, 'Valitse käyttöjärjestelmä') !==false) {
+		if (strpos($this->kayttoJarjestelma, 'none') !==false) {
 			return 12;
 		}
 		return 0;
