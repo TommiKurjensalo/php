@@ -1,3 +1,13 @@
+# 12.4.2017
+
+Oppitunnilla saatu selvitettyä ongelmia liittyen päivämääräkenttiin.
+
+Nyt toimii "tieto ei syötetty" ja "pvm tulevaisuudessa" tarkistukset.
+
+Syntaxien kanssa on aina ongelmia ja pähkäilyä, että missä järjestyksessä tulee mitäkin.
+
+Aikaa meni 3 tuntia.
+
 # 11.4.2017
 
 * Muutettu sähköpostiosoitteen tarkastustapaa.

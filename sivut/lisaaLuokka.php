@@ -243,8 +243,9 @@ class Lisaa {
 		if ($required == false && strlen($this->paiva) == 0 && strlen($this->kuukausi) == 0 && strlen($this->vuosi) == 0)
 			return 0;
 	
+		
 		// Jos kentät on tyhjiä
-		if (strlen($this->paiva) == 0 && strlen($this->kuukausi) == 0 && strlen($this->vuosi) == 0)
+		if (strpos($this->paiva, 'none') !==false && strpos($this->kuukausi, 'none') !==false && strpos($this->vuosi, 'none') !==false)
 			return 8;
 		
 		// Määritellään muuttujia päivämäärän tulevaisuuden tarkistamista varten
