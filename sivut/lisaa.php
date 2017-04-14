@@ -410,9 +410,6 @@ else {
                         
                     </div> <!-- /.vasen col-lg-6 -->
                         
-				</div> <!-- ./ vasen row -->
-						
-					<div class="row"> <!-- oikea row -->
 					<div class="col-lg-6"> <!-- oikea col-lg-6 -->
                            
 							
