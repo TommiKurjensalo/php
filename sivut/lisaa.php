@@ -176,7 +176,7 @@ else {
                 <div class="row">
                     <div class="col-lg-6">
 
-                        <form class="inline-form" role="form" action="" method="post">
+                        <form class="inline-form" role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
 
                             <!-- ** ASIAKKAAN NIMI ** -->
                             <div class="form-group">
@@ -190,7 +190,7 @@ else {
                             
                             <!-- Jos syöttökentässä on ollut virhe, palautetaan annettu arvo -->                       
                             <input name="asiakkaanNimi" class="form-control" type="text" value=
-                            <?php echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getAsiakkaanNimi().'"';?> placeholder="Neste Oy"></input>
+                            <?php echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getAsiakkaanNimi().'"';?> placeholder="Neste Oy"/>
 							
 								<!-- <?php  echo 'Syöttövirheet: ' . (($syottoVirhe == TRUE) ? 'true' : 'false'); ?>  -->
                             	</div> <!-- ./input-group -->
@@ -208,7 +208,7 @@ else {
                                 
                                  <!-- Jos syöttökentässä on ollut virhe, palautetaan annettu arvo -->
                                 <input name="sahkopostiosoite" class="form-control" type="text" value= 
-                                <?php echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getSahkopostiosoite().'"';?> placeholder="nimi@esimerkki.fi"></input>
+                                <?php echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getSahkopostiosoite().'"';?> placeholder="nimi@esimerkki.fi"/>
                            
                             	</div> <!-- ./input-group -->
 							</div> <!-- ./form-group -->
@@ -225,7 +225,7 @@ else {
                                 
                                 <!-- Jos syöttökentässä on ollut virhe, palautetaan annettu arvo -->
                                 <input name="puhelinNumero" class="form-control" type="tel" value=
-                            	<?php echo (($syottoVirhe == FALSE) ? '""' : '"'.$lisaa->getPuhelinNumero().'"');?> placeholder="040-3493384"></input>
+                            	<?php echo (($syottoVirhe == FALSE) ? '""' : '"'.$lisaa->getPuhelinNumero().'"');?> placeholder="040-3493384"/>
                             	</div> <!-- ./input-group -->
 							</div> <!-- ./form-group -->
 
@@ -324,7 +324,7 @@ else {
 	                                <span class="input-group-addon"><i class="glyphicon glyphicon-hdd"></i></span>
 	                                
 	                                <input name="levytila" class="form-control" type="number" min="1" value=<?php
-	                             		echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getLevytila().'"';?> placeholder="100"></input>
+	                             		echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getLevytila().'"';?> placeholder="100"/>
                             	</div> <!-- ./input-group -->
 							</div> <!-- ./form-group -->
 
@@ -354,7 +354,7 @@ else {
 								? 'Windows Server 2008" selected>Windows Server 2008' : 'Windows Server 2008">Windows Server 2008' ));
 							echo "</option>\n";
 							
-							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2008 R2>Windows Server 2008 R2'
+							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2008 R2">Windows Server 2008 R2'
 									: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2008 R2')
 									? 'Windows Server 2008 R2" selected>Windows Server 2008 R2' : 'Windows Server 2008 R2">Windows Server 2008 R2' ));
 							echo "</option>\n";
