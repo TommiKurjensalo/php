@@ -26,7 +26,7 @@ Jäljelle jäävät ongelmat olivat:
 
     From line 116, column 25; to line 116, column 119
 
-   ```<form class="inline-form" role="form" action="/tommi_kurjensalo/sivut/lisaa.php" method="post">↩↩ ```
+    ```<form class="inline-form" role="form" action="/tommi_kurjensalo/sivut/lisaa.php" method="post">↩↩ ```
 
 Ensimmäiseen ei tarvitse [stackoverflow](http://stackoverflow.com/questions/18007771/how-do-i-fix-error-a-charset-attribute-on-a-meta-element-found-after-the-first "stackoverflow - how-do-i-fix-error-a-charset-attribute-on-a-meta-element-found-after-the-first") mukaan korjata, koska ongelma piilee validator sivussa.
 
