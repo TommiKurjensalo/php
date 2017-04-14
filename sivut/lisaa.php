@@ -120,7 +120,7 @@ else {
 
 <body>
 
-    <div id="wrapper">
+    <div id="wrapper"> <!-- koko sivun "käärre" -->
 
         <!-- Navigation -->
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -128,7 +128,7 @@ else {
             <div class="navbar-header">
                  <a class="navbar-brand" href="index.php">Notes for business</a>
                 
-            </div>
+            </div> <!-- ./ navbar-header -->
             
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -147,9 +147,8 @@ else {
                     </li>
                                      
                 </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </nav>
+            </div> <!-- /.navbar-collapse -->
+        </nav> <!-- /.navbar header -->
 
         <div id="page-wrapper">
 
@@ -169,12 +168,12 @@ else {
                                 <i class="fa fa-edit"></i> Lisää
                             </li>
                         </ol>
-                    </div>
-                </div>
-                <!-- /.row -->
+                    </div> <!-- /. head col-lg-12 -->
+                </div> <!-- /. head row -->
+                
 
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-6"> <!-- vasen col-lg-6 -->
 
                         <form class="inline-form" role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
 
@@ -267,7 +266,7 @@ else {
 									
 									 echo '<option value="'.(($syottoVirhe == FALSE) ? $pv .'">' .$pv 
 									 	: (($lisaa->getPaiva() == $pvmNro) ? $pv .'" selected>' .$pv : $pvmNro .'">' .$pv ));
-									 echo "</option>";
+									 echo "</option>" ."\n";
                             	}
                             	echo "</select>" ."\n";
                             	
@@ -283,7 +282,7 @@ else {
 
 									 echo '<option value="'.(($syottoVirhe == FALSE) ? $kkNro .'">' .$kk
 									 	: (($lisaa->getKuukausi() == $kkNro) ? $kkNro .'" selected>' .$kk : $kkNro .'">' .$kk ));
-									 echo "</option>";
+									 echo "</option>" ."\n";
 								}
 								echo "</select>\n";
 								
@@ -304,7 +303,7 @@ else {
 												
 									 echo '<option value="'.(($syottoVirhe == FALSE) ? $vuos .'">' .$vuos
 									 	: (($lisaa->getVuosi() == $vuos) ? $vuos .'" selected>' .$vuos : $vuos .'">' .$vuos ));
-									 echo "</option>";
+									 echo "</option>" ."\n";
 											}
 										
 									}
@@ -389,7 +388,8 @@ else {
                                <!-- Jos syöttökentässä on ollut virhe, palautetaan annettu arvo -->                
                                 <textarea name="lisatietoa" class="form-control" rows="3"><?php
                              echo (($syottoVirhe == FALSE)) ? '' : $lisaa->getLisatietoa(); ?></textarea>
-                            </div> <!-- ./input-group -->
+                            
+                            <?php echo "</div> <!-- ./input-group -->\n" ?>
 							</div> <!-- ./form-group -->
                           
                             <!-- ** TALLENNA JA PERUUTA PAINIKKEET ** -->
@@ -406,12 +406,14 @@ else {
                             </div><!-- ./form-group -->
                            
                          
-                        </form>
+                        </form> <!-- ./ lomakkeet -->
                         
-                        </div> <!-- /.vasen col-lg-6 -->
+                    </div> <!-- /.vasen col-lg-6 -->
                         
+				</div> <!-- ./ vasen row -->
 						
-                           <div class="col-lg-6">
+					<div class="row"> <!-- oikea row -->
+					<div class="col-lg-6"> <!-- oikea col-lg-6 -->
                            
 							
 							<!--  Virheviestit  -->
@@ -495,18 +497,18 @@ else {
                             </div> <!-- ./ oikea col-lg-6 -->
 							
 			
-                    
-                </div>
-                <!-- /.row -->
+                <!-- /.row -->    
+                </div> 
 
-            </div>
             <!-- /.container-fluid -->
+            </div>
 
-        </div>
         <!-- /#page-wrapper -->
-
+        </div>
+        
+	<!-- /#wrapper -->
     </div>
-    <!-- /#wrapper -->
+    
 
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
