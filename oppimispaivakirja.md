@@ -10,8 +10,8 @@ Käytetty sivu läpi w3 validaattorista, korjattu ongelmat joita on syytä korja
 
 Jäljelle jäävät ongelmat olivat:
 
-    Error: A document must not include both a meta element with an http-equiv attribute whose value is content-type, 
-    and a meta element with a charset 	attribute.
+    Error: A document must not include both a meta element with an http-equiv attribute whose value is 
+    content-type, and a meta element with a charset attribute.
 
     From line 8, column 5; to line 8, column 70
 
