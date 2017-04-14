@@ -257,8 +257,8 @@ else {
                             	
                             	// Päivä alasvetovalikko, loopataan päivät 1-31 ilman etunollia.
                             	// Jos syöttökentässä on ollut virhe, palautetaan annettu arvo
-                            	echo '<label>Päivä:' . '&nbsp;';
-                            	echo '<select class="selectpicker" data-width="auto" name="paiva"></label> ."\n"';
+                            	echo '<label>Päivä:' . '&nbsp;</label>';
+                            	echo '<select class="selectpicker" data-width="auto" name="paiva">' ."\n";
 								echo '<option value="none"', ($lisaa->getPaiva() == 'none') 
 								? 'selected':'' ,'>Päivä</option>';
 								echo "\n";
@@ -267,7 +267,7 @@ else {
 									
 									 echo '<option value="'.(($syottoVirhe == FALSE) ? $pv .'">' .$pv 
 									 	: (($lisaa->getPaiva() == $pvmNro) ? $pv .'" selected>' .$pv : $pvmNro .'">' .$pv ));
-									 echo "</option>" ."\n";
+									 echo "</option>";
                             	}
                             	echo "</select>" ."\n";
                             	
@@ -283,7 +283,7 @@ else {
 
 									 echo '<option value="'.(($syottoVirhe == FALSE) ? $kkNro .'">' .$kk
 									 	: (($lisaa->getKuukausi() == $kkNro) ? $kkNro .'" selected>' .$kk : $kkNro .'">' .$kk ));
-									 echo "</option>" ."\n";
+									 echo "</option>";
 								}
 								echo "</select>\n";
 								
@@ -291,7 +291,7 @@ else {
 								// Mutta ei laiteta vuosilistaan uudempaa vuotta kuin nykyvuosi
 								// Nykyinen systeemi lisää automaattisesti vuoteen 2030 asti
                             	// Jos syöttökentässä on ollut virhe, palautetaan annettu arvo
-								echo '<label>'.'&nbsp;&nbsp;'.'Vuosi:'.'&nbsp;'.' </label>' ."\n";
+								echo '<label>'.'&nbsp;&nbsp;'.'Vuosi:'.'&nbsp;'.'</label>' ."\n";
 								echo '<select class="selectpicker" data-width="auto" name="vuosi">';
 								echo '<option value="none"', ($lisaa->getVuosi() == 'none') 
 								? 'selected':'' ,'>Vuosi</option>';
@@ -304,13 +304,14 @@ else {
 												
 									 echo '<option value="'.(($syottoVirhe == FALSE) ? $vuos .'">' .$vuos
 									 	: (($lisaa->getVuosi() == $vuos) ? $vuos .'" selected>' .$vuos : $vuos .'">' .$vuos ));
-									 echo "</option>" ."\n";
+									 echo "</option>";
 											}
 										
 									}
 								echo "</select>\n";
+								echo "</div> <!-- ./input-group -->\n"
 								?>
-                                </div> <!-- ./form-inline -->
+                                
                            </div> <!-- ./form-group -->
                             
                               <!-- ** LEVYTILA ** -->
