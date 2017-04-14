@@ -9,7 +9,7 @@ class Lisaa {
 			2 => "Nimi on liian pitkä tai lyhyt",
 			3 => "Nimessä voi olla vain kirjaimia, välilyöntejä ja '-'",
 			4 => "Sähköpostiosoite ei voi olla tyhjä",
-			5 => "Sähköpostiosoite on virheellinen",
+			5 => "Sähköpostiosoite on virheellinen, hyväksytyt merkit ovat (A-Z a-z 0-9 .-) ja maatunnus 2-4 merkkiä (A-Z a-z)",
 			6 => "Puhelinnumero ei voi olla tyhjä",
 			7 => "Puhelinnumerossa voi olla vain numeroita ja '-' (väliviiva)",
 			8 => "Asennuspäivämäärä ei voi olla tyhjä",
@@ -20,6 +20,7 @@ class Lisaa {
 			13 => "Lisatietoa ei voi olla tyhjä",
 			14 => "Lisatietoa on liian lyhyt (min 10 merkkiä) tai liia pitkä (max 500 merkkiä)",
 			20 => "Puhelinnumero on liian lyhyt (min 8 merkkiä) tai liian pitkä (max 20 merkkiä)",
+			21 => "Levytila ei voi olla 0 tai negatiivinen kokonaisluku",
 	);
 	
 	// Metodi palauttaa virhekoodia vastaavan tekstin
@@ -123,13 +124,7 @@ class Lisaa {
 		if (strlen($this->sahkopostiosoite) == 0) 
 			return 4;
 		
-		// Jos kentässä on sinne kuulumattomia merkkejä
-		//if (preg_match("[^a-zA-Z\.@0-9]", $this->sahkopostiosoite) || ! strstr($this->sahkopostiosoite, "@"))		
-		// Remove all illegal characters from email
-		//$email = filter_var($this->sahkopostiosoite, FILTER_SANITIZE_EMAIL);
-		
-		//if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		
+		// Jos kentässä on sinne kuulumattomia merkkejä		
 		// Hyväksytyt merkit ovat A-Z a-z 0-9 . - ja maatunnus 2-4 merkkiä (A-Z a-z)
 		if (!preg_match('/^[A-Öa-ö0-9._-]+@[A-Öa-ö0-9.-]+\.[A-Za-z]{2,4}$/', $this->sahkopostiosoite))
 			return 5;
@@ -276,6 +271,10 @@ class Lisaa {
 		// Jos kentässä on sinne kuulumattomia merkkejä
 		if (preg_match("[\d{1-5}]", $this->levytila))
 			return 11;
+		
+		// Jos levytila on 0 tai negatiivinen kokonaisluku
+		if ($this->levytila <= 0)
+			return 21;
 	
 		return 0;
 	}
