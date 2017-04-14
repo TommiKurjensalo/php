@@ -256,7 +256,7 @@ else {
                             	
                             	// Päivä alasvetovalikko, loopataan päivät 1-31 ilman etunollia.
                             	// Jos syöttökentässä on ollut virhe, palautetaan annettu arvo
-                            	echo '<label>Päivä:' . '&nbsp;</label>';
+                            	echo '<label style="padding-top:15%;">Päivä:' . '&nbsp;</label>';
                             	echo '<select class="selectpicker" data-width="auto" name="paiva">' ."\n";
 								echo '<option value="none"', ($lisaa->getPaiva() == 'none') 
 								? 'selected':'' ,'>Päivä</option>';

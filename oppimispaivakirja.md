@@ -1,3 +1,49 @@
+# 14.4.2017
+
+* Korjattu ongelma vuosien "valuminen" alaspäin ja kuukausien palautuminen "none" arvoon.
+
+* Korjattu logiikkoja ja syntakseja.
+
+* Muutettu tapaa kuinka sähköpostiosoitetta tarkistetaan, palattu takaisin pereg_match metodiin.
+
+Käytetty sivu läpi w3 validaattorista, korjattu ongelmat joita on syytä korjata.
+
+Jäljelle jäävät ongelmat olivat:
+
+    Error: A document must not include both a meta element with an http-equiv attribute whose value is content-type, and a meta element with a charset 	attribute.
+
+    From line 8, column 5; to line 8, column 70
+
+    ```f-8">↩    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">↩    <```
+
+    Warning: The navigation role is unnecessary for element nav.
+
+    From line 64, column 9; to line 64, column 78
+
+    ```>↩        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">↩ ```
+
+    Warning: The form role is unnecessary for element form.
+
+    From line 116, column 25; to line 116, column 119
+
+   ```<form class="inline-form" role="form" action="/tommi_kurjensalo/sivut/lisaa.php" method="post">↩↩ ```
+
+Ensimmäiseen ei tarvitse [stackoverflow](http://stackoverflow.com/questions/18007771/how-do-i-fix-error-a-charset-attribute-on-a-meta-element-found-after-the-first "stackoverflow - how-do-i-fix-error-a-charset-attribute-on-a-meta-element-found-after-the-first") mukaan korjata, koska ongelma piilee validator sivussa.
+
+Kaksi viimeistä taas on ns. turhia, koska nämä roolien merkitykset on hyvä säilyttää muita selaimia ja laitteita varten.
+
+Lopputulos on silti hyvä, aluksi minulla oli noin 20 virhettä.
+
+Aikaa meni 4tuntia.
+
+# 13.4.2017
+
+* Korjattu asennuspäivämääräkentissä oleva arvon palautus ja tarkitus ongelmat. Syynä oli jälleen syntaxit ja logiikka ongelmat.
+
+* Tosin nyt tapahtuu sitä, että kun tallenna painikettaa painaa 2x, alkaa vuosi "valumaan" 1vuosi alaspäin per kerta ja kuukausi valinta palautuu "none" valitaan.
+
+Aikaa meni 7tuntia.
+
 # 12.4.2017
 
 Oppitunnilla saatu selvitettyä ongelmia liittyen päivämääräkenttiin.
