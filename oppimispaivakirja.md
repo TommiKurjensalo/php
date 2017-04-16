@@ -32,23 +32,24 @@ Käytetty sivu läpi w3 validaattorista, korjattu ongelmat joita on syytä korja
 
 Jäljelle jäävät ongelmat olivat:
 
-    Error: A document must not include both a meta element with an http-equiv attribute whose value is content-type, and a meta element with a charset 	attribute.
+    Error: A document must not include both a meta element with an http-equiv attribute whose value is 
+    content-type, and a meta element with a charset attribute.
 
     From line 8, column 5; to line 8, column 70
 
-    ```f-8">↩    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">↩    <```
+    f-8">↩    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">↩ <
 
     Warning: The navigation role is unnecessary for element nav.
 
     From line 64, column 9; to line 64, column 78
 
-    ```>↩        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">↩ ```
+    >↩        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">↩
 
     Warning: The form role is unnecessary for element form.
 
     From line 116, column 25; to line 116, column 119
 
-   ```<form class="inline-form" role="form" action="/tommi_kurjensalo/sivut/lisaa.php" method="post">↩↩ ```
+    <form class="inline-form" role="form" action="/tommi_kurjensalo/sivut/lisaa.php" method="post">↩↩
 
 Ensimmäiseen ei tarvitse [stackoverflow](http://stackoverflow.com/questions/18007771/how-do-i-fix-error-a-charset-attribute-on-a-meta-element-found-after-the-first "stackoverflow - how-do-i-fix-error-a-charset-attribute-on-a-meta-element-found-after-the-first") mukaan korjata, koska ongelma piilee validator sivussa.
 
