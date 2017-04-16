@@ -26,7 +26,7 @@
 		</list>
 	</section>
 	<section name="SearchDialog">
-		<item value="org.eclipse.php.ui.PHPSearchPage" key="PREVIOUS_PAGE"/>
+		<item value="org.eclipse.rse.internal.files.ui.search.searchPage" key="PREVIOUS_PAGE"/>
 	</section>
 	<section name="DialogBounds_SearchDialog">
 		<item value="861" key="DIALOG_WIDTH"/>
