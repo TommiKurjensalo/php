@@ -1,10 +1,53 @@
+<?php
+// Liitetään lomakekenttien käsittelyyn tarkoitettu luokka
+require_once "lisaaLuokka.php";
+
+// Alustetaan muuttuja $syottoVirhe
+$syottoVirhe = FALSE;
+
+// Onko painettu tallenna-painiketta
+if (isset($_POST["hae"])) {
+   // Viedään muodostimelle kenttien arvot
+   $lisaa = new Lisaa(
+   		$_POST["asiakkaanNimi"],
+   		$_POST["paiva"],
+   		$_POST["kuukausi"],
+   		$_POST["vuosi"],
+   		$_POST["kayttoJarjestelma"]
+   		);
+
+   // Haetaan mahdolliset virhekoodit
+   $asiakkaanNimiVirhe = $lisaa->checkAsiakkaanNimi();
+   $asennusPaivamaaraVirhe = $lisaa->checkAsennusPaivamaara();
+   $kayttoJarjestelmaVirhe = $lisaa->checkKayttoJarjestelma();
+    
+   
+   // Haetaan mahdolliset syöttövirheet ja annetaan boolean tyyppinen true tai false arvo
+   if (($asiakkaanNimiVirhe) > 0) $syottoVirhe = "TRUE";
+   if (($asennusPaivamaaraVirhe) > 0) $syottoVirhe = "TRUE";
+   if (($kayttoJarjestelmaVirhe) > 0) $syottoVirhe = "TRUE";
+   
+}
+
+// Sivulle tultiin ensimmäistä kertaa
+else {
+   // Tehdään tyhjä olio
+   $lisaa = new Lisaa();
+   // Nollataan virhekoodit
+   $asiakkaanNimiVirhe = 0;
+   $puhelinNumeroVirhe = 0;
+   $asennusPaivamaaraVirhe = 0;
+   $kayttoJarjestelmaVirhe = 0;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -13,6 +56,9 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Select CSS -->
+    <link href="css/bootstrap-select.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/sb-admin.css" rel="stylesheet">
@@ -27,11 +73,34 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+
+
+<style type="text/css">
+    .bs-example{
+    	margin: 20px;
+    }
+    .icon-input-btn{
+        display: inline-block;
+        position: relative;
+    }
+    .icon-input-btn input[type="submit"]{
+        padding-left: 2em;
+    }
+    .icon-input-btn .glyphicon{
+        display: inline-block;
+        position: absolute;
+        left: 0.65em;
+        top: 30%;
+    }
+</style>
+
+
+    
 </head>
 
 <body>
 
-    <div id="wrapper">
+    <div id="wrapper"> <!-- koko sivun "käärre" -->
 
         <!-- Navigation -->
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -39,7 +108,7 @@
             <div class="navbar-header">
                  <a class="navbar-brand" href="index.php">Notes for business</a>
                 
-            </div>
+            </div> <!-- ./ navbar-header -->
             
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -58,9 +127,8 @@
                     </li>
                                      
                 </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </nav>
+            </div> <!-- /.navbar-collapse -->
+        </nav> <!-- /.navbar header -->
 
         <div id="page-wrapper">
 
@@ -74,92 +142,319 @@
                         </h1>
                         <ol class="breadcrumb">
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="index.php">Hallintapaneli</a>
+                                <i class="fa fa-dashboard"></i>  <a href="index.php">Etusivu</a>
                             </li>
                             <li class="active">
                                 <i class="fa fa-edit"></i> Listaa kaikki
                             </li>
                         </ol>
-                    </div>
-                </div>
-                <!-- /.row -->
+                    </div> <!-- /. heading col-lg-12 -->
+                </div> <!-- /. heading row -->
+                
 
-                <div class="row">
-                    <div class="col-lg-4">
-
-                        <form role="form">
-
-                            <div class="form-group">
-                                <label>Asiakkaan nimi</label>
-                                <input class="form-control" type="text" placeholder="Neste Oy">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Sähköpostiosoite</label>
-                                <input class="form-control" type="email" placeholder="nimi@esimerkki.fi"></input>
-                            </div>
+                
+                    <div class="row">
+						<div class="col-sm-12"> <!-- painike col-lg-12 -->
+                        	<form class="form-inline" role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                        	
+							   	<!-- ** ASIAKKAAN NIMI ** -->
+								<label>Asiakkaan nimi</label>  
+									
+                                 <!-- Tarkistetaan onko syöttökentässä virhe, jos on korostetaan kehys punaisella -->
+                            	 <?php echo ($lisaa->getVirhe($asiakkaanNimiVirhe) == null 
+                             		? '<div class="input-group mb-2 mr-sm-2 mb-sm-0">' : '<div class="input-group has-error mb-2 mr-sm-2 mb-sm-0">' );?>
                             
-                            <div class="form-group">
-                                <label>Puhelinnumero</label>
-                                <input class="form-control" type="tel" placeholder="040-3493384"></input>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Asennuspäivämäärä</label>
-                                <input class="form-control" type="date" placeholder="27.03.2017"></input>
-                            </div>
+	                            <!-- Jos syöttökentässä on ollut virhe, palautetaan annettu arvo -->                       
+	                            <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+	                            <input name="asiakkaanNimi" class="form-control" type="text" value=
+	                            <?php echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getAsiakkaanNimi().'"';?> placeholder="Neste Oy"/>
+								<?php echo '</div>' ?> 
+									<!-- <?php  echo 'Syöttövirheet: ' . (($syottoVirhe == TRUE) ? 'true' : 'false'); ?>  -->  
                             
-                            <div class="form-group">
-                                <label>Levytila (Gt)</label>
-                                <input class="form-control" type="number" placeholder="100"></input>
-                            </div>
+ 								<!-- ** ASENNUSPÄIVÄMÄÄRÄ ** -->	
 
-                            <div class="form-group">
+ 							
+ 							<!--  Asennuspäivämäärien PHP lomakkeet  -->
+                            <!-- OLI AIVAN KAUHEA HOMMA SAADA NÄMÄ TOIMIMAAN ! -->
+                            	<?php
+                            	// Määritetään oletus aikavyöhyke ja maa-asetukset
+                            	date_default_timezone_set('Europe/Helsinki');
+                            	setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
+                            	
+                            	// Määritetään formaatiksi %e, kun kyseessä on muu kuin windows
+                            	$format = '%e';
+                            	
+                            	// Muutetaan formaatti %e->%d, mikäli käyttöjärjestelmänä on windows
+                            	if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+                            		$format = preg_replace('(%e)', '%d', $format);
+                            	}    	
+                            	
+                            	// Päivä alasvetovalikko, loopataan päivät 1-31 ilman etunollia.
+                            	// Jos syöttökentässä on ollut virhe, palautetaan annettu arvo
+                            	echo '<label>Asennuspäivämäärä:' . '&nbsp;</label>';
+                            	// Aloitus input-group
+                            	echo '<div class="input-group mb-2 mr-sm-2 mb-sm-0">';
+                            	echo '<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>';
+                            	echo '<select class="selectpicker" data-width="auto" name="paiva">' ."\n";
+								echo '<option value="none"', ($lisaa->getPaiva() == 'none') 
+								? 'selected':'' ,'>Päivä</option>';
+								echo "\n";
+                            	for($pvmNro=1;$pvmNro<=31;$pvmNro++){
+									$pv=strftime($format, mktime(0,0,0,0,$pvmNro));
+									
+									 echo '<option value="'.(($syottoVirhe == FALSE) ? $pv .'">' .$pv 
+									 	: (($lisaa->getPaiva() == $pvmNro) ? $pv .'" selected>' .$pv : $pvmNro .'">' .$pv ));
+									 echo "</option>" ."\n";
+                            	}
+                            	echo "</select>" ."\n";
+                            	
+                            	// Kuukausi alasvetovalikko, loopataan kuukaudet 1-12 ilman etunollia
+                            	// Jos syöttökentässä on ollut virhe, palautetaan annettu arvo
+                            	echo '<label>'.'&nbsp;&nbsp;'.'Kuukausi:' . '&nbsp;' . '</label>' ."\n";
+                            	//echo '<div class="input-group mb-2 mr-sm-2 mb-sm-0">';
+                            	echo '<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>';
+								echo '<select class="selectpicker" data-width="auto" name="kuukausi">';
+								echo '<option value="none"', ($lisaa->getKuukausi() == 'none') 
+								? 'selected':'' ,'>Kuukausi</option>';
+								echo "\n";
+								for($kkNro=1;$kkNro<=12;$kkNro++){
+									$kk=strftime('%B', mktime(0,0,0,$kkNro));
+
+									 echo '<option value="'.(($syottoVirhe == FALSE) ? $kkNro .'">' .$kk
+									 	: (($lisaa->getKuukausi() == $kkNro) ? $kkNro .'" selected>' .$kk : $kkNro .'">' .$kk ));
+									 echo "</option>" ."\n";
+								}
+								echo "</select>\n";
+								
+								// Vuosi alasvetovalikko, loopataan vuodet 1990-2030
+								// Mutta ei laiteta vuosilistaan uudempaa vuotta kuin nykyvuosi
+								// Nykyinen systeemi lisää automaattisesti vuoteen 2030 asti
+                            	// Jos syöttökentässä on ollut virhe, palautetaan annettu arvo
+								echo '<label>'.'&nbsp;&nbsp;'.'Vuosi:'.'&nbsp;'.'</label>' ."\n";
+								//echo '<div class="input-group mb-2 mr-sm-2 mb-sm-0">';
+								echo '<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>';
+								echo '<select class="selectpicker" data-width="auto" name="vuosi">';
+								echo '<option value="none"', ($lisaa->getVuosi() == 'none') 
+								? 'selected':'' ,'>Vuosi</option>';
+								echo "\n";
+									$nykyVuosi = (new DateTime)->format("Y");
+									
+										for($vuosNro=1991;$vuosNro<=2031;$vuosNro++){
+											$vuos=strftime('%Y', mktime(0,0,0,0,0,$vuosNro));
+											if ($vuos<=$nykyVuosi) {
+												
+									 echo '<option value="'.(($syottoVirhe == FALSE) ? $vuos .'">' .$vuos
+									 	: (($lisaa->getVuosi() == $vuos) ? $vuos .'" selected>' .$vuos : $vuos .'">' .$vuos ));
+									 echo "</option>" ."\n";
+											}
+										
+									}
+								echo "</select></div>\n"; // end of class input-group
+								
+								?>
+                                
+                          
+                           
+                            <!-- ** KÄYTTÖJÄRJESTELMÄ ** -->
+							  <!-- valinnat tehty n00b tyylillä, eikä ole käytetty mitään muuuttujia, listoja saatikka luokkia -->
+                           
                                 <label>Käyttöjärjestelmä</label>
-                                <select class="form-control">
-                                    <option>Windows Server 2008</option>
-                                    <option>Windows Server 2008 R2</option>
-                                    <option>Windows Server 2012 R2</option>
-                                    <option>Windows Server 2016</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Lisätietoa</label>
-                                <textarea class="form-control" rows="3"></textarea>
-                            </div>
-                          
-                          
-                          	<div class="form-group">
-                          	<div class="pull-left">
-                            <input name="tallenna" type="submit" class="btn btn-primary px-2" value="Tallenna"></input>                        
-                 			</div>
-                 			<div class="pull-right">
-                            <input name="peruuta" type="submit" class="btn btn-danger" value="Peruuta"></input>
-                             </div>
-                            </div>
+                              
+									<div class="input-group">
+                                
+                                		<span class="input-group-addon"><i class="glyphicon glyphicon-cog"></i></span>
+											
+								<select name="kayttoJarjestelma" class="form-control">
+							<?php 
+							echo '<option value="none"', ($lisaa->getKayttoJarjestelma() == 'none') 
+								? 'selected':'' ,'>Valitse käyttöjärjestelmä</option>';
+							echo "\n"; 
+							
+							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2008">Windows Server 2008'
+								: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2008') 
+								? 'Windows Server 2008" selected>Windows Server 2008' : 'Windows Server 2008">Windows Server 2008' ));
+							echo "</option>\n";
+							
+							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2008 R2">Windows Server 2008 R2'
+									: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2008 R2')
+									? 'Windows Server 2008 R2" selected>Windows Server 2008 R2' : 'Windows Server 2008 R2">Windows Server 2008 R2' ));
+							echo "</option>\n";
+							
+							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2012">Windows Server 2012'
+									: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2012')
+									? 'Windows Server 2012" selected>Windows Server 2012' : 'Windows Server 2012">Windows Server 2012' ));
+							echo "</option>\n";
+							
+							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2016">Windows Server 2016'
+									: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2016')
+									? 'Windows Server 2016" selected>Windows Server 2016' : 'Windows Server 2016">Windows Server 2016' ));
+							echo "</option>\n";
+							
+							
+ 							?>
+								</select>
+									</div> <!-- ./input-group -->
+							
+									
                             
-                        </form>
+	                           	<!-- ** TALLENNA PAINIKKE ** -->
+	                           	<span class="icon-input-btn"><span class="glyphicon glyphicon-ok"></span>
+                    			<input name="hae" type="submit" class="btn btn-primary px-2" value="Hae"></span> 
+                             
 
-                    </div>
+                         	
+                         		<div class="input-group">
+                         	   <?php 
+                        		try {
+                        			require_once "listaaKaikkiPDO.php";
+                        			$Database = new Database();
+								
+									echo ' DB Yhteys: ' .($Database->isConnected() ? 'ON' : 'OFF');
+                        		} catch (Exception $error) {
+									print($error->getMessage());
+								}
+								?>
+								</div>
+								
+								</form> <!-- /. lomakkeet -->
+                         
+                         <hr> <!-- line breaker -->
+                         </div> <!-- /. painike col-lg-12 -->
+
+
+                         	
+                         	<div id="haettuLista" class="col-sm-12"> <!-- tulostetut col-sm-12 -->
+                        
+                         <?php 
+						
+                         if (isset($_POST["hae"])) {
+                       
+                           try {
+                           
+	                           	require_once "listaaKaikkiPDO.php";
+									$kantakasittely = new listaaPDO();
+									$rivit = $kantakasittely->haeAsiakas($_POST["asiakkaanNimi"]);
+							//		print("<p>Yhteensä " . print_r(array_values($rivit)) . " riviä</p>");
+									
+								//	print json_encode($tulos);
+							
+									echo '<div class="table-responsive">';
+									   	echo '<table class="table table-striped table-hover">';
+										   	echo '<thead>';
+												echo '<tr>';
+													echo '<th>#</th>';
+													echo '<th>Nimi</th>';
+													echo '<th>Sähkopostiosoite</th>';
+													echo '<th>Puhelinnumero</th>';
+													echo '<th>Kayttojärjestelmä</th>';
+													echo '<th>Asennuspäivamäärä</th>';
+													echo '<th>Levytila(Gt)</th>';
+													echo '<th>Lisätietoa</th>';
+												echo '</tr>';
+										    echo '</thead>';
+								   	echo '<tbody>';
+	
+									foreach ( $rivit as $lisaa) {
+								    	print("<tr>");
+									    	print("<td>".utf8_encode($lisaa->getLisaaId())."</td>");
+									    	print("<td>".utf8_encode($lisaa->getAsiakkaanNimi())."</td>");
+									    	print("<td>".utf8_encode($lisaa->getSahkopostiosoite())."</td>");
+									    	print("<td>".utf8_encode($lisaa->getPuhelinNumero())."</td>");
+									    	print("<td>".utf8_encode($lisaa->getKayttoJarjestelma())."</td>");
+									    	print("<td>".DateTime::createFromFormat('Y-m-d', $lisaa->getAsennusPaivamaara())->format('d.m.Y')."</td>");
+									    	print("<td>".utf8_encode($lisaa->getLevytila())."</td>");
+									    	print("<td>".$lisaa->getLisatietoa()."</td>");
+								   	print("</tr>");
+									}
+								
+							 	} catch (Exception $error) {
+									print($error->getMessage());
+								}
+								
+								
+								
+						echo '</tbody>';
+						echo '</table>';
+						echo '</div>';
+						 
+						//  Kyselyn tulosrivien määrä
+						print("<p>Yhteensä " . (isset($rivit) && ($rivit !=null) ? count($rivit) : '') . " riviä</p>");
+                         }
+						?>
+ 					
                     
-                </div>
-                <!-- /.row -->
+                    </div> <!-- /.tulostetut col-sm-12 -->
+                        
+                    
+                </div> <!-- /.row -->
 
-            </div>
-            <!-- /.container-fluid -->
+           
+            </div>  <!-- /.container-fluid -->
 
-        </div>
-        <!-- /#page-wrapper -->
-
-    </div>
-    <!-- /#wrapper -->
+        
+        </div> <!-- /#page-wrapper -->
+        
+	
+    </div> <!-- /#wrapper -->
+    
 
     <!-- jQuery -->
-    <script src="js/jquery.js"></script>
+    <script src="js/jquery-2.2.3.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+    
+    <!-- Bootstrap select picker JavaScript -->
+    <script type="text/javascript" src="js/bootstrap-select.min.js"></script>
+        
+<!-- Bootstrap selectpicker & glyphicons to input buttons -->
+<script type="text/javascript">
+$(document).ready(function( {
+    $('.selectpicker').selectpicker();
+    style: 'btn-default',
+    size: false
+  });
+  
+$(document).ready(function(){
+	$(".icon-input-btn").each(function(){
+        var btnFont = $(this).find(".btn").css("font-size");
+        var btnColor = $(this).find(".btn").css("color");
+		$(this).find(".glyphicon").css("font-size", btnFont);
+        $(this).find(".glyphicon").css("color", btnColor);
+        if($(this).find(".btn-xs").length){
+            $(this).find(".glyphicon").css("top", "24%");
+        }
+	}); 
+}); 
+
+$(document).on("ready", function() {
+	$.ajax({
+		url: "asiakkaatJSON.php",
+		method: "get",
+		data: {nimi: $("#asiakkaanNimi").val()},
+		dataType: "json", timeout: 5000
+		dataType: "json",
+		timeout: 5000
+	})
+.done(function(data) {
+	$("#haettuLista").html("");
+		for(var i = 0; i < data.length; i++) {
+	$("#haettuLista").append(
+		"<p>Nimi: " + data[i].asiakkaanNimi +
+		"<br>Sähköposti: " + data[i].sahkopostiosoite +
+		"<br>Puh: " + data[i].puhelinNumero +
+		"<br>OS: " + data[i].kayttoJarjestelmaNimi + 
+		"<br>Pvm: " + data[i].asennusPaivamaara +
+		"<br>HDD: " + data[i].levytila +
+		"<br>Info: " + data[i].lisatietoa + "</p>");
+		} //for
+	}) //done
+	.fail(function() {
+		$("#haettuLista").html("<p>Listausta ei voida tehdä</p>");
+		}); //fail
+	d}); //ready
+	
+</script>
 
 </body>
 

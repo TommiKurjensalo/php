@@ -8,7 +8,8 @@ $syottoVirhe = FALSE;
 // Onko painettu tallenna-painiketta
 if (isset($_POST["tallenna"])) {
    // Viedään muodostimelle kenttien arvot
-   $lisaa = new Lisaa($_POST["asiakkaanNimi"],
+   $lisaa = new Lisaa(
+   		$_POST["asiakkaanNimi"],
    		$_POST["sahkopostiosoite"],
    		$_POST["puhelinNumero"],
    		$_POST["paiva"],
@@ -168,8 +169,8 @@ else {
                                 <i class="fa fa-edit"></i> Lisää
                             </li>
                         </ol>
-                    </div> <!-- /. head col-lg-12 -->
-                </div> <!-- /. head row -->
+                    </div> <!-- /. heading col-lg-12 -->
+                </div> <!-- /. heading row -->
                 
 
                 <div class="row">
@@ -192,7 +193,7 @@ else {
                             <?php echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getAsiakkaanNimi().'"';?> placeholder="Neste Oy"/>
 							
 								<!-- <?php  echo 'Syöttövirheet: ' . (($syottoVirhe == TRUE) ? 'true' : 'false'); ?>  -->
-                            	</div> <!-- ./input-group -->
+                            	<?php echo '</div> <!-- ./input-group -->' ?>
 							</div> <!-- ./form-group -->
 							
 							
@@ -209,7 +210,7 @@ else {
                                 <input name="sahkopostiosoite" class="form-control" type="text" value= 
                                 <?php echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getSahkopostiosoite().'"';?> placeholder="nimi@esimerkki.fi"/>
                            
-                            	</div> <!-- ./input-group -->
+                            	<?php echo '</div> <!-- ./input-group -->' ?>
 							</div> <!-- ./form-group -->
                             
                               <!-- ** PUHELINNUMERO ** -->
@@ -225,7 +226,7 @@ else {
                                 <!-- Jos syöttökentässä on ollut virhe, palautetaan annettu arvo -->
                                 <input name="puhelinNumero" class="form-control" type="tel" value=
                             	<?php echo (($syottoVirhe == FALSE) ? '""' : '"'.$lisaa->getPuhelinNumero().'"');?> placeholder="040-3493384"/>
-                            	</div> <!-- ./input-group -->
+                            	<?php echo '</div> <!-- ./input-group -->' ?>
 							</div> <!-- ./form-group -->
 
 							  <!-- ** ASENNUSPÄIVÄMÄÄRÄ ** -->
@@ -325,7 +326,7 @@ else {
 	                                
 	                                <input name="levytila" class="form-control" type="number" min="1" value=<?php
 	                             		echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getLevytila().'"';?> placeholder="100"/>
-                            	</div> <!-- ./input-group -->
+                            	<?php echo '</div> <!-- ./input-group -->' ?>
 							</div> <!-- ./form-group -->
 
 							  <!-- ** KÄYTTÖJÄRJESTELMÄ ** -->
@@ -372,7 +373,7 @@ else {
 							
  							?>
                                 	</select>
-                            	</div> <!-- ./input-group -->
+                            	<?php echo '</div> <!-- ./input-group -->' ?>
 							</div> <!-- ./form-group -->
 
 							  <!-- ** LISÄTIETOA ** -->

@@ -6,7 +6,7 @@ class Lisaa {
 			-1 => "Virheellinen tieto",
 			0 => "",
 			1 => "Nimi ei voi olla tyhjä",
-			2 => "Nimi on liian pitkä tai lyhyt",
+			2 => "Nimi on liian pitkä tai lyhyt, min 3 merkkiä ja maksimissaan 50 merkkiä",
 			3 => "Nimessä voi olla vain kirjaimia, välilyöntejä ja '-'",
 			4 => "Sähköpostiosoite ei voi olla tyhjä",
 			5 => "Sähköpostiosoite on virheellinen, hyväksytyt merkit ovat (A-Z a-z 0-9 .-) ja maatunnus 2-4 merkkiä (A-Z a-z)",
@@ -34,6 +34,7 @@ class Lisaa {
 	
 	
 	// luokan attribuutit
+	private $lisaaId = "";
 	private $asiakkaanNimi = "";
 	private $sahkopostiosoite = "";
 	private $puhelinNumero = "";
@@ -44,16 +45,16 @@ class Lisaa {
 	private $levytila = "";
 	private $kayttoJarjestelma = "";
 	private $lisatietoa = "";
-	private $id = 0;
 	private $NykyHetki = "";
 	
 	
 	// Luokan konstruktori
-	function __construct($uusiAsiakkaanNimi = "", $uusiSahkopostiosoite = "", $uusiPuhelinNumero = "", 
+	function __construct($uusiId="", $uusiAsiakkaanNimi = "", $uusiSahkopostiosoite = "", $uusiPuhelinNumero = "", 
 			$uusiPaiva = "", $uusiKuukausi = "", $uusiVuosi = "",
-			$uusiLevytila = "", $uusiKayttoJarjestelma = "", $uusiLisatietoa = "", 
-			$id=0) {
+			$uusiLevytila = "", $uusiKayttoJarjestelma = "", $uusiLisatietoa = "") 
+		{
 		// trim poistaa tyhjät merkkijonon alusta ja lopusta
+		$this->lisaaId = ($uusiId);
 		$this->asiakkaanNimi = trim($uusiAsiakkaanNimi);
 		$this->sahkopostiosoite = trim($uusiSahkopostiosoite);
 		$this->puhelinNumero = trim($uusiPuhelinNumero);
@@ -62,8 +63,17 @@ class Lisaa {
 		$this->vuosi = trim($uusiVuosi);
 		$this->levytila = trim($uusiLevytila);
 		$this->kayttoJarjestelma = trim($uusiKayttoJarjestelma);
-		$this->lisatietoa = trim($uusiLisatietoa);
-		$this->id = ($id);
+		$this->lisatietoa = trim($uusiLisatietoa);		
+	}
+	
+	// Muuttaa/asettaa lisaaId-attribuutin
+	public function setLisaaId($uusiId) {
+		$this->lisaaId = $uusiId;
+	}
+	
+	// Palauttaa lisaaId-attribuutin
+	public function getLisaaId() {
+		return $this->lisaaId;
 	}
 	
 	// Muuttaa/asettaa asiakkaanNimi-attribuutin
@@ -80,7 +90,7 @@ class Lisaa {
 	// $empty kertoo, saako kenttä olla tyhjä (false=>ei saa olla eli on pakollinen)
 	// $min kertoo kentän minimipituuden merkkeinä
 	// $max kertoo kentän maksimipituuden merkkeinä
-	public function checkAsiakkaanNimi($required = true, $min=3, $max=35) {
+	public function checkAsiakkaanNimi($required = true, $min=3, $max=50) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
 		if ($required == false && strlen($this->asiakkaanNimi) == 0) 	

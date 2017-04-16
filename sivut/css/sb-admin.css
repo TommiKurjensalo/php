@@ -262,3 +262,23 @@ ul.alert-dropdown {
 			 text-shadow: 10px 10px 0 black;
 		 }
 		 
+hr {
+   display: block;
+   position: relative;
+   padding: 20px 0px 20px 0px;
+   margin: 0 auto;
+   height: 0;
+   width: 100%;
+   max-height: 0;
+   font-size: 1px;
+   line-height: 10px;
+   clear: both;
+   border: none;
+   border-top: 2px solid #aaaaaa;
+   border-bottom: 2px solid #ffffff;
+}
+
+.table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th {
+  background-color: #646464;
+  color:#eeeeee;
+}
