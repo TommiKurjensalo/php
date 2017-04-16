@@ -1,3 +1,25 @@
+# 16.4.2017
+
+* Tehty haeAsiakas (yksittäistä) metodia
+
+* Muokattu päivämäärää näkymään pp.kk.vvvv muotoon
+
+Aikaa meni 2tuntia
+
+# 15.4.2017
+
+* Lisätty "listaa kaikki" sivu, joka hakee tiedot tietokannasta
+
+* Luotu tietokannat
+
+Oli kyllä paljon ihmetystä, että kuinka tuo tietokanta homma toimii kun ohjeet oli hiukan epäselvät.
+
+Epäselvillä tarkoitan sitä, että vaihtoehtoja oli useampi. JSON tapaa en ole vielä edes tutkinut sen tarkemmin, tosin olen lisännyt sivulle jo tarpeelliset script rivit.
+
+PDO käsittelyssäkin oli hämmennystä aiheuttavia asioita, koska halusin, että tietokanta tiedot ovat eri tiedostossa, eikä luokan sisällä.
+
+Aikaa meni 7tuntia.
+
 # 14.4.2017
 
 * Korjattu ongelma vuosien "valuminen" alaspäin ja kuukausien palautuminen "none" arvoon.
