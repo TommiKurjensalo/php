@@ -8,7 +8,7 @@ $syottoVirhe = FALSE;
 // Onko painettu tallenna-painiketta
 if (isset($_POST["tallenna"])) {
    // Viedään muodostimelle kenttien arvot
-   $lisaa = new Lisaa(
+   $lisaa = new Lisaa(0,
    		$_POST["asiakkaanNimi"],
    		$_POST["sahkopostiosoite"],
    		$_POST["puhelinNumero"],
@@ -21,23 +21,23 @@ if (isset($_POST["tallenna"])) {
    		);
    
    // Haetaan mahdolliset virhekoodit
-   $asiakkaanNimiVirhe = $lisaa->checkAsiakkaanNimi();
-   $sahkopostiosoiteVirhe = $lisaa->checkSahkopostiosoite();
-   $puhelinNumeroVirhe = $lisaa->checkPuhelinNumero();
-   $asennusPaivamaaraVirhe = $lisaa->checkAsennusPaivamaara();
-   $levytilaVirhe = $lisaa->checkLevytila();
-   $kayttoJarjestelmaVirhe = $lisaa->checkKayttoJarjestelma();
-   $lisatietoaVirhe = $lisaa->checkLisatietoa();
+   $asiakkaanNimiVirhe = $lisaa->checkAsiakkaanNimi(TRUE,3,50);
+   $sahkopostiosoiteVirhe = $lisaa->checkSahkopostiosoite(TRUE);
+   $puhelinNumeroVirhe = $lisaa->checkPuhelinNumero(TRUE);
+   $asennusPaivamaaraVirhe = $lisaa->checkAsennusPaivamaara(TRUE);
+   $levytilaVirhe = $lisaa->checkLevytila(TRUE);
+   $kayttoJarjestelmaVirhe = $lisaa->checkKayttoJarjestelma(TRUE);
+   $lisatietoaVirhe = $lisaa->checkLisatietoa(FALSE);
    
 
    // Haetaan mahdolliset syöttövirheet ja annetaan boolean tyyppinen true tai false arvo
-   if (($asiakkaanNimiVirhe) > 0) $syottoVirhe = "TRUE";
-   if (($sahkopostiosoiteVirhe) > 0) $syottoVirhe = "TRUE";
-   if (($puhelinNumeroVirhe) > 0) $syottoVirhe = "TRUE";
-   if (($asennusPaivamaaraVirhe) > 0) $syottoVirhe = "TRUE";
-   if (($levytilaVirhe) > 0) $syottoVirhe = "TRUE";
-   if (($kayttoJarjestelmaVirhe) > 0) $syottoVirhe = "TRUE";
-   if (($lisatietoaVirhe) > 0) $syottoVirhe = "TRUE";
+   if ($asiakkaanNimiVirhe > 0) $syottoVirhe = TRUE;
+   if ($sahkopostiosoiteVirhe > 0) $syottoVirhe = TRUE;
+   if ($puhelinNumeroVirhe > 0) $syottoVirhe = TRUE;
+   if ($asennusPaivamaaraVirhe > 0) $syottoVirhe = TRUE;
+   if ($levytilaVirhe > 0) $syottoVirhe = TRUE;
+   if ($kayttoJarjestelmaVirhe > 0) $syottoVirhe = TRUE;
+   if ($lisatietoaVirhe > 0) $syottoVirhe = TRUE;
 }
 
 
@@ -260,7 +260,7 @@ else {
                             	echo '<label style="padding-top:15%;">Päivä:' . '&nbsp;</label>';
                             	echo '<select class="selectpicker" data-width="auto" name="paiva">' ."\n";
 								echo '<option value="none"', ($lisaa->getPaiva() == 'none') 
-								? 'selected':'' ,'>Päivä</option>';
+								? ' selected':'' ,'>Päivä</option>';
 								echo "\n";
                             	for($pvmNro=1;$pvmNro<=31;$pvmNro++){
 									$pv=strftime($format, mktime(0,0,0,0,$pvmNro));
@@ -276,7 +276,7 @@ else {
                             	echo '<label>'.'&nbsp;&nbsp;'.'Kuukausi:' . '&nbsp;' . '</label>' ."\n";
 								echo '<select class="selectpicker" data-width="auto" name="kuukausi">';
 								echo '<option value="none"', ($lisaa->getKuukausi() == 'none') 
-								? 'selected':'' ,'>Kuukausi</option>';
+								? ' selected':'' ,'>Kuukausi</option>';
 								echo "\n";
 								for($kkNro=1;$kkNro<=12;$kkNro++){
 									$kk=strftime('%B', mktime(0,0,0,$kkNro));
@@ -294,7 +294,7 @@ else {
 								echo '<label>'.'&nbsp;&nbsp;'.'Vuosi:'.'&nbsp;'.'</label>' ."\n";
 								echo '<select class="selectpicker" data-width="auto" name="vuosi">';
 								echo '<option value="none"', ($lisaa->getVuosi() == 'none') 
-								? 'selected':'' ,'>Vuosi</option>';
+								? ' selected':'' ,'>Vuosi</option>';
 								echo "\n";
 									$nykyVuosi = (new DateTime)->format("Y");
 									
@@ -350,24 +350,24 @@ else {
 								? 'selected':'' ,'>Valitse käyttöjärjestelmä</option>';
 							echo "\n"; 
 							
-							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2008">Windows Server 2008'
-								: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2008') 
-								? 'Windows Server 2008" selected>Windows Server 2008' : 'Windows Server 2008">Windows Server 2008' ));
+							echo '<option value="'.(($syottoVirhe == FALSE) ? '1">Windows Server 2008'
+								: (($lisaa->getKayttoJarjestelma() === '1') 
+								? '1" selected>Windows Server 2008' : '1">Windows Server 2008' ));
 							echo "</option>\n";
 							
-							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2008 R2">Windows Server 2008 R2'
-									: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2008 R2')
-									? 'Windows Server 2008 R2" selected>Windows Server 2008 R2' : 'Windows Server 2008 R2">Windows Server 2008 R2' ));
+							echo '<option value="'.(($syottoVirhe == FALSE) ? '2">Windows Server 2008 R2'
+									: (($lisaa->getKayttoJarjestelma() === '2')
+									? '2" selected>Windows Server 2008 R2' : '2">Windows Server 2008 R2' ));
 							echo "</option>\n";
 							
-							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2012">Windows Server 2012'
-									: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2012')
-									? 'Windows Server 2012" selected>Windows Server 2012' : 'Windows Server 2012">Windows Server 2012' ));
+							echo '<option value="'.(($syottoVirhe == FALSE) ? '3">Windows Server 2012'
+									: (($lisaa->getKayttoJarjestelma() === '3')
+									? '3" selected>Windows Server 2012' : '3">Windows Server 2012' ));
 							echo "</option>\n";
 							
-							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2016">Windows Server 2016'
-									: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2016')
-									? 'Windows Server 2016" selected>Windows Server 2016' : 'Windows Server 2016">Windows Server 2016' ));
+							echo '<option value="'.(($syottoVirhe == FALSE) ? '4">Windows Server 2016'
+									: (($lisaa->getKayttoJarjestelma() === '4')
+									? '4" selected>Windows Server 2016' : '4">Windows Server 2016' ));
 							echo "</option>\n";
 							
 							

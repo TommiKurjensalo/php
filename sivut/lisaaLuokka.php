@@ -1,4 +1,5 @@
 <?php
+
 class Lisaa {
 	
 	// Virhekoodit
@@ -47,12 +48,23 @@ class Lisaa {
 	private $lisatietoa = "";
 	private $NykyHetki = "";
 	
+	// Etsitään sopiva konstruktori
+	function __construct() {
+		$get_arguments       = func_get_args();
+		$number_of_arguments = func_num_args();
+	
+		if (method_exists($this, $method_name = '__construct'.$number_of_arguments)) {
+			call_user_func_array(array($this, $method_name), $get_arguments);
+		}
+	}
+	
 	
 	// Luokan konstruktori
-	function __construct($uusiId="", $uusiAsiakkaanNimi = "", $uusiSahkopostiosoite = "", $uusiPuhelinNumero = "", 
+	public function __construct10($uusiId="", $uusiAsiakkaanNimi = "", $uusiSahkopostiosoite = "", $uusiPuhelinNumero = "", 
 			$uusiPaiva = "", $uusiKuukausi = "", $uusiVuosi = "",
 			$uusiLevytila = "", $uusiKayttoJarjestelma = "", $uusiLisatietoa = "") 
 		{
+
 		// trim poistaa tyhjät merkkijonon alusta ja lopusta
 		$this->lisaaId = ($uusiId);
 		$this->asiakkaanNimi = trim($uusiAsiakkaanNimi);
@@ -64,6 +76,21 @@ class Lisaa {
 		$this->levytila = trim($uusiLevytila);
 		$this->kayttoJarjestelma = trim($uusiKayttoJarjestelma);
 		$this->lisatietoa = trim($uusiLisatietoa);		
+	}
+	
+	// Luokan konstruktori listaaKaikki toimintoa varten
+	public function __construct6($uusiId="", $uusiAsiakkaanNimi = "",
+			$uusiPaiva = "", $uusiKuukausi = "", $uusiVuosi = "",
+			$uusiKayttoJarjestelma = "")
+	{
+
+		// trim poistaa tyhjät merkkijonon alusta ja lopusta
+		$this->lisaaId = ($uusiId);
+		$this->asiakkaanNimi = trim($uusiAsiakkaanNimi);
+		$this->paiva = trim($uusiPaiva);
+		$this->kuukausi = trim($uusiKuukausi);
+		$this->vuosi = trim($uusiVuosi);
+		$this->kayttoJarjestelma = trim($uusiKayttoJarjestelma);
 	}
 	
 	// Muuttaa/asettaa lisaaId-attribuutin
@@ -87,13 +114,13 @@ class Lisaa {
 	}
 	
 
-	// $empty kertoo, saako kenttä olla tyhjä (false=>ei saa olla eli on pakollinen)
+	// $empty kertoo, saako kenttä olla tyhjä (FALSE=>ei saa olla eli on pakollinen)
 	// $min kertoo kentän minimipituuden merkkeinä
 	// $max kertoo kentän maksimipituuden merkkeinä
-	public function checkAsiakkaanNimi($required = true, $min=3, $max=50) {
+	public function checkAsiakkaanNimi($required, $min, $max) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == false && strlen($this->asiakkaanNimi) == 0) 	
+		if ($required == FALSE && strlen($this->asiakkaanNimi) == 0) 	
 			return 0;
 		
 		// Jos kenttä on tyhjä
@@ -124,10 +151,10 @@ class Lisaa {
 		return $this->sahkopostiosoite;
 	}
 	
-	public function checkSahkopostiosoite($required = true) {
+	public function checkSahkopostiosoite($required) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == false && strlen($this->sahkopostiosoite) == 0) 
+		if ($required == FALSE && strlen($this->sahkopostiosoite) == 0) 
 			return 0;
 		
 		// Jos kenttä on tyhjä
@@ -154,10 +181,10 @@ class Lisaa {
 		return $this->puhelinNumero;
 	}
 	
-	public function checkPuhelinNumero($required = true, $min = 8, $max = 20) {
+	public function checkPuhelinNumero($required, $min = 8, $max = 20) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == false && strlen($this->puhelinNumero) == 0)
+		if ($required == FALSE && strlen($this->puhelinNumero) == 0)
 			return 0;
 	
 		// Jos kenttä on tyhjä
@@ -228,16 +255,16 @@ class Lisaa {
 		return $this->NykyHetki;
 	}
 	
-	public function checkAsennusPaivamaara($required = false) {
+	public function checkAsennusPaivamaara($required) {
 	
 		
 		// Jos kentät saa olla tyhjiä ja se on tyhjä, ei ole virhettä
-		if ($required == false && strlen($this->paiva) == 0 && strlen($this->kuukausi) == 0 && strlen($this->vuosi) == 0)
+		if ($required == FALSE && strpos($this->paiva, 'none') !==FALSE || strpos($this->kuukausi, 'none') !==FALSE || strpos($this->vuosi, 'none') !==FALSE)
 			return 0;
 	
 		
 		// Jos kentät on tyhjiä
-		if (strpos($this->paiva, 'none') !==false || strpos($this->kuukausi, 'none') !==false || strpos($this->vuosi, 'none') !==false)
+		if (strpos($this->paiva, 'none') !==FALSE || strpos($this->kuukausi, 'none') !==FALSE || strpos($this->vuosi, 'none') !==FALSE)
 			return 8;
 		
 		// Määritellään muuttujia päivämäärän tulevaisuuden tarkistamista varten
@@ -268,10 +295,10 @@ class Lisaa {
 		return $this->levytila;
 	}
 	
-	public function checkLevytila($required = true) {
+	public function checkLevytila($required) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == false && strlen($this->levytila) == 0)
+		if ($required == FALSE && strlen($this->levytila) == 0)
 			return 0;
 	
 		// Jos kenttä on tyhjä
@@ -300,14 +327,14 @@ class Lisaa {
 		return $this->kayttoJarjestelma;
 	}
 	
-	public function checkKayttoJarjestelma($required = true) {
+	public function checkKayttoJarjestelma($required) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == false && strlen($this->kayttoJarjestelma) == 0)
+		if ($required == FALSE && strlen($this->kayttoJarjestelma) == 0)
 			return 0;
 	
 		// Jos käyttöjärjestelmää ei ole valittu
-		if (strpos($this->kayttoJarjestelma, 'none') !==false) 
+		if ($required == TRUE && strpos($this->kayttoJarjestelma, 'none') !==FALSE) 
 			return 12;
 		
 		// Ei ollut virheitä
@@ -325,10 +352,10 @@ class Lisaa {
 		return $this->lisatietoa;
 	}
 	
-	public function checkLisatietoa ($required = true, $min = 10, $max = 500) {
+	public function checkLisatietoa ($required, $min = 10, $max = 500) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == false && strlen($this->lisatietoa) == 0)
+		if ($required == FALSE && strlen($this->lisatietoa) == 0)
 			return 0;
 	
 		// Jos kenttä on tyhjä

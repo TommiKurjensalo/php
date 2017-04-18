@@ -1,14 +1,18 @@
 <?php
 // Liitetään lomakekenttien käsittelyyn tarkoitettu luokka
 require_once "lisaaLuokka.php";
+require_once "listaaKaikkiPDO.php";
 
+	
 // Alustetaan muuttuja $syottoVirhe
 $syottoVirhe = FALSE;
 
+
 // Onko painettu tallenna-painiketta
 if (isset($_POST["hae"])) {
+
    // Viedään muodostimelle kenttien arvot
-   $lisaa = new Lisaa(
+   $lisaa = new Lisaa(0,
    		$_POST["asiakkaanNimi"],
    		$_POST["paiva"],
    		$_POST["kuukausi"],
@@ -16,29 +20,48 @@ if (isset($_POST["hae"])) {
    		$_POST["kayttoJarjestelma"]
    		);
 
+   // Aloitetaan istunto
+   //session_start();
+    
+   //$_SESSION["lisaa"] = $lisaa;
+   
+   // kirjoitetaan istunnon tiedot talteen
+  	//session_write_close();
+   
    // Haetaan mahdolliset virhekoodit
-   $asiakkaanNimiVirhe = $lisaa->checkAsiakkaanNimi();
-   $asennusPaivamaaraVirhe = $lisaa->checkAsennusPaivamaara();
-   $kayttoJarjestelmaVirhe = $lisaa->checkKayttoJarjestelma();
+   $asiakkaanNimiVirhe = $lisaa->checkAsiakkaanNimi(FALSE,0,50);
+   $asennusPaivamaaraVirhe = $lisaa->checkAsennusPaivamaara(FALSE);
+   $kayttoJarjestelmaVirhe = $lisaa->checkKayttoJarjestelma(FALSE);
     
    
    // Haetaan mahdolliset syöttövirheet ja annetaan boolean tyyppinen true tai false arvo
-   if (($asiakkaanNimiVirhe) > 0) $syottoVirhe = "TRUE";
-   if (($asennusPaivamaaraVirhe) > 0) $syottoVirhe = "TRUE";
-   if (($kayttoJarjestelmaVirhe) > 0) $syottoVirhe = "TRUE";
+   if ($asiakkaanNimiVirhe > 0) $syottoVirhe = TRUE;
+   if ($asennusPaivamaaraVirhe > 0) $syottoVirhe = TRUE;
+   if ($kayttoJarjestelmaVirhe > 0) $syottoVirhe = TRUE;
+
    
 }
 
 // Sivulle tultiin ensimmäistä kertaa
 else {
-   // Tehdään tyhjä olio
-   $lisaa = new Lisaa();
-   // Nollataan virhekoodit
-   $asiakkaanNimiVirhe = 0;
-   $puhelinNumeroVirhe = 0;
-   $asennusPaivamaaraVirhe = 0;
-   $kayttoJarjestelmaVirhe = 0;
+
+	   // Tehdään tyhjä olio
+	   $lisaa = new Lisaa();
+	   // Nollataan virhekoodit
+	   $asiakkaanNimiVirhe = 0;
+	   $puhelinNumeroVirhe = 0;
+	   $asennusPaivamaaraVirhe = 0;
+	   $kayttoJarjestelmaVirhe = 0;
+		}
+
+
+if (isset($_COOKIE[session_name()]))  {
+	// Poistetaan istunnon tunniste käyttäjän koneelta
+	setcookie(session_name(), '', time()-100, '/');
 }
+
+// Tuhotaan istunto
+//session_destroy();
 ?>
 
 <!DOCTYPE html>
@@ -140,6 +163,13 @@ else {
                         <h1 class="page-header">
                             Listaa kaikki asiakkaat
                         </h1>
+                        <!--  Debuggausta varten
+                        <?php 
+                           echo ' nimi: ' .$asiakkaanNimiVirhe;
+  				 echo ' pvm: ' .$asennusPaivamaaraVirhe;
+   				echo ' os: ' .$kayttoJarjestelmaVirhe;
+   				?>
+   				-->
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.php">Etusivu</a>
@@ -154,6 +184,7 @@ else {
 
                 
                     <div class="row">
+                   <!--  <?php  echo 'Syöttövirheet: ' . (($syottoVirhe == TRUE) ? 'true' : 'false'); ?>  -->
 						<div class="col-sm-12"> <!-- painike col-lg-12 -->
                         	<form class="form-inline" role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
                         	
@@ -167,9 +198,10 @@ else {
 	                            <!-- Jos syöttökentässä on ollut virhe, palautetaan annettu arvo -->                       
 	                            <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
 	                            <input name="asiakkaanNimi" class="form-control" type="text" value=
-	                            <?php echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getAsiakkaanNimi().'"';?> placeholder="Neste Oy"/>
+	                            <?php echo (($syottoVirhe == FALSE) ? '""' : (empty($lisaa->getAsiakkaanNimi()) || ($lisaa->getAsiakkaanNimi() == null)) ? '""' 
+								: '"'.$lisaa->getAsiakkaanNimi().'"');?> placeholder="Neste Oy"/>
 								<?php echo '</div>' ?> 
-									<!-- <?php  echo 'Syöttövirheet: ' . (($syottoVirhe == TRUE) ? 'true' : 'false'); ?>  -->  
+								
                             
  								<!-- ** ASENNUSPÄIVÄMÄÄRÄ ** -->	
 
@@ -197,25 +229,25 @@ else {
                             	echo '<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>';
                             	echo '<select class="selectpicker" data-width="auto" name="paiva">' ."\n";
 								echo '<option value="none"', ($lisaa->getPaiva() == 'none') 
-								? 'selected':'' ,'>Päivä</option>';
+								? ' selected':'' ,'>Päivä</option>';
 								echo "\n";
                             	for($pvmNro=1;$pvmNro<=31;$pvmNro++){
 									$pv=strftime($format, mktime(0,0,0,0,$pvmNro));
 									
 									 echo '<option value="'.(($syottoVirhe == FALSE) ? $pv .'">' .$pv 
-									 	: (($lisaa->getPaiva() == $pvmNro) ? $pv .'" selected>' .$pv : $pvmNro .'">' .$pv ));
+									 	: (($lisaa->getPaiva() == $pv) ? $pv .'" selected>' .$pv : $pv .'">' .$pv ));
 									 echo "</option>" ."\n";
                             	}
                             	echo "</select>" ."\n";
                             	
                             	// Kuukausi alasvetovalikko, loopataan kuukaudet 1-12 ilman etunollia
                             	// Jos syöttökentässä on ollut virhe, palautetaan annettu arvo
-                            	echo '<label>'.'&nbsp;&nbsp;'.'Kuukausi:' . '&nbsp;' . '</label>' ."\n";
+                            	echo '<label style="margin-top:8%;">'.'&nbsp;&nbsp;'.'Kuukausi:' . '&nbsp;' . '</label>' ."\n";
                             	//echo '<div class="input-group mb-2 mr-sm-2 mb-sm-0">';
                             	echo '<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>';
 								echo '<select class="selectpicker" data-width="auto" name="kuukausi">';
 								echo '<option value="none"', ($lisaa->getKuukausi() == 'none') 
-								? 'selected':'' ,'>Kuukausi</option>';
+								? ' selected':'' ,'>Kuukausi</option>';
 								echo "\n";
 								for($kkNro=1;$kkNro<=12;$kkNro++){
 									$kk=strftime('%B', mktime(0,0,0,$kkNro));
@@ -235,7 +267,7 @@ else {
 								echo '<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>';
 								echo '<select class="selectpicker" data-width="auto" name="vuosi">';
 								echo '<option value="none"', ($lisaa->getVuosi() == 'none') 
-								? 'selected':'' ,'>Vuosi</option>';
+								? ' selected':'' ,'>Vuosi</option>';
 								echo "\n";
 									$nykyVuosi = (new DateTime)->format("Y");
 									
@@ -269,25 +301,25 @@ else {
 							echo '<option value="none"', ($lisaa->getKayttoJarjestelma() == 'none') 
 								? 'selected':'' ,'>Valitse käyttöjärjestelmä</option>';
 							echo "\n"; 
-							
-							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2008">Windows Server 2008'
-								: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2008') 
-								? 'Windows Server 2008" selected>Windows Server 2008' : 'Windows Server 2008">Windows Server 2008' ));
+									
+							echo '<option value="'.(($syottoVirhe == FALSE) ? '1">Windows Server 2008'
+								: (($lisaa->getKayttoJarjestelma() === '1') 
+								? '1" selected>Windows Server 2008' : '1">Windows Server 2008' ));
 							echo "</option>\n";
 							
-							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2008 R2">Windows Server 2008 R2'
-									: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2008 R2')
-									? 'Windows Server 2008 R2" selected>Windows Server 2008 R2' : 'Windows Server 2008 R2">Windows Server 2008 R2' ));
+							echo '<option value="'.(($syottoVirhe == FALSE) ? '2">Windows Server 2008 R2'
+									: (($lisaa->getKayttoJarjestelma() === '2')
+									? '2" selected>Windows Server 2008 R2' : '2">Windows Server 2008 R2' ));
 							echo "</option>\n";
 							
-							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2012">Windows Server 2012'
-									: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2012')
-									? 'Windows Server 2012" selected>Windows Server 2012' : 'Windows Server 2012">Windows Server 2012' ));
+							echo '<option value="'.(($syottoVirhe == FALSE) ? '3">Windows Server 2012'
+									: (($lisaa->getKayttoJarjestelma() === '3')
+									? '3" selected>Windows Server 2012' : '3">Windows Server 2012' ));
 							echo "</option>\n";
 							
-							echo '<option value="'.(($syottoVirhe == FALSE) ? 'Windows Server 2016">Windows Server 2016'
-									: (($lisaa->getKayttoJarjestelma() == 'Windows Server 2016')
-									? 'Windows Server 2016" selected>Windows Server 2016' : 'Windows Server 2016">Windows Server 2016' ));
+							echo '<option value="'.(($syottoVirhe == FALSE) ? '4">Windows Server 2016'
+									: (($lisaa->getKayttoJarjestelma() === '4')
+									? '4" selected>Windows Server 2016' : '4">Windows Server 2016' ));
 							echo "</option>\n";
 							
 							
@@ -303,13 +335,14 @@ else {
                              
 
                          	
-                         		<div class="input-group">
+                         		<div class="pull-right input-group" style="background:yellow; margin-top:0.5%;">
                          	   <?php 
                         		try {
                         			require_once "listaaKaikkiPDO.php";
                         			$Database = new Database();
-								
+                        			
 									echo ' DB Yhteys: ' .($Database->isConnected() ? 'ON' : 'OFF');
+									
                         		} catch (Exception $error) {
 									print($error->getMessage());
 								}
@@ -319,40 +352,46 @@ else {
 								</form> <!-- /. lomakkeet -->
                          
                          <hr> <!-- line breaker -->
+                         
                          </div> <!-- /. painike col-lg-12 -->
-
+							
 
                          	
                          	<div id="haettuLista" class="col-sm-12"> <!-- tulostetut col-sm-12 -->
                         
                          <?php 
 						
-                         if (isset($_POST["hae"])) {
-                       
+                         echo '<div class="table-responsive">';
+	                         echo '<table class="table table-striped table-hover">';
+		                         echo '<thead>';
+			                         echo '<tr>';
+				                         echo '<th>#</th>';
+				                         echo '<th>Nimi</th>';
+				                         echo '<th>Sähkopostiosoite</th>';
+				                         echo '<th>Puhelinnumero</th>';
+				                         echo '<th>Kayttojärjestelmä</th>';
+				                         echo '<th>Asennuspäivamäärä</th>';
+				                         echo '<th>Levytila(Gt)</th>';
+				                         echo '<th>Lisätietoa</th>';
+			                         echo '</tr>';
+		                         echo '</thead>';
+                         echo '<tbody>';
+                        
+                         	if (isset($_POST["hae"])) {
+                         		
+ 	
                            try {
                            
-	                           	require_once "listaaKaikkiPDO.php";
+	                        	//   	require_once "listaaKaikkiPDO.php";
+	                        	//   	require_once "lisaaLuokka.php";
 									$kantakasittely = new listaaPDO();
-									$rivit = $kantakasittely->haeAsiakas($_POST["asiakkaanNimi"]);
+									
+									$rivit = $kantakasittely->haeAsiakas($lisaa);
 							//		print("<p>Yhteensä " . print_r(array_values($rivit)) . " riviä</p>");
 									
 								//	print json_encode($tulos);
 							
-									echo '<div class="table-responsive">';
-									   	echo '<table class="table table-striped table-hover">';
-										   	echo '<thead>';
-												echo '<tr>';
-													echo '<th>#</th>';
-													echo '<th>Nimi</th>';
-													echo '<th>Sähkopostiosoite</th>';
-													echo '<th>Puhelinnumero</th>';
-													echo '<th>Kayttojärjestelmä</th>';
-													echo '<th>Asennuspäivamäärä</th>';
-													echo '<th>Levytila(Gt)</th>';
-													echo '<th>Lisätietoa</th>';
-												echo '</tr>';
-										    echo '</thead>';
-								   	echo '<tbody>';
+
 	
 									foreach ( $rivit as $lisaa) {
 								    	print("<tr>");
@@ -370,7 +409,7 @@ else {
 							 	} catch (Exception $error) {
 									print($error->getMessage());
 								}
-								
+                         	}
 								
 								
 						echo '</tbody>';
@@ -378,8 +417,8 @@ else {
 						echo '</div>';
 						 
 						//  Kyselyn tulosrivien määrä
-						print("<p>Yhteensä " . (isset($rivit) && ($rivit !=null) ? count($rivit) : '') . " riviä</p>");
-                         }
+						print("<p>Yhteensä " . (isset($rivit) && ($rivit !=null) ? count($rivit) : ' 0') . " riviä</p>");
+                         
 						?>
  					
                     
@@ -390,8 +429,8 @@ else {
 
            
             </div>  <!-- /.container-fluid -->
+            
 
-        
         </div> <!-- /#page-wrapper -->
         
 	
