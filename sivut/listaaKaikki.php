@@ -1,7 +1,7 @@
 <?php
 // Liitetään lomakekenttien käsittelyyn tarkoitettu luokka
 require_once "lisaaLuokka.php";
-require_once "listaaKaikkiPDO.php";
+require_once "listaaKaikkiLuokka.php";
 
 	
 // Alustetaan muuttuja $syottoVirhe
@@ -165,11 +165,11 @@ if (isset($_COOKIE[session_name()]))  {
                         </h1>
                         <!--  Debuggausta varten
                         <?php 
-                           echo ' nimi: ' .$asiakkaanNimiVirhe;
-  				 echo ' pvm: ' .$asennusPaivamaaraVirhe;
-   				echo ' os: ' .$kayttoJarjestelmaVirhe;
-   				?>
-   				-->
+                        	echo ' nimi: ' .$asiakkaanNimiVirhe;
+			  				echo ' pvm: ' .$asennusPaivamaaraVirhe;
+			   				echo ' os: ' .$kayttoJarjestelmaVirhe;
+			   			?>
+			   				-->
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.php">Etusivu</a>
@@ -338,7 +338,7 @@ if (isset($_COOKIE[session_name()]))  {
                          		<div class="pull-right input-group" style="background:yellow; margin-top:0.5%;">
                          	   <?php 
                         		try {
-                        			require_once "listaaKaikkiPDO.php";
+                        			require_once "PDO.php";
                         			$Database = new Database();
                         			
 									echo ' DB Yhteys: ' .($Database->isConnected() ? 'ON' : 'OFF');
@@ -382,12 +382,8 @@ if (isset($_COOKIE[session_name()]))  {
  	
                            try {
                            
-	                        	//   	require_once "listaaKaikkiPDO.php";
-	                        	//   	require_once "lisaaLuokka.php";
-									$kantakasittely = new listaaPDO();
-									
+									$kantakasittely = new listaa();							
 									$rivit = $kantakasittely->haeAsiakas($lisaa);
-							//		print("<p>Yhteensä " . print_r(array_values($rivit)) . " riviä</p>");
 									
 								//	print json_encode($tulos);
 							
