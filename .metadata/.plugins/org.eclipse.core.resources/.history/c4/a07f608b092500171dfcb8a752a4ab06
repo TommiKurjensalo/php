@@ -1,0 +1,360 @@
+<?php
+require_once "lisaaLuokka.php";
+class Database {
+
+	// Määritellään $link muuttujalle arvo null
+		private static $link = null ;
+	
+		// Luodaan funktio getLink, joka palauttaa $link arvon, jos se on true
+		private static function getLink ( ) {
+			if ( self :: $link ) {
+				return self :: $link ;
+			}
+	
+			// Määritellään asetustiedosto
+			$ini = "pdo_settings.ini" ;
+			
+			// Määritetään, muuttujalle asetustiedoston sisältö, jos tiedostoa ei löydy annettaan virheilmoitus
+			//$parse = parse_ini_file ( $ini , TRUE ) ;
+			if (!$parse = parse_ini_file($ini, TRUE,INI_SCANNER_TYPED)) throw new exception('Ei pystytty avaamaan tiedostoa ' . $ini . '.');
+			
+			// Annetaan muuttujille arvot asetustiedostosta
+			$driver = $parse [ "db_driver" ] ;
+			$dsn = "${driver}:" ;
+			$user = $parse [ "db_user" ] ;
+			$password = $parse [ "db_password" ] ;
+			$options = $parse [ "db_options" ] ;
+			$attributes = $parse [ "db_attributes" ] ;
+	
+			// Luodaan [dsn] lohkon avulla $dsn muuttujan parametrit
+			foreach ( $parse [ "dsn" ] as $k => $v ) {
+				$dsn .= "${k}=${v};" ;
+	}
+	
+	// Avataan uusi PDO yhteys annetuilla arvoilla
+	self :: $link = new PDO ( $dsn, $user, $password, $options ) ;
+	
+
+	// Käydään attribuutit läpi ja ajetaan ne
+	foreach ( $attributes as $k => $v ) {
+		
+		self :: $link -> setAttribute ( constant ( "{$k}" )
+			, constant ( "{$v}" ) );
+		 //echo ( "link -> setAttribute (" .$k.", ".$v. ")" );
+	}
+
+
+	// Palautetaan $link (yhteys)
+	return self :: $link ;
+	
+	
+	}
+	
+	// Pyytää linkin tiedon array listaan
+	public static function __callStatic ( $name, $args ) {
+		$callback = array ( self :: getLink ( ), $name ) ;
+		return call_user_func_array ( $callback , $args ) ;
+	}
+	
+	// Yksinkertainen funtio, joka testaa onko yhteys päällä
+	public function isConnected()
+	{
+		try {
+			return (bool) Database::query('SELECT 1+1');
+		} catch (PDOException $e) {
+			return FALSE;
+		}
+	}
+}
+
+
+class listaaPDO {
+	
+
+	public function haeKaikkiAsiakkaat() {
+
+		// Muodostetaan SQL kyselylause
+		$sql = "SELECT l.lisaaId,l.asiakkaanNimi,l.sahkopostiosoite,l.puhelinNumero,
+   				k.kayttoJarjestelmaNimi,l.asennusPaivamaara,l.levytila,l.lisatietoa
+				FROM lisaa_kayttojarjestelma lk
+				INNER JOIN lisaa l on l.lisaaId=lk.lisaaId
+				INNER JOIN kayttojarjestelma k on k.kayttoJarjestelmaId=lk.kayttoJarjestelmaId
+				ORDER BY lk.lisaaId ASC;";
+	
+	
+		
+		// Valmistellaan lause
+		$stmt = Database :: prepare($sql);
+		
+		// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
+			if (! $stmt = Database :: prepare($sql)) {
+			$virhe = Database :: errorInfo();
+		
+			throw new PDOException($virhe[2], $virhe[1]);
+		}
+	
+		// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
+		if (! $stmt->execute()) {
+			$virhe = $stmt->errorInfo();
+	
+			throw new PDOException($virhe[2], $virhe[1]);
+		}
+	
+		// Käsitellän/siirretään saatu tulos $lisaa olioon
+		$tulos = array();
+		while ($rivi = $stmt->fetchObject()) {
+			$lisaa = new Lisaa();
+			$lisaa->setLisaaId($rivi->lisaaId);
+			$lisaa->setAsiakkaanNimi(utf8_encode($rivi->asiakkaanNimi));
+			$lisaa->setSahkopostiosoite(utf8_encode($rivi->sahkopostiosoite));
+			$lisaa->setPuhelinNumero(utf8_encode($rivi->puhelinNumero));
+			$lisaa->setKayttoJarjestelma(utf8_encode($rivi->kayttoJarjestelmaNimi));
+			$lisaa->setAsennusPaivamaara(utf8_encode($rivi->asennusPaivamaara));
+			$lisaa->setLevytila(utf8_encode($rivi->levytila));
+			$lisaa->setLisatietoa(utf8_encode($rivi->lisatietoa));
+				
+			$tulos[] = $lisaa;
+		}
+		$this->lkm = $stmt->rowCount();
+		
+		// Palautetaan olio $tulos, joka sisältää haetut rivit tietokannasta rivit
+		return $tulos;
+	} // haeKaikkiAsiakkaat
+	
+	public function haeAsiakas($lisaa) {
+		
+		
+		// Muodostetaan SQL kyselylause
+		$sql = "SELECT l.lisaaId,l.asiakkaanNimi,l.sahkopostiosoite,l.puhelinNumero,
+   				k.kayttoJarjestelmaNimi,l.asennusPaivamaara,l.levytila,l.lisatietoa
+				FROM lisaa_kayttojarjestelma lk
+				INNER JOIN lisaa l on l.lisaaId=lk.lisaaId
+				INNER JOIN kayttojarjestelma k on k.kayttoJarjestelmaId=lk.kayttoJarjestelmaId
+				WHERE (l.asiakkaanNimi LIKE :asiakkaanNimi
+				AND l.asennusPaivamaara LIKE :asennusPaivamaara
+				AND k.kayttoJarjestelmaId LIKE :kayttoJarjestelma)
+				ORDER BY lk.lisaaId ASC;";
+		
+		
+		
+		// Valmistellaan lause
+		$stmt = Database :: prepare($sql);
+		
+		// debuggausta varten
+		//var_dump($lisaa);
+		//echo "\n";
+
+		// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
+		if (! $stmt = Database :: prepare($sql)) {
+			$virhe = Database :: errorInfo();
+		
+			throw new PDOException($virhe[2], $virhe[1]);
+		}
+		
+		// Jos nimi on syötetty, käytetään hakuehtona asiakkaan nimi kentässä olevaa arvoa
+		// Muutoin käytetään arvoa mitä tahansa (%)	
+		(empty($lisaa->getAsiakkaanNimi()) && ($lisaa->getAsiakkaanNimi() !==null) 
+			? $stmt->bindValue(":asiakkaanNimi", utf8_decode("%"), PDO::PARAM_STR)
+			: $stmt->bindValue(":asiakkaanNimi", utf8_decode("%".$lisaa->getAsiakkaanNimi()."%"), PDO::PARAM_STR));
+
+		// Jos päivä, kuukausi eikä vuosi kenttään ole syötetty arvoja, annetaan $asennusPaivamaara muuttujalle arvo null
+		(((strpos($lisaa->getPaiva(), 'none') !==FALSE) && (strpos($lisaa->getKuukausi(), 'none') !==FALSE) && (strpos($lisaa->getVuosi(), 'none') !==FALSE)) 
+			? $asennusPaivamaara = null
+			: '');
+		
+		// Jos päivä kenttään on annettu arvo, luodaan $asennusPaivamaara muuttujalle kyselylauseke
+		(((strpos($lisaa->getPaiva(), 'none') ===FALSE) && (strpos($lisaa->getKuukausi(), 'none') !==FALSE) && (strpos($lisaa->getVuosi(), 'none') !==FALSE))
+			? $asennusPaivamaara = '-'.$lisaa->getPaiva()
+			: '');
+
+		// Jos kuukausi kenttään on annettu arvo, luodaan $asennusPaivamaara muuttujalle kyselylauseke
+		(((strpos($lisaa->getPaiva(), 'none') !==FALSE) && (strpos($lisaa->getKuukausi(), 'none') ===FALSE) && (strpos($lisaa->getVuosi(), 'none') !==FALSE))
+			? $asennusPaivamaara = '-%'.$lisaa->getKuukausi().'-'
+			: '');
+
+		// Jos vuosi kenttään on annettu arvo, luodaan $asennusPaivamaara muuttujalle kyselylauseke		
+		(((strpos($lisaa->getPaiva(), 'none') !==FALSE) && (strpos($lisaa->getKuukausi(), 'none') !==FALSE) && (strpos($lisaa->getVuosi(), 'none') ===FALSE))
+			? $asennusPaivamaara = $lisaa->getVuosi().'-'
+			: '');
+		
+		// Jos $asennusPaivamaara on tyhjä tai null, annetaan kyselylausekeen arvoksi mitä tahansa (%)
+		// Muutoin annetaan :asennusPaivamaara muotoon vvvv-kk-pp
+		(empty($asennusPaivamaara) || ($asennusPaivamaara ===null) 
+		? $stmt->bindValue(":asennusPaivamaara", utf8_decode("%"), PDO::PARAM_STR)
+		: $stmt->bindValue(":asennusPaivamaara", utf8_decode("%$asennusPaivamaara%"), PDO::PARAM_STR));
+		
+		// Jos käyttöjärjestelmä kenttä on tyhjä tai arvo 'none', annetaan kyselylausekeen arvoksi mitä tahansa (%)
+		// Muutoin annetaan kayttoJarjestelman arvo oliosta
+		
+		
+		
+		(empty($lisaa->getKayttoJarjestelma()) || (strpos($lisaa->getKayttoJarjestelma(), 'none') !== FALSE) 
+		? $stmt->bindValue(":kayttoJarjestelma", utf8_decode("%"), PDO::PARAM_STR)
+		: $stmt->bindValue(":kayttoJarjestelma", utf8_decode("%".$lisaa->getKayttoJarjestelma()."%"), PDO::PARAM_STR));
+		
+		// debuggausta varten
+		/*
+		echo "<br>".'"SELECT l.lisaaId,l.asiakkaanNimi,l.sahkopostiosoite,l.puhelinNumero,
+   				k.kayttoJarjestelmaNimi,l.asennusPaivamaara,l.levytila,l.lisatietoa
+				FROM lisaa_kayttojarjestelma lk
+				INNER JOIN lisaa l on l.lisaaId=lk.lisaaId
+				INNER JOIN kayttojarjestelma k on k.kayttoJarjestelmaId=lk.kayttoJarjestelmaId
+				WHERE (l.asiakkaanNimi LIKE "%'.$lisaa->getAsiakkaanNimi().'%"
+				AND l.asennusPaivamaara LIKE "%'.(!empty($asennusPaivamaara) ? $asennusPaivamaara : '').'%"
+				AND k.kayttoJarjestelmaId LIKE "%'.((strpos($lisaa->getKayttoJarjestelma(), 'none') === FALSE) ? $lisaa->getKayttoJarjestelma() : '').'%")
+				ORDER BY lk.lisaaId ASC;"';
+		echo '<br>';
+		echo 'nimi: '. '"%'.$lisaa->getAsiakkaanNimi().'%"'
+			.' | pp.kk.vvvv: ' .$lisaa->getPaiva().'.'.$lisaa->getKuukausi().'.'.$lisaa->getVuosi()
+			.' | pvm: '. '"%'. (!empty($asennusPaivamaara) ? $asennusPaivamaara : ''). '%"'
+			.' | Os: '. '"%'.((strpos($lisaa->getKayttoJarjestelma(), 'none') === FALSE) ? $lisaa->getKayttoJarjestelma() : ''). '%"'
+			;
+		*/
+		
+		// Jos SQL kyselylausekkeen ajo epäonnistuu, näytetään virheviesti
+		if (! $stmt->execute()) {
+			$virhe = $stmt->errorInfo();
+		
+			throw new PDOException($virhe[2], $virhe[1]);
+		}
+		
+		// Käsitellän/siirretään saatu tulos array taulukkoon
+		$tulos = array();
+		while ($rivi = $stmt->fetchObject()) {
+			$lisaa = new Lisaa();
+			$lisaa->setLisaaId($rivi->lisaaId);
+			$lisaa->setAsiakkaanNimi(utf8_encode($rivi->asiakkaanNimi));
+			$lisaa->setSahkopostiosoite(utf8_encode($rivi->sahkopostiosoite));
+			$lisaa->setPuhelinNumero(utf8_encode($rivi->puhelinNumero));
+			$lisaa->setKayttoJarjestelma(utf8_encode($rivi->kayttoJarjestelmaNimi));
+			$lisaa->setAsennusPaivamaara(utf8_encode($rivi->asennusPaivamaara));
+			$lisaa->setLevytila(utf8_encode($rivi->levytila));
+			$lisaa->setLisatietoa(utf8_encode($rivi->lisatietoa));
+		
+			$tulos[] = $lisaa;
+		}
+
+		$this->lkm = $stmt->rowCount();
+		return $tulos;
+		
+	} // haeAsiakas
+	
+	public function lisaaAsiakas($lisaa) {
+		
+		// Luodaan SQL kysely tietojen lisäystä varten
+		$sql = "INSERT INTO LISAA (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,
+   				asennusPaivamaara,levytila,lisatietoa)
+				VALUE (:lisaaId,:asiakkaanNimi,:sahkopostiosoite,:puhelinNumero,
+   				:asennusPaivamaara,:levytila,:lisatietoa);";
+		
+		// Valmistellaan lause
+		$stmt = $this->PDOExt->prepare($sql);
+	
+		// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
+		if (! $stmt = $this->PDOExt->prepare($sql)) {
+			$virhe = $this->PDOExt->errorInfo();
+		
+			throw new PDOException($virhe[2], $virhe[1]);
+		}
+		
+		// Jos nimi on syötetty, käytetään hakuehtona asiakkaan nimi kentässä olevaa arvoa
+		// Muutoin käytetään arvoa mitä tahansa (%)
+		(empty($lisaa->getAsiakkaanNimi()) && ($lisaa->getAsiakkaanNimi() !==null)
+		? $stmt->bindValue(":asiakkaanNimi", utf8_decode("%"), PDO::PARAM_STR)
+		: $stmt->bindValue(":asiakkaanNimi", utf8_decode("%".$lisaa->getAsiakkaanNimi()."%"), PDO::PARAM_STR));
+		
+		// Jos sähköposti on syötetty, käytetään hakuehtona sähköposti kentässä olevaa arvoa
+		// Muutoin käytetään arvoa mitä tahansa (%)
+		(empty($lisaa->getSahkopostiosoite()) && ($lisaa->getSahkopostiosoite() !==null)
+		? $stmt->bindValue(":sahkopostiosoite", utf8_decode("%"), PDO::PARAM_STR)
+		: $stmt->bindValue(":sahkopostiosoite", utf8_decode("%".$lisaa->getSahkopostiosoite()."%"), PDO::PARAM_STR));
+		
+		// Jos puhelinnumero on syötetty, käytetään hakuehtona puhelinnumero kentässä olevaa arvoa
+		// Muutoin käytetään arvoa mitä tahansa (%)
+		(empty($lisaa->getPuhelinNumero()) && ($lisaa->getPuhelinNumero() !==null)
+		? $stmt->bindValue(":puhelinNumero", utf8_decode("%"), PDO::PARAM_STR)
+		: $stmt->bindValue(":puhelinNumero", utf8_decode("%".$lisaa->getPuhelinNumero()."%"), PDO::PARAM_STR));
+		
+		// Jos päivä, kuukausi eikä vuosi kenttään ole syötetty arvoja, annetaan $asennusPaivamaara muuttujalle arvo null
+		(((strpos($lisaa->getPaiva(), 'none') !==FALSE) && (strpos($lisaa->getKuukausi(), 'none') !==FALSE) && (strpos($lisaa->getVuosi(), 'none') !==FALSE))
+		? $asennusPaivamaara = null
+		: '');
+		
+		// Jos päivä kenttään on annettu arvo, luodaan $asennusPaivamaara muuttujalle kyselylauseke
+		(((strpos($lisaa->getPaiva(), 'none') ===FALSE) && (strpos($lisaa->getKuukausi(), 'none') !==FALSE) && (strpos($lisaa->getVuosi(), 'none') !==FALSE))
+		? $asennusPaivamaara = '-'.$lisaa->getPaiva()
+		: '');
+		
+		// Jos kuukausi kenttään on annettu arvo, luodaan $asennusPaivamaara muuttujalle kyselylauseke
+		(((strpos($lisaa->getPaiva(), 'none') !==FALSE) && (strpos($lisaa->getKuukausi(), 'none') ===FALSE) && (strpos($lisaa->getVuosi(), 'none') !==FALSE))
+		? $asennusPaivamaara = '-%'.$lisaa->getKuukausi().'-'
+				: '');
+		
+		// Jos vuosi kenttään on annettu arvo, luodaan $asennusPaivamaara muuttujalle kyselylauseke
+		(((strpos($lisaa->getPaiva(), 'none') !==FALSE) && (strpos($lisaa->getKuukausi(), 'none') !==FALSE) && (strpos($lisaa->getVuosi(), 'none') ===FALSE))
+		? $asennusPaivamaara = $lisaa->getVuosi().'-'
+				: '');
+		
+		// Jos $asennusPaivamaara on tyhjä tai null, annetaan kyselylausekeen arvoksi mitä tahansa (%)
+		// Muutoin annetaan :asennusPaivamaara muotoon vvvv-kk-pp
+		(empty($asennusPaivamaara) || ($asennusPaivamaara ===null)
+		? $stmt->bindValue(":asennusPaivamaara", utf8_decode("%"), PDO::PARAM_STR)
+		: $stmt->bindValue(":asennusPaivamaara", utf8_decode("%$asennusPaivamaara%"), PDO::PARAM_STR));
+		
+		// Jos levytila on syötetty, käytetään hakuehtona levytila kentässä olevaa arvoa
+		// Muutoin käytetään arvoa mitä tahansa (%)
+		(empty($lisaa->getLevytila()) && ($lisaa->getLevytila() !==null)
+		? $stmt->bindValue(":levytila", utf8_decode("%"), PDO::PARAM_INT)
+		: $stmt->bindValue(":levytila", utf8_decode("%".$lisaa->getLevytila()."%"), PDO::PARAM_INT));
+		
+		// Jos käyttöjärjestelmä kenttä on tyhjä tai arvo 'none', annetaan kyselylausekeen arvoksi mitä tahansa (%)
+		// Muutoin annetaan kayttoJarjestelman arvo oliosta
+		(empty($lisaa->getKayttoJarjestelma()) || (strpos($lisaa->getKayttoJarjestelma(), 'none') !== FALSE)
+		? $stmt->bindValue(":kayttoJarjestelma", utf8_decode("%"), PDO::PARAM_STR)
+		: $stmt->bindValue(":kayttoJarjestelma", utf8_decode("%".$lisaa->getKayttoJarjestelma()."%"), PDO::PARAM_STR));
+		
+		// Jos lisätietoa on syötetty, käytetään hakuehtona lisätietoa kentässä olevaa arvoa
+		// Muutoin käytetään arvoa mitä tahansa (%)
+		(empty($lisaa->getLisatietoa()) && ($lisaa->getLisatietoa() !==null)
+		? $stmt->bindValue(":lisatietoa", utf8_decode("%"), PDO::PARAM_STR)
+		: $stmt->bindValue(":lisatietoa", utf8_decode("%".$lisaa->getLisatietoa()."%"), PDO::PARAM_STR));
+	
+	
+	
+		
+		// Jos SQL kyselylausekkeen ajo epäonnistuu, näytetään virheviesti
+		if (! $stmt->execute()) {
+			$virhe = $stmt->errorInfo();
+		
+			if ($virhe[0] == "HY093") {
+				$virhe[2] = "Invalid parameter";
+			}
+			
+			throw new PDOException($virhe[2], $virhe[1]);
+		}
+		
+		$this->lkm = 1;
+		return $this->db->lastInsertId();
+		
+	} // function lisaaAsiakas
+	
+
+} // class listaaPDO
+
+
+class asdPDO implements JsonSerializable {
+	public function jsonSerialize() {
+		return array (
+				"lisaaId" => $this->lisaaId,
+				"asiakkaanNimi" => $this->asiakkaanNimi,
+				"sahkopostiosoite" => $this->sahkopostiosoite,
+				"puhelinNumero" => $this->puhelinNumero,
+				"kayttoJarjestelmaNimi" => $this->kayttoJarjestelmaNimi,
+				"asennusPaivamaara" => $this->asennusPaivamaara,
+				"levytila" => $this->levytila,
+				"lisatietoa" => $this->lisatietoa
+		);
+	}
+}
+
+?>

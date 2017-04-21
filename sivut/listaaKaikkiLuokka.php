@@ -57,8 +57,12 @@ class listaa {
 	
 	public function haeAsiakas($lisaa) {
 		
+<<<<<<< HEAD
 
 
+=======
+		
+>>>>>>> 89ff6f8ae0e1e486d3bbbcb0b76f7348f9b6868b
 		// Muodostetaan SQL kyselylause
 		$sql = "SELECT l.lisaaId,l.asiakkaanNimi,l.sahkopostiosoite,l.puhelinNumero,
    				k.kayttoJarjestelmaNimi,l.asennusPaivamaara,l.levytila,l.lisatietoa
@@ -73,6 +77,12 @@ class listaa {
 		// Valmistellaan lause
 		$stmt = Database :: prepare($sql);
 		
+<<<<<<< HEAD
+=======
+		// debuggausta varten
+		//var_dump($lisaa);
+		//echo "\n";
+>>>>>>> 89ff6f8ae0e1e486d3bbbcb0b76f7348f9b6868b
 
 		// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
 		if (! $stmt = Database :: prepare($sql)) {
@@ -123,6 +133,7 @@ class listaa {
 		: $stmt->bindValue(":kayttoJarjestelmaId", utf8_decode("%".$lisaa->getKayttoJarjestelma()."%"), PDO::PARAM_STR));
 		
 		// debuggausta varten
+<<<<<<< HEAD
 		
 			if (isset($_COOKIE["isDebug"])) {
 				echo "var_dump: ".var_dump($lisaa)."<br>";
@@ -142,6 +153,25 @@ class listaa {
 					.' | Os: '. '"%'.((strpos($lisaa->getKayttoJarjestelma(), 'none') === FALSE) ? $lisaa->getKayttoJarjestelma() : ''). '%"'
 					;
 			}
+=======
+		/*
+		echo "<br>".'"SELECT l.lisaaId,l.asiakkaanNimi,l.sahkopostiosoite,l.puhelinNumero,
+   				k.kayttoJarjestelmaNimi,l.asennusPaivamaara,l.levytila,l.lisatietoa
+				FROM lisaa_kayttojarjestelma lk
+				INNER JOIN lisaa l on l.lisaaId=lk.lisaaId
+				INNER JOIN kayttojarjestelma k on k.kayttoJarjestelmaId=lk.kayttoJarjestelmaId
+				WHERE (l.asiakkaanNimi LIKE "%'.$lisaa->getAsiakkaanNimi().'%"
+				AND l.asennusPaivamaara LIKE "%'.(!empty($asennusPaivamaara) ? $asennusPaivamaara : '').'%"
+				AND k.kayttoJarjestelmaId LIKE "%'.((strpos($lisaa->getKayttoJarjestelma(), 'none') === FALSE) ? $lisaa->getKayttoJarjestelma() : '').'%")
+				ORDER BY lk.lisaaId ASC;"';
+		echo '<br>';
+		echo 'nimi: '. '"%'.$lisaa->getAsiakkaanNimi().'%"'
+			.' | pp.kk.vvvv: ' .$lisaa->getPaiva().'.'.$lisaa->getKuukausi().'.'.$lisaa->getVuosi()
+			.' | pvm: '. '"%'. (!empty($asennusPaivamaara) ? $asennusPaivamaara : ''). '%"'
+			.' | Os: '. '"%'.((strpos($lisaa->getKayttoJarjestelma(), 'none') === FALSE) ? $lisaa->getKayttoJarjestelma() : ''). '%"'
+			;
+		*/
+>>>>>>> 89ff6f8ae0e1e486d3bbbcb0b76f7348f9b6868b
 		
 		// Jos SQL kyselylausekkeen ajo epäonnistuu, näytetään virheviesti
 		if (! $stmt->execute()) {
