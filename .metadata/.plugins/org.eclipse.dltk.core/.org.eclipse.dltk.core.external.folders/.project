@@ -8,4 +8,11 @@
 	</buildSpec>
 	<natures>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>.link3</name>
+			<type>2</type>
+			<location>C:/xampp/htdocs/php/.metadata/.plugins/org.eclipse.php.core/__language__/c1e0849f</location>
+		</link>
+	</linkedResources>
 </projectDescription>
