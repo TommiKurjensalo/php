@@ -381,6 +381,11 @@ class Lisaa {
 	
 	public function lisaaAsiakas($lisaa) {
 		
+		var_dump($lisaa);
+		if ($lisaa) {
+			
+			exit();
+		}
 	
 		// Luodaan SQL kysely tietojen lisäystä varten
 

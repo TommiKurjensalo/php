@@ -33,6 +33,7 @@ class Lisaa {
 	}
 		
 	
+	
 	// luokan attribuutit
 	private $lisaaId = "";
 	private $asiakkaanNimi = "";
@@ -122,6 +123,7 @@ class Lisaa {
 		if ($required === FALSE && strlen($this->asiakkaanNimi) == 0) 	
 			return 0;
 		
+
 		if ($required === TRUE) {
 			// Jos kenttä on tyhjä
 			if (strlen($this->asiakkaanNimi) == 0)
@@ -263,28 +265,30 @@ class Lisaa {
 	public function checkAsennusPaivamaara($required) {
 	
 		
-		if ($required === TRUE) {
-			// Jos kentät on tyhjiä
-		
-			if (strpos($this->paiva, 'none') !==FALSE || strpos($this->kuukausi, 'none') !==FALSE 
-					|| strpos($this->vuosi, 'none') !==FALSE) {
-				return 8;
-			}
-			// Määritellään muuttujia päivämäärän tulevaisuuden tarkistamista varten
-			$paivaFormaatti='j.n.Y';
-			$nykyHetki = new DateTime('now', new DateTimeZone('Europe/Helsinki'));
-			// Muutetaan tuodut päivä,kuukausi ja vuositiedot DateTime muotoon, jotta sitä voidaan helpommin vertailla
-			// ja viedä yhdellä muuttujalle tiedot sivulle
-			$DateAsennusPaivamaara = DateTime::createFromFormat($paivaFormaatti,"$this->paiva.$this->kuukausi.$this->vuosi");
-			$this->asennusPaivamaara = $DateAsennusPaivamaara;
-			$this->NykyHetki = $nykyHetki;
-			
-			// Jos asetettu päivämääärä on tulevaisuudessa
-			if($DateAsennusPaivamaara > $nykyHetki) 
-				return 9;
+		// Jos kentät saa olla tyhjiä ja se on tyhjä, ei ole virhettä
+		if ($required === FALSE && stripos($this->paiva, 'none') !==FALSE || stripos($this->kuukausi, 'none') !==FALSE || stripos($this->vuosi, 'none') !==FALSE)
+			return 0;
+	
+		if ($required !== FALSE) {
+		// Jos kentät on tyhjiä
+		if ((strpos($this->paiva, 'none') !==FALSE) && (strpos($this->kuukausi, 'none') !==FALSE) && (strpos($this->vuosi, 'none') !==FALSE)) {
+			return 8;
 		}
-		// Muuten palautetaan 0, aka kaikki hyvin
-		return 0;
+		
+		// Määritellään muuttujia päivämäärän tulevaisuuden tarkistamista varten
+		$paivaFormaatti='j.n.Y';
+		$nykyHetki = new DateTime('now', new DateTimeZone('Europe/Helsinki'));
+		// Muutetaan tuodut päivä,kuukausi ja vuositiedot DateTime muotoon, jotta sitä voidaan helpommin vertailla
+		// ja viedä yhdellä muuttujalle tiedot sivulle
+		$DateAsennusPaivamaara = DateTime::createFromFormat($paivaFormaatti,"$this->paiva.$this->kuukausi.$this->vuosi");
+		$this->asennusPaivamaara = $DateAsennusPaivamaara;
+		$this->NykyHetki = $nykyHetki;
+		
+		// Jos asetettu päivämääärä on tulevaisuudessa
+		if($DateAsennusPaivamaara > $nykyHetki) 
+			return 9;
+		}
+
 	}
 	
 	// *******************************************************
@@ -380,7 +384,6 @@ class Lisaa {
 	}
 	
 	public function lisaaAsiakas($lisaa) {
-		
 	
 		// Luodaan SQL kysely tietojen lisäystä varten
 

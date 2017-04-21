@@ -236,7 +236,6 @@ else {
                             </li>
                             
                            <div class="pull-right input-group" style="background:yellow;">
-                           
                            <?php
                            		try {
                          			require_once "PDO.php";

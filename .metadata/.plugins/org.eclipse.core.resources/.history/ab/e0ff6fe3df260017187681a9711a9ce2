@@ -380,7 +380,6 @@ class Lisaa {
 	}
 	
 	public function lisaaAsiakas($lisaa) {
-		
 	
 		// Luodaan SQL kysely tietojen lisäystä varten
 
