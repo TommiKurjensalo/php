@@ -1,9 +1,13 @@
 <?php
 // Liitetään lomakekenttien käsittelyyn tarkoitettu luokka
 require_once "lisaaLuokka.php";
+require_once "PDO.php";
 
 // Alustetaan muuttuja $syottoVirhe
-$syottoVirhe = FALSE;
+$syottoVirhe = TRUE;
+
+// Käynnistetään sessio
+session_start ();
 
 // Onko painettu tallenna-painiketta
 if (isset($_POST["tallenna"])) {
@@ -19,18 +23,24 @@ if (isset($_POST["tallenna"])) {
    		$_POST["kayttoJarjestelma"],
    		$_POST["lisatietoa"]
    		);
-   
+
+
+   // Kirjoitetaan session tiedot talteen
+   $_SESSION ["lisaa"] = $lisaa;
+   session_write_close ();
+    
    // Haetaan mahdolliset virhekoodit
    $asiakkaanNimiVirhe = $lisaa->checkAsiakkaanNimi(TRUE,3,50);
    $sahkopostiosoiteVirhe = $lisaa->checkSahkopostiosoite(TRUE);
-   $puhelinNumeroVirhe = $lisaa->checkPuhelinNumero(TRUE);
-   $asennusPaivamaaraVirhe = $lisaa->checkAsennusPaivamaara(TRUE);
+   $puhelinNumeroVirhe = $lisaa->checkPuhelinNumero(TRUE,8,20);
+   $asennusPaivamaaraVirhe = $lisaa->checkAsennusPaivamaara(FALSE);
    $levytilaVirhe = $lisaa->checkLevytila(TRUE);
    $kayttoJarjestelmaVirhe = $lisaa->checkKayttoJarjestelma(TRUE);
-   $lisatietoaVirhe = $lisaa->checkLisatietoa(FALSE);
+   $lisatietoaVirhe = $lisaa->checkLisatietoa(FALSE,10,500);
    
 
    // Haetaan mahdolliset syöttövirheet ja annetaan boolean tyyppinen true tai false arvo
+   /*
    if ($asiakkaanNimiVirhe > 0) $syottoVirhe = TRUE;
    if ($sahkopostiosoiteVirhe > 0) $syottoVirhe = TRUE;
    if ($puhelinNumeroVirhe > 0) $syottoVirhe = TRUE;
@@ -38,28 +48,84 @@ if (isset($_POST["tallenna"])) {
    if ($levytilaVirhe > 0) $syottoVirhe = TRUE;
    if ($kayttoJarjestelmaVirhe > 0) $syottoVirhe = TRUE;
    if ($lisatietoaVirhe > 0) $syottoVirhe = TRUE;
+   */
 }
-
 
 
 // Onko painettu peruuta painiketta
 elseif (isset($POST["peruuta"])) {
+	// Siirretään SESSION tiedot arraylistaan
+	$_SESSION = array ();
+		// Jos COOKIE on asetettu, määritetään sille miinus arvoinen säilytysaika
+		if (isset ( $_COOKIE [session_name ()] )) {
+			setcookie ( session_name (), "", time () - 100, "/" );
+		}
+
+	// Tuhotaan sessio
+	session_destroy ();
+
 	header("location: lisaa.php");
 	exit;
-}
-// Sivulle tultiin ensimmäistä kertaa
+} // elseif (isset($POST["peruuta"])
+
+elseif (isset ( $_POST ["tallenna"] )) {
+	if (isset ( $_SESSION ["lisaa"] )) {
+		$_SESSION = array ();
+
+		if (isset ( $_COOKIE [session_name ()] )) {
+			setcookie ( session_name (), '', time () - 100, '/' );
+		}
+
+		session_destroy ();
+
+		header ( "Location: lisaa.php" );
+		exit ();
+	} else {
+		$virheviesti = "Ei ollut talletettavia tietoja";
+		header ( "location: lisaa.php?virheviesti" );
+		exit ();
+	}
+} // elseif (isset ( $_POST ["tallenna"] ))
 else {
-   // Tehdään tyhjä olio
-   $lisaa = new Lisaa();
-   // Nollataan virhekoodit
-   $asiakkaanNimiVirhe = 0;
-   $sahkopostiosoiteVirhe = 0;
-   $puhelinNumeroVirhe = 0;
-   $asennusPaivamaaraVirhe = 0;
-   $levytilaVirhe = 0;
-   $kayttoJarjestelmaVirhe = 0;
-   $lisatietoaVirhe = 0;
-}
+
+	if (isset ( $_SESSION ["lisaa"] )) {
+		$lisaa = $_SESSION ["lisaa"];
+
+		// Haetaan mahdolliset virhekoodit
+		$asiakkaanNimiVirhe = $lisaa->checkAsiakkaanNimi(TRUE,3,50);
+		$sahkopostiosoiteVirhe = $lisaa->checkSahkopostiosoite(TRUE);
+		$puhelinNumeroVirhe = $lisaa->checkPuhelinNumero(TRUE,8,20);
+		$asennusPaivamaaraVirhe = $lisaa->checkAsennusPaivamaara(TRUE);
+		$levytilaVirhe = $lisaa->checkLevytila(TRUE);
+		$kayttoJarjestelmaVirhe = $lisaa->checkKayttoJarjestelma(TRUE);
+		$lisatietoaVirhe = $lisaa->checkLisatietoa(FALSE,10,500);
+
+
+		// Haetaan mahdolliset syöttövirheet ja annetaan boolean tyyppinen true tai false arvo
+		if ($asiakkaanNimiVirhe > 0) $syottoVirhe = TRUE;
+		if ($sahkopostiosoiteVirhe > 0) $syottoVirhe = TRUE;
+		if ($puhelinNumeroVirhe > 0) $syottoVirhe = TRUE;
+		if ($asennusPaivamaaraVirhe > 0) $syottoVirhe = TRUE;
+		if ($levytilaVirhe > 0) $syottoVirhe = TRUE;
+		if ($kayttoJarjestelmaVirhe > 0) $syottoVirhe = TRUE;
+		if ($lisatietoaVirhe > 0) $syottoVirhe = TRUE;
+	} // if (isset ( $_SESSION ["lisaa"] ))
+
+	// Sivulle tultiin ensimmäistä kertaa
+	else {
+		// Tehdään tyhjä olio
+		$lisaa = new Lisaa();
+		// Nollataan virhekoodit
+		$asiakkaanNimiVirhe = 0;
+		$sahkopostiosoiteVirhe = 0;
+		$puhelinNumeroVirhe = 0;
+		$asennusPaivamaaraVirhe = 0;
+		$levytilaVirhe = 0;
+		$kayttoJarjestelmaVirhe = 0;
+		$lisatietoaVirhe = 0;
+	} // elseif else
+} // eka else
+	
 ?>
 
 <!DOCTYPE html>
@@ -141,7 +207,7 @@ else {
                         <a href="muokkaa.php"><i class="fa fa-fw fa-edit"></i> Muokkaa</a>
                     </li>
                     <li>
-                        <a href="listaaKaikki.php"><i class="fa fa-fw fa-edit"></i> Listaa kaikki</a>
+                        <a href="listaaKaikki.php"><i class="fa fa-fw fa-edit"></i> Hae / Poista</a>
                     </li>
                     <li>
                         <a href="asetukset.php"><i class="fa fa-fw fa-wrench"></i> Asetukset</a>
@@ -168,6 +234,20 @@ else {
                             <li class="active">
                                 <i class="fa fa-edit"></i> Lisää
                             </li>
+                            
+                           <div class="pull-right input-group" style="background:yellow;">
+                           <?php
+                           		try {
+                         			require_once "PDO.php";
+                              		 $Database = new Database();
+                                  		echo ' DB Yhteys: ' .($Database->isConnected() ? 'ON' : 'OFF');
+                                     } catch (Exception $error) {
+                                  	 	print($error->getMessage());
+                       				 }
+                             ?>
+                            </div>
+                            
+                            
                         </ol>
                     </div> <!-- /. heading col-lg-12 -->
                 </div> <!-- /. heading row -->
@@ -266,7 +346,7 @@ else {
 									$pv=strftime($format, mktime(0,0,0,0,$pvmNro));
 									
 									 echo '<option value="'.(($syottoVirhe == FALSE) ? $pv .'">' .$pv 
-									 	: (($lisaa->getPaiva() == $pvmNro) ? $pv .'" selected>' .$pv : $pvmNro .'">' .$pv ));
+									 	: (($lisaa->getPaiva() == $pvmNro) ? $pv .'" selected>' .$pv : $pv .'">' .$pv ));
 									 echo "</option>" ."\n";
                             	}
                             	echo "</select>" ."\n";
@@ -333,7 +413,7 @@ else {
 							  <!-- valinnat tehty n00b tyylillä, eikä ole käytetty mitään muuuttujia, listoja saatikka luokkia -->
                             <div class="form-group">
                                 <label>Käyttöjärjestelmä</label>
-                              
+
                              <!-- Tarkistetaan onko syöttökentässä virhe, jos on korostetaan kehys punaisella --> 
                              <?php echo (($lisaa->getVirhe($kayttoJarjestelmaVirhe)) == null
                              	? '<div class="input-group">' : '<div class="input-group has-error">' );?>
@@ -416,10 +496,26 @@ else {
 							
 							<!--  Virheviestit  -->
 							<!-- Asiakkaan nimi virheet -->  
-							<div class="form-group" style="padding-top:3.5%;">
+							<div class="form-group" style="padding-top:4%;">
 								<div class="input-group">
 									<p>
-		                            <?php echo (($lisaa->getVirhe($asiakkaanNimiVirhe)) 
+		                            <?php 
+		                            if (isset($_POST["tallenna"])) {
+		                            try {
+		                            	 
+		                            	$kantakasittely = new Lisaa();
+		                            	$rivit = $kantakasittely->lisaaAsiakas($_SESSION["lisaa"]);
+
+		                            	echo ((stripos($rivit[0], 'lisaa ok') !== FALSE && stripos($rivit[1], 'lisaa_kayttojarjestelma ok') !== FALSE)
+		                            	? '<h3 style="color:green"><i class="glyphicon glyphicon-ok"></i> Asiakas on lisätty onnistuneesti! <br> Lisättyjä rivejä: ' .$rivit[2]. '</h3>': '');
+		                            } 	catch (Exception $error) {
+
+											print($error->getMessage());
+											echo "<br>";
+										}
+		                            }
+
+		                            echo (($lisaa->getVirhe($asiakkaanNimiVirhe)) 
 		                            ? '<span style="color:red";>' .$lisaa->getVirhe($asiakkaanNimiVirhe). '</span>'
 									: '&nbsp;');?>
 		                            </p>
@@ -454,7 +550,14 @@ else {
 									<p>
 									<?php echo (($lisaa->getVirhe($asennusPaivamaaraVirhe)) 
 		                            ? '<span style="color:red";>' .$lisaa->getVirhe($asennusPaivamaaraVirhe). '</span>'
-									: '&nbsp;');?>
+									: '<BR>&nbsp;');
+									/*
+									echo ' paiva: '. $lisaa->getPaiva().
+									' kk: '.$lisaa->getKuukausi().
+									' vuosi: '.$lisaa->getVuosi();
+									*/	
+									
+									?>
 		                            </p>
 	                            </div>
                             </div>

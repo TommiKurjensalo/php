@@ -1,3 +1,80 @@
+# 21.4.2017
+
+* Tehty asetukset sivu, lisätty "debug tila on/off"
+
+* Muokattu Listaa kaikki menuvalinta -> Hae / Poista
+
+Tämä siksi, koska ajattelin hyödyntää nykyistä hakusivua siihen, että siitä voi valita asiakkaan muokattavaksi
+tai sitten poistaa asiakastieto.
+
+* Lisätty cookie / sessio toimintoja lisää ja asetukset sivuille
+
+Aikaa meni 7 tuntia.
+
+# 20.4.2017
+
+* Korjattu asennuspäivämäärä kentässä oleva virheentarkistus ongelma
+
+* Nyt painike "tallenna" vie tiedon kantaan asti (ei vielä 100% valmis toiminto)
+
+Ongelmaksi muodostui tietokannan luontilausekkeen ja bindvalue ominaisuuksien käyttö, koska
+joudun lisäämään kahteen eri otteeseen tietoa.
+
+Asennuspäivämääräkentän validointi korjaantui if lausekkeiden paikkoja vaihtamalla, sitä ennen olin
+jo testannut vaikka mitä. Muunmuassa tein testi php sivun jossa testailin strpos tarkistusta if lauseen sisällä.
+Löytyy muuten test/strposTest.php.
+
+Tehty myös kaikkea pientä viilausta, kaikkea ei voi edes muistaa.
+
+Aikaa meni taas 5-6 tuntia.
+
+# 19.4.2017
+
+* Koululla yritetty opetella sessioita ja cookien merkityksiä
+
+* Yritetty lisätä kantaan lisäys toimintoa, mutta en ehtinyt tehdä kuin vain osan metodista
+
+* Siirretty PDO omaan luokkaansa
+
+* Lisätty Lisää sivulle sessiot, ja tämän aikana hajosi asennuspäivämääräkentän validointi.
+Ihmetelty mitä kävi, ei selvinnyt.
+
+Aikaa meni se 3tuntia.
+
+# 18.4.2017
+
+* Muokattu käyttöjärjestelmä valikkojen value numeroksi, jotta tietojen lisäys olisi tulevaisuudessa helpompaa
+
+* Vaihdettu listaaKaikki.php->listaaKAikkiPDO.php tietojen vienti yksittäisistä muuttujista olioksi
+
+* Tehty __functio constructori, joka sallii useamman kuin yhden konstruktorin käytön
+
+* Korjattu class Database, nyt toimii myös attribuutin PDO::ATTR_EMULATE_PREPARES='false' lisäys
+
+Samaa toistoa, syntaksien käyttö on haastavaa laittaa oikein.
+
+Haasteita oli myös erittäin runsaasti olio pohjaisen tiedon siirto sivun ja luokan välillä, varsinkin kun eclipse luna EI näyttänyt 
+mitään metodeja ko. luokasta vaikka laittoi $obj-> käskyn.
+
+Syyksi paljastui lopulta mm. juurikin tuo, että eclipse ei vain näytä niitä. Myöskin require_once käsky uupui luokasta.
+
+Ongelmana oli myös se, että kun listaaKaikki sivulta ei tuoda kaikkia tietoja, niin oletus konstruktorihan laittoi tiedot vääriin kohtiin.
+Kun sain tämän osan toimimaan, niin alkoi myös muutkin hommat menemään eteenpäin.
+
+Pitäisi melkein olla joku debug on/off nappula sivulla, niin saisi tietoja esille kun ongelmia ilmenee.
+
+Aikaa meni 5 tuntia.
+
+# 17.4.2017
+
+* Tapeltu varmaankin 4 tuntia olio pohjaisen tietojen siirrossa.
+
+* Tehty haeAsiakas metodiin kaikkien parametrien tarkastukset ja tietojen validoinnit.
+
+Perkeleen oliot, ei tajua heitä...
+
+Aikaa meni 8 tuntia.
+
 # 16.4.2017
 
 * Tehty haeAsiakas (yksittäistä) metodia

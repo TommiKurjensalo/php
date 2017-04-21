@@ -8,7 +8,7 @@ class Lisaa {
 			0 => "",
 			1 => "Nimi ei voi olla tyhjä",
 			2 => "Nimi on liian pitkä tai lyhyt, min 3 merkkiä ja maksimissaan 50 merkkiä",
-			3 => "Nimessä voi olla vain kirjaimia, välilyöntejä ja '-'",
+			3 => "Nimessä voi olla vain kirjaimia, numeroita, välilyöntejä ja väliviiva",
 			4 => "Sähköpostiosoite ei voi olla tyhjä",
 			5 => "Sähköpostiosoite on virheellinen, hyväksytyt merkit ovat (A-Z a-z 0-9 .-) ja maatunnus 2-4 merkkiä (A-Z a-z)",
 			6 => "Puhelinnumero ei voi olla tyhjä",
@@ -120,21 +120,22 @@ class Lisaa {
 	public function checkAsiakkaanNimi($required, $min, $max) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == FALSE && strlen($this->asiakkaanNimi) == 0) 	
+		if ($required === FALSE && strlen($this->asiakkaanNimi) == 0) 	
 			return 0;
 		
-		// Jos kenttä on tyhjä
-		if (strlen($this->asiakkaanNimi) == 0)
-			return 1;
-		
-		// Jos kentässä on liian vähän tai liikaa merkkejä
-		if (strlen($this->asiakkaanNimi) < $min || strlen($this->asiakkaanNimi) > $max)
-			return 2;
-		
-		// Jos kentässä on sinne kuulumattomia merkkejä
-		if (preg_match("/[^a-zåäöA-ZÅÄÖ \-]/", $this->asiakkaanNimi))
-			return 3;
-		
+		if ($required === TRUE) {
+			// Jos kenttä on tyhjä
+			if (strlen($this->asiakkaanNimi) == 0)
+				return 1;
+			
+			// Jos kentässä on liian vähän tai liikaa merkkejä
+			if (strlen($this->asiakkaanNimi) < $min || strlen($this->asiakkaanNimi) > $max)
+				return 2;
+			
+			// Jos kentässä on sinne kuulumattomia merkkejä
+			if (preg_match("/[^a-zåäöA-ZÅÄÖ0-9 \-]/", $this->asiakkaanNimi))
+				return 3;
+		}
 		// Ei ollut virheitä
 		return 0;
 		
@@ -154,18 +155,19 @@ class Lisaa {
 	public function checkSahkopostiosoite($required) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == FALSE && strlen($this->sahkopostiosoite) == 0) 
+		if ($required === FALSE && strlen($this->sahkopostiosoite) == 0) 
 			return 0;
 		
-		// Jos kenttä on tyhjä
-		if (strlen($this->sahkopostiosoite) == 0) 
-			return 4;
-		
-		// Jos kentässä on sinne kuulumattomia merkkejä		
-		// Hyväksytyt merkit ovat A-Z a-z 0-9 . - ja maatunnus 2-4 merkkiä (A-Z a-z)
-		if (!preg_match('/^[A-Öa-ö0-9._-]+@[A-Öa-ö0-9.-]+\.[A-Za-z]{2,4}$/', $this->sahkopostiosoite))
-			return 5;
-		
+		if ($required === TRUE) {
+			// Jos kenttä on tyhjä
+			if (strlen($this->sahkopostiosoite) == 0) 
+				return 4;
+			
+			// Jos kentässä on sinne kuulumattomia merkkejä		
+			// Hyväksytyt merkit ovat A-Z a-z 0-9 . - ja maatunnus 2-4 merkkiä (A-Z a-z)
+			if (!preg_match('/^[A-Öa-ö0-9._-]+@[A-Öa-ö0-9.-]+\.[A-Za-z]{2,4}$/', $this->sahkopostiosoite))
+				return 5;
+		}
 			
 		return 0;
 	}
@@ -181,26 +183,27 @@ class Lisaa {
 		return $this->puhelinNumero;
 	}
 	
-	public function checkPuhelinNumero($required, $min = 8, $max = 20) {
+	public function checkPuhelinNumero($required, $min, $max) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == FALSE && strlen($this->puhelinNumero) == 0)
+		if ($required === FALSE && strlen($this->puhelinNumero) == 0)
 			return 0;
 	
-		// Jos kenttä on tyhjä
-		if (strlen($this->puhelinNumero) == 0)	
-			return 6;
-	
-		// Jos kentässä on liian vähän merkkejä/numeroita
-		if (strlen($this->puhelinNumero) < $min || strlen($this->puhelinNumero) > $max) {
-			return 20;
-		}
-		// Jos kentässä on sinne kuulumattomia merkkejä
-		// Sallittu vain numerot 0-9 ja välimerkki '-'
-		elseif (!preg_match('/^(\d){0,4}[-]{1}(\d){0,17}$/D', $this->puhelinNumero)) {
-			return 7;
-		}
+		if ($required === TRUE) {
+			// Jos kenttä on tyhjä
+			if (strlen($this->puhelinNumero) == 0)	
+				return 6;
 		
+			// Jos kentässä on liian vähän merkkejä/numeroita
+			if (strlen($this->puhelinNumero) < $min || strlen($this->puhelinNumero) > $max) {
+				return 20;
+			}
+				// Jos kentässä on sinne kuulumattomia merkkejä
+				// Sallittu vain numerot 0-9 ja välimerkki '-'
+				elseif (!preg_match('/^(\d){0,4}[-]{1}(\d){0,17}$/D', $this->puhelinNumero)) {
+					return 7;
+				}
+		}
 		// Ei ollut virheitä
 		return 0;
 	}
@@ -257,29 +260,26 @@ class Lisaa {
 	
 	public function checkAsennusPaivamaara($required) {
 	
+		if ($required === TRUE) {
+			// Jos kentät on tyhjiä
 		
-		// Jos kentät saa olla tyhjiä ja se on tyhjä, ei ole virhettä
-		if ($required == FALSE && strpos($this->paiva, 'none') !==FALSE || strpos($this->kuukausi, 'none') !==FALSE || strpos($this->vuosi, 'none') !==FALSE)
-			return 0;
-	
-		
-		// Jos kentät on tyhjiä
-		if (strpos($this->paiva, 'none') !==FALSE || strpos($this->kuukausi, 'none') !==FALSE || strpos($this->vuosi, 'none') !==FALSE)
-			return 8;
-		
-		// Määritellään muuttujia päivämäärän tulevaisuuden tarkistamista varten
-		$paivaFormaatti='j.n.Y';
-		$nykyHetki = new DateTime('now', new DateTimeZone('Europe/Helsinki'));
-		// Muutetaan tuodut päivä,kuukausi ja vuositiedot DateTime muotoon, jotta sitä voidaan helpommin vertailla
-		// ja viedä yhdellä muuttujalle tiedot sivulle
-		$DateAsennusPaivamaara = DateTime::createFromFormat($paivaFormaatti,"$this->paiva.$this->kuukausi.$this->vuosi");
-		$this->asennusPaivamaara = $DateAsennusPaivamaara;
-		$this->NykyHetki = $nykyHetki;
-		
-		// Jos asetettu päivämääärä on tulevaisuudessa
-		if($DateAsennusPaivamaara > $nykyHetki) 
-			return 9;
+			if (strpos($this->paiva, 'none') !==FALSE || strpos($this->kuukausi, 'none') !==FALSE || strpos($this->vuosi, 'none') !==FALSE)
+				return 8;
+		}
+			// Määritellään muuttujia päivämäärän tulevaisuuden tarkistamista varten
+			$paivaFormaatti='j.n.Y';
+			$nykyHetki = new DateTime('now', new DateTimeZone('Europe/Helsinki'));
+			// Muutetaan tuodut päivä,kuukausi ja vuositiedot DateTime muotoon, jotta sitä voidaan helpommin vertailla
+			// ja viedä yhdellä muuttujalle tiedot sivulle
+			$DateAsennusPaivamaara = DateTime::createFromFormat($paivaFormaatti,"$this->paiva.$this->kuukausi.$this->vuosi");
+			$this->asennusPaivamaara = $DateAsennusPaivamaara;
+			$this->NykyHetki = $nykyHetki;
 			
+			// Jos asetettu päivämääärä on tulevaisuudessa
+			if($DateAsennusPaivamaara > $nykyHetki) 
+				return 9;
+
+		
 		// Muuten palautetaan 0, aka kaikki hyvin
 		return 0;
 	}
@@ -298,21 +298,22 @@ class Lisaa {
 	public function checkLevytila($required) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == FALSE && strlen($this->levytila) == 0)
+		if ($required === FALSE && strlen($this->levytila) == 0)
 			return 0;
 	
-		// Jos kenttä on tyhjä
-		if (strlen($this->levytila) == 0)
-			return 10;
-	
-		// Jos kentässä on sinne kuulumattomia merkkejä
-		if (preg_match("[\d{1-5}]", $this->levytila))
-			return 11;
+		if ($required === TRUE) {
+			// Jos kenttä on tyhjä
+			if (strlen($this->levytila) == 0)
+				return 10;
 		
-		// Jos levytila on 0 tai negatiivinen kokonaisluku
-		if ($this->levytila <= 0)
-			return 21;
-	
+			// Jos kentässä on sinne kuulumattomia merkkejä
+			if (preg_match("[\d{1-5}]", $this->levytila))
+				return 11;
+			
+			// Jos levytila on 0 tai negatiivinen kokonaisluku
+			if ($this->levytila <= 0)
+				return 21;
+		}
 		return 0;
 	}
 	
@@ -330,13 +331,14 @@ class Lisaa {
 	public function checkKayttoJarjestelma($required) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == FALSE && strlen($this->kayttoJarjestelma) == 0)
+		if ($required === FALSE && strlen($this->kayttoJarjestelma) == 0)
 			return 0;
 	
-		// Jos käyttöjärjestelmää ei ole valittu
-		if ($required == TRUE && strpos($this->kayttoJarjestelma, 'none') !==FALSE) 
-			return 12;
-		
+		if ($required === TRUE) {
+			// Jos käyttöjärjestelmää ei ole valittu
+			if (strpos($this->kayttoJarjestelma, 'none') !==FALSE) 
+				return 12;
+		}
 		// Ei ollut virheitä
 		return 0;
 	}
@@ -352,23 +354,163 @@ class Lisaa {
 		return $this->lisatietoa;
 	}
 	
-	public function checkLisatietoa ($required, $min = 10, $max = 500) {
+	public function checkLisatietoa ($required, $min, $max) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required == FALSE && strlen($this->lisatietoa) == 0)
+		if ($required === FALSE && strlen($this->lisatietoa) == 0)
 			return 0;
-	
-		// Jos kenttä on tyhjä
-		if (strlen($this->lisatietoa) == 0)
-			return 13;
-	
-		// Jos kentässä on liian vähän tekstiä
-		if (strlen($this->lisatietoa) < $min || strlen($this->lisatietoa) > $max)
-			return 14;
-	
+		
+		if ($required === TRUE) {
+			// Jos kenttä on tyhjä
+			if (strlen($this->lisatietoa) == 0)
+				return 13;
+		
+			// Jos kentässä on liian vähän tekstiä
+			if (strlen($this->lisatietoa) < $min || strlen($this->lisatietoa) > $max)
+				return 14;
+		}
 		// Ei ollut virheitä
 		return 0;
 	}
 	
-}
+	public function lisaaAsiakas($lisaa) {
+	
+		// Luodaan SQL kysely tietojen lisäystä varten
+		$sql_lisaa = "INSERT INTO lisaa (asiakkaanNimi,sahkopostiosoite,puhelinNumero,
+                                asennusPaivamaara,levytila,lisatietoa)
+                                VALUE (:asiakkaanNimi,:sahkopostiosoite,:puhelinNumero,
+                                :asennusPaivamaara,:levytila,:lisatietoa);";
+	
+		$sql_linkkaus = "INSERT INTO lisaa_kayttojarjestelma (kayttoJarjestelmaId,lisaaId)
+                                VALUE (:kayttoJarjestelmaId,:lisaaId);";
+	
+		
+		// Valmistellaan lause
+		$stmt_lisaa = Database :: prepare($sql_lisaa);
+		$stmt_linkkaus = Database :: prepare($sql_linkkaus);
+	
+	
+		// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
+		if (! $stmt_lisaa = Database :: prepare($sql_lisaa)) {
+			$virhe_lisaa = Database :: errorInfo();
+	
+			throw new PDOException($virhe_lisaa[2], $virhe_lisaa[1]);
+		}
+		
+		// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
+		if (! $stmt_linkkaus = Database :: prepare($sql_linkkaus)) {
+			$virhe_linkkaus = Database :: errorInfo();
+		
+			throw new PDOException($virhe_linkkaus[2], $virhe_linkkaus[1]);
+		}
+	
+
+		// Jos nimi on syötetty, käytetään hakuehtona asiakkaan nimi kentässä olevaa arvoa
+		// Muutoin käytetään arvoa mitä tahansa ()
+		(empty($lisaa->getAsiakkaanNimi()) && ($lisaa->getAsiakkaanNimi() !==null)
+		? $stmt_lisaa->bindValue(":asiakkaanNimi", utf8_decode(""), PDO::PARAM_STR)
+		: $stmt_lisaa->bindValue(":asiakkaanNimi", utf8_decode($lisaa->getAsiakkaanNimi()), PDO::PARAM_STR));
+	
+		// Jos sähköposti on syötetty, käytetään hakuehtona sähköposti kentässä olevaa arvoa
+		// Muutoin käytetään arvoa mitä tahansa ()
+		(empty($lisaa->getSahkopostiosoite()) && ($lisaa->getSahkopostiosoite() !==null)
+		? $stmt_lisaa->bindValue(":sahkopostiosoite", utf8_decode(""), PDO::PARAM_STR)
+		: $stmt_lisaa->bindValue(":sahkopostiosoite", utf8_decode($lisaa->getSahkopostiosoite()), PDO::PARAM_STR));
+	
+		// Jos puhelinnumero on syötetty, käytetään hakuehtona puhelinnumero kentässä olevaa arvoa
+		// Muutoin käytetään arvoa mitä tahansa ()
+		(empty($lisaa->getPuhelinNumero()) && ($lisaa->getPuhelinNumero() !==null)
+		? $stmt_lisaa->bindValue(":puhelinNumero", utf8_decode(""), PDO::PARAM_STR)
+		: $stmt_lisaa->bindValue(":puhelinNumero", utf8_decode($lisaa->getPuhelinNumero()), PDO::PARAM_STR));
+	
+		// Tehdään asennuspäivämäärä muuttuja saaduista tiedoista
+		((strpos($this->paiva, 'none') ===FALSE && strpos($this->kuukausi, 'none') ===FALSE && strpos($this->vuosi, 'none') ===FALSE)
+		? $asennusPaivamaara = $lisaa->getVuosi().'-'.$lisaa->getKuukausi().'-'.$lisaa->getPaiva()
+				: '');
+	
+		// Jos $asennusPaivamaara on tyhjä tai null, annetaan kyselylausekeen arvoksi mitä tahansa ()
+		// Muutoin annetaan :asennusPaivamaara muotoon vvvv-kk-pp
+		(empty($asennusPaivamaara) || ($asennusPaivamaara ===null)
+		? $stmt_lisaa->bindValue(":asennusPaivamaara", utf8_decode(""), PDO::PARAM_STR)
+		: $stmt_lisaa->bindValue(":asennusPaivamaara", utf8_decode("$asennusPaivamaara"), PDO::PARAM_STR));
+	
+		// Jos levytila on syötetty, käytetään hakuehtona levytila kentässä olevaa arvoa
+		// Muutoin käytetään arvoa mitä tahansa ()
+		(empty($lisaa->getLevytila()) && ($lisaa->getLevytila() !==null)
+		? $stmt_lisaa->bindValue(":levytila", utf8_decode(""), PDO::PARAM_INT)
+		: $stmt_lisaa->bindValue(":levytila", utf8_decode($lisaa->getLevytila()), PDO::PARAM_INT));
+		
+		// Jos lisätietoa on syötetty, käytetään hakuehtona lisätietoa kentässä olevaa arvoa
+		// Muutoin käytetään arvoa mitä tahansa ()
+		(empty($lisaa->getLisatietoa()) && ($lisaa->getLisatietoa() !==null)
+		? $stmt_lisaa->bindValue(":lisatietoa", utf8_decode(""), PDO::PARAM_STR)
+		: $stmt_lisaa->bindValue(":lisatietoa", utf8_decode($lisaa->getLisatietoa()), PDO::PARAM_STR));
+	
+
+		// debuggausta varten
+		
+		if (isset($_COOKIE["isDebug"])) {
+		echo "<br>var_dump: ".	var_dump($lisaa). "<br>";
+		echo "INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,
+				asennusPaivamaara,levytila,lisatietoa)
+				VALUE (:lisaaId,\"".$lisaa->getAsiakkaanNimi()."\",\"" .$lisaa->getSahkopostiosoite(). "\",\"" .$lisaa->getPuhelinNumero()."\",
+				\"".$asennusPaivamaara."\",\"".$lisaa->getLevytila()."\",\"".$lisaa->getLisatietoa()."\");";
+			
+		echo '<br>';
+		}
+		
+		$tulos = array();
+	
+		// Jos SQL kyselylausekkeen ajo epäonnistuu, näytetään virheviesti
+		if (! $stmt_lisaa->execute()) {
+			$virhe_lisaa = $stmt_lisaa->errorInfo();
+			$tulos[] = $virhe_lisaa;
+	
+			if ($virhe_lisaa[0] == "HY093") {
+				$virhe_lisaa[2] = "Invalid parameter";
+			}
+			throw new PDOException($virhe_lisaa[2], $virhe_lisaa[1]);
+		} else {
+			$tulos[] = "lisaa ok";
+		}
+	
+		// Jos käyttöjärjestelmä kenttä on tyhjä tai arvo 'none', annetaan kyselylausekeen arvoksi mitä tahansa ()
+		// Muutoin annetaan kayttoJarjestelman arvo oliosta
+		(empty($lisaa->getKayttoJarjestelma()) || (strpos($lisaa->getKayttoJarjestelma(), 'none') !== FALSE)
+		? $stmt_linkkaus->bindValue(":kayttoJarjestelmaId", utf8_decode(""), PDO::PARAM_STR)
+		: $stmt_linkkaus->bindValue(":kayttoJarjestelmaId", utf8_decode($lisaa->getKayttoJarjestelma()), PDO::PARAM_STR));
+		
+		// Jos käyttöjärjestelmä on syötetty, haetaan viimeksi syötetty lisaaId
+		// Muutoin käytetään arvoa mitä tahansa ""
+		(empty(Database::lastInsertId()) && (Database::lastInsertId() !==null)
+		? $stmt_linkkaus->bindValue(":lisaaId", utf8_decode(""), PDO::PARAM_INT)
+		: $stmt_linkkaus->bindValue(":lisaaId", utf8_decode(Database::lastInsertId()), PDO::PARAM_INT));
+		
+		if (isset($_COOKIE["isDebug"])) {
+		echo "INSERT INTO lisaa_kayttojarjestelma (kayttoJarjestelmaId,lisaaId)
+                        VALUE (\"".$lisaa->getKayttoJarjestelma()."\",\"".Database::lastInsertId()."\");";
+		}		
+
+		
+		// Jos SQL kyselylausekkeen ajo epäonnistuu, näytetään virheviesti
+		if (! $stmt_linkkaus->execute()) {
+			$virhe_linkkaus = $stmt_linkkaus->errorInfo();
+			$tulos[] = $virhe_linkkaus;
+			if ($virhe_linkkaus[0] == "HY093") {
+				$virhe_linkkaus[2] = "Invalid parameter";
+			}
+		
+			throw new PDOException($virhe_linkkaus[2], $virhe_linkkaus[1]);
+		} else {
+			$tulos[] = "lisaa_kayttojarjestelma ok";
+		}
+		
+		$this->lkm = $stmt_lisaa->rowCount();
+		$tulos[] = $this->lkm;
+		
+		return $tulos;
+	
+	
+	} // function lisaaAsiakas
+} // Luokka Lisaa
 ?>

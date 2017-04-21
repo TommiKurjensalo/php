@@ -4287,3 +4287,256 @@ Caused by: java.lang.ClassCastException: org.eclipse.egit.ui.internal.repository
 	at java.lang.reflect.Method.invoke(Unknown Source)
 	at org.eclipse.e4.core.internal.di.MethodRequestor.execute(MethodRequestor.java:55)
 	... 38 more
+!SESSION 2017-04-17 13:20:44.237 -----------------------------------------------
+eclipse.buildId=4.4.2.M20150204-1700
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.egit.ui 2 0 2017-04-17 13:21:16.599
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\tommi'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.php.core 4 10001 2017-04-17 18:27:44.839
+!MESSAGE PHPCore plugin internal error
+!STACK 1
+org.eclipse.dltk.core.ModelException: File not found: C:\xampp\htdocs\php\sivut\listaaKaikkiLuokka.php.
+	at org.eclipse.dltk.internal.core.util.Util.getResourceContentsAsCharArray(Util.java:539)
+	at org.eclipse.dltk.internal.core.util.Util.getResourceContentsAsCharArray(Util.java:491)
+	at org.eclipse.dltk.internal.core.SourceModule.getBufferContent(SourceModule.java:405)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.openBuffer(AbstractSourceModule.java:641)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.buildStructure(AbstractSourceModule.java:487)
+	at org.eclipse.dltk.internal.core.Openable.generateInfos(Openable.java:195)
+	at org.eclipse.dltk.internal.core.SourceRefElement.generateInfos(SourceRefElement.java:59)
+	at org.eclipse.dltk.internal.core.ModelElement.openWhenClosed(ModelElement.java:196)
+	at org.eclipse.dltk.internal.core.ModelElement.getElementInfo(ModelElement.java:183)
+	at org.eclipse.dltk.internal.core.ModelElement.getChildren(ModelElement.java:368)
+	at org.eclipse.dltk.internal.core.ModelElement.getChildrenOfType(ModelElement.java:347)
+	at org.eclipse.dltk.internal.core.ModelElement.getChildrenOfType(ModelElement.java:342)
+	at org.eclipse.dltk.internal.core.SourceType.getMethods(SourceType.java:113)
+	at org.eclipse.php.internal.core.typeinference.FakeConstructor.getConstructorsOfType(FakeConstructor.java:95)
+	at org.eclipse.php.internal.core.typeinference.FakeConstructor.getConstructors(FakeConstructor.java:66)
+	at org.eclipse.php.internal.ui.documentation.PHPDocumentationProvider.getInfo(PHPDocumentationProvider.java:79)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess$2.getInfo(ScriptDocumentationAccess.java:158)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess.merge(ScriptDocumentationAccess.java:88)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess.getHTMLContentReader(ScriptDocumentationAccess.java:150)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.getHTMLContentReader(ProposalInfo.java:182)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.extractScriptdoc(ProposalInfo.java:154)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.computeInfo(ProposalInfo.java:94)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.getInfo(ProposalInfo.java:71)
+	at org.eclipse.dltk.ui.text.completion.AbstractScriptCompletionProposal.getAdditionalProposalInfo(AbstractScriptCompletionProposal.java:471)
+	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: org.eclipse.core.runtime.CoreException: File not found: C:\xampp\htdocs\php\sivut\listaaKaikkiLuokka.php.
+	at org.eclipse.core.internal.filesystem.Policy.error(Policy.java:55)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.openInputStream(LocalFile.java:386)
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.read(FileSystemResourceManager.java:797)
+	at org.eclipse.core.internal.resources.File.getContents(File.java:290)
+	at org.eclipse.dltk.internal.core.util.Util.getResourceContentsAsCharArray(Util.java:534)
+	... 25 more
+Caused by: java.io.FileNotFoundException: C:\xampp\htdocs\php\sivut\listaaKaikkiLuokka.php (The system cannot find the file specified)
+	at java.io.FileInputStream.open0(Native Method)
+	at java.io.FileInputStream.open(Unknown Source)
+	at java.io.FileInputStream.<init>(Unknown Source)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.openInputStream(LocalFile.java:377)
+	... 28 more
+!SUBENTRY 1 org.eclipse.dltk.core 4 969 2017-04-17 18:27:44.850
+!MESSAGE File not found: C:\xampp\htdocs\php\sivut\listaaKaikkiLuokka.php.
+!STACK 1
+org.eclipse.core.runtime.CoreException: File not found: C:\xampp\htdocs\php\sivut\listaaKaikkiLuokka.php.
+	at org.eclipse.core.internal.filesystem.Policy.error(Policy.java:55)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.openInputStream(LocalFile.java:386)
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.read(FileSystemResourceManager.java:797)
+	at org.eclipse.core.internal.resources.File.getContents(File.java:290)
+	at org.eclipse.dltk.internal.core.util.Util.getResourceContentsAsCharArray(Util.java:534)
+	at org.eclipse.dltk.internal.core.util.Util.getResourceContentsAsCharArray(Util.java:491)
+	at org.eclipse.dltk.internal.core.SourceModule.getBufferContent(SourceModule.java:405)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.openBuffer(AbstractSourceModule.java:641)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.buildStructure(AbstractSourceModule.java:487)
+	at org.eclipse.dltk.internal.core.Openable.generateInfos(Openable.java:195)
+	at org.eclipse.dltk.internal.core.SourceRefElement.generateInfos(SourceRefElement.java:59)
+	at org.eclipse.dltk.internal.core.ModelElement.openWhenClosed(ModelElement.java:196)
+	at org.eclipse.dltk.internal.core.ModelElement.getElementInfo(ModelElement.java:183)
+	at org.eclipse.dltk.internal.core.ModelElement.getChildren(ModelElement.java:368)
+	at org.eclipse.dltk.internal.core.ModelElement.getChildrenOfType(ModelElement.java:347)
+	at org.eclipse.dltk.internal.core.ModelElement.getChildrenOfType(ModelElement.java:342)
+	at org.eclipse.dltk.internal.core.SourceType.getMethods(SourceType.java:113)
+	at org.eclipse.php.internal.core.typeinference.FakeConstructor.getConstructorsOfType(FakeConstructor.java:95)
+	at org.eclipse.php.internal.core.typeinference.FakeConstructor.getConstructors(FakeConstructor.java:66)
+	at org.eclipse.php.internal.ui.documentation.PHPDocumentationProvider.getInfo(PHPDocumentationProvider.java:79)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess$2.getInfo(ScriptDocumentationAccess.java:158)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess.merge(ScriptDocumentationAccess.java:88)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess.getHTMLContentReader(ScriptDocumentationAccess.java:150)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.getHTMLContentReader(ProposalInfo.java:182)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.extractScriptdoc(ProposalInfo.java:154)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.computeInfo(ProposalInfo.java:94)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.getInfo(ProposalInfo.java:71)
+	at org.eclipse.dltk.ui.text.completion.AbstractScriptCompletionProposal.getAdditionalProposalInfo(AbstractScriptCompletionProposal.java:471)
+	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: java.io.FileNotFoundException: C:\xampp\htdocs\php\sivut\listaaKaikkiLuokka.php (The system cannot find the file specified)
+	at java.io.FileInputStream.open0(Native Method)
+	at java.io.FileInputStream.open(Unknown Source)
+	at java.io.FileInputStream.<init>(Unknown Source)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.openInputStream(LocalFile.java:377)
+	... 28 more
+!SUBENTRY 2 org.eclipse.core.filesystem 4 271 2017-04-17 18:27:44.851
+!MESSAGE File not found: C:\xampp\htdocs\php\sivut\listaaKaikkiLuokka.php.
+!STACK 0
+java.io.FileNotFoundException: C:\xampp\htdocs\php\sivut\listaaKaikkiLuokka.php (The system cannot find the file specified)
+	at java.io.FileInputStream.open0(Native Method)
+	at java.io.FileInputStream.open(Unknown Source)
+	at java.io.FileInputStream.<init>(Unknown Source)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.openInputStream(LocalFile.java:377)
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.read(FileSystemResourceManager.java:797)
+	at org.eclipse.core.internal.resources.File.getContents(File.java:290)
+	at org.eclipse.dltk.internal.core.util.Util.getResourceContentsAsCharArray(Util.java:534)
+	at org.eclipse.dltk.internal.core.util.Util.getResourceContentsAsCharArray(Util.java:491)
+	at org.eclipse.dltk.internal.core.SourceModule.getBufferContent(SourceModule.java:405)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.openBuffer(AbstractSourceModule.java:641)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.buildStructure(AbstractSourceModule.java:487)
+	at org.eclipse.dltk.internal.core.Openable.generateInfos(Openable.java:195)
+	at org.eclipse.dltk.internal.core.SourceRefElement.generateInfos(SourceRefElement.java:59)
+	at org.eclipse.dltk.internal.core.ModelElement.openWhenClosed(ModelElement.java:196)
+	at org.eclipse.dltk.internal.core.ModelElement.getElementInfo(ModelElement.java:183)
+	at org.eclipse.dltk.internal.core.ModelElement.getChildren(ModelElement.java:368)
+	at org.eclipse.dltk.internal.core.ModelElement.getChildrenOfType(ModelElement.java:347)
+	at org.eclipse.dltk.internal.core.ModelElement.getChildrenOfType(ModelElement.java:342)
+	at org.eclipse.dltk.internal.core.SourceType.getMethods(SourceType.java:113)
+	at org.eclipse.php.internal.core.typeinference.FakeConstructor.getConstructorsOfType(FakeConstructor.java:95)
+	at org.eclipse.php.internal.core.typeinference.FakeConstructor.getConstructors(FakeConstructor.java:66)
+	at org.eclipse.php.internal.ui.documentation.PHPDocumentationProvider.getInfo(PHPDocumentationProvider.java:79)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess$2.getInfo(ScriptDocumentationAccess.java:158)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess.merge(ScriptDocumentationAccess.java:88)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess.getHTMLContentReader(ScriptDocumentationAccess.java:150)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.getHTMLContentReader(ProposalInfo.java:182)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.extractScriptdoc(ProposalInfo.java:154)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.computeInfo(ProposalInfo.java:94)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.getInfo(ProposalInfo.java:71)
+	at org.eclipse.dltk.ui.text.completion.AbstractScriptCompletionProposal.getAdditionalProposalInfo(AbstractScriptCompletionProposal.java:471)
+	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SESSION 2017-04-17 19:53:56.500 -----------------------------------------------
+eclipse.buildId=4.4.2.M20150204-1700
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.egit.ui 2 0 2017-04-17 19:54:18.337
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\tommi'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+!SESSION 2017-04-18 12:27:09.487 -----------------------------------------------
+eclipse.buildId=4.4.2.M20150204-1700
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.egit.ui 2 0 2017-04-18 12:27:43.234
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\tommi'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.ui 4 4 2017-04-18 17:42:07.259
+!MESSAGE Conflicting handlers for org.eclipse.ui.file.print: {ActionHandler(org.eclipse.ui.texteditor.AbstractDecoratedTextEditor$12@3a7ca7c8)} vs {ActionHandler(org.eclipse.ui.texteditor.TextOperationAction@44c0b128)}
+!SESSION 2017-04-20 18:38:55.652 -----------------------------------------------
+eclipse.buildId=4.4.2.M20150204-1700
+java.version=1.8.0_131
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.egit.ui 2 0 2017-04-20 18:39:25.363
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\tommi'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+!SESSION 2017-04-20 20:09:09.295 -----------------------------------------------
+eclipse.buildId=4.4.2.M20150204-1700
+java.version=1.8.0_131
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.egit.ui 2 0 2017-04-20 20:09:26.694
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\tommi'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+!SESSION 2017-04-21 15:39:09.219 -----------------------------------------------
+eclipse.buildId=4.4.2.M20150204-1700
+java.version=1.8.0_131
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.egit.ui 2 0 2017-04-21 15:40:24.612
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\tommi'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.php.ui 4 10001 2017-04-21 16:33:00.242
+!MESSAGE PHP ui plugin internal error
+!STACK 1
+org.eclipse.dltk.core.ModelException: $asetukset [in haeAsiakas [in listaa [in listaaKaikkiLuokka.php [in <default> [in <project root> [in sivut]]]]]] does not exist
+	at org.eclipse.dltk.internal.core.ModelElement.newNotPresentException(ModelElement.java:270)
+	at org.eclipse.dltk.internal.core.ModelElement.openWhenClosed(ModelElement.java:208)
+	at org.eclipse.dltk.internal.core.ModelElement.getElementInfo(ModelElement.java:183)
+	at org.eclipse.dltk.internal.core.ModelElement.getElementInfo(ModelElement.java:165)
+	at org.eclipse.dltk.internal.core.Member.getFlags(Member.java:50)
+	at org.eclipse.php.internal.ui.documentation.PHPDocumentationProvider.isFinal(PHPDocumentationProvider.java:274)
+	at org.eclipse.php.internal.ui.documentation.PHPDocumentationProvider.getConstantValue(PHPDocumentationProvider.java:233)
+	at org.eclipse.php.internal.ui.documentation.PHPDocumentationProvider.getInfo(PHPDocumentationProvider.java:94)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess$2.getInfo(ScriptDocumentationAccess.java:158)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess.merge(ScriptDocumentationAccess.java:88)
+	at org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess.getHTMLContentReader(ScriptDocumentationAccess.java:150)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.getHTMLContentReader(ProposalInfo.java:182)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.extractScriptdoc(ProposalInfo.java:154)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.computeInfo(ProposalInfo.java:94)
+	at org.eclipse.dltk.ui.text.completion.ProposalInfo.getInfo(ProposalInfo.java:71)
+	at org.eclipse.dltk.ui.text.completion.AbstractScriptCompletionProposal.getAdditionalProposalInfo(AbstractScriptCompletionProposal.java:471)
+	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 1 org.eclipse.dltk.core 4 969 2017-04-21 16:33:00.249
+!MESSAGE $asetukset [in haeAsiakas [in listaa [in listaaKaikkiLuokka.php [in <default> [in <project root> [in sivut]]]]]] does not exist
+
+!ENTRY org.eclipse.ui 4 4 2017-04-21 23:31:48.482
+!MESSAGE Conflicting handlers for org.eclipse.ui.file.print: {ActionHandler(org.eclipse.ui.texteditor.TextOperationAction@6acc97bc)} vs {ActionHandler(org.eclipse.ui.texteditor.AbstractDecoratedTextEditor$12@6634a0f8)}
+
+!ENTRY org.eclipse.ui 4 4 2017-04-21 23:33:33.877
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.disable.grammar.constraints
+
+!ENTRY org.eclipse.ui 4 4 2017-04-21 23:33:33.884
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.reload.dependencies
+
+!ENTRY org.eclipse.ui 4 4 2017-04-21 23:33:33.890
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.disable.grammar.constraints
+
+!ENTRY org.eclipse.ui 4 4 2017-04-21 23:33:33.895
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.reload.dependencies
+
+!ENTRY org.eclipse.ui 4 4 2017-04-21 23:33:33.902
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.disable.grammar.constraints
+
+!ENTRY org.eclipse.ui 4 4 2017-04-21 23:33:33.908
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.reload.dependencies

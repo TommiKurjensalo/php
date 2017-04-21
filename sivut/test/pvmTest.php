@@ -1,6 +1,6 @@
 <?php
 
-require_once "lisaaLuokka.php";
+require_once "../lisaaLuokka.php";
 // Onko painettu tallenna-painiketta
 if (isset($_POST["tallenna"])) {
 

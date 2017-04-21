@@ -1,7 +1,7 @@
 <?php
 // Liitetään lomakekenttien käsittelyyn tarkoitettu luokka
 require_once "lisaaLuokka.php";
-require_once "listaaKaikkiPDO.php";
+require_once "listaaKaikkiLuokka.php";
 
 	
 // Alustetaan muuttuja $syottoVirhe
@@ -143,7 +143,7 @@ if (isset($_COOKIE[session_name()]))  {
                         <a href="muokkaa.php"><i class="fa fa-fw fa-edit"></i> Muokkaa</a>
                     </li>
                     <li>
-                        <a href="listaaKaikki.php" class="active"><i class="fa fa-fw fa-edit"></i> Listaa kaikki</a>
+                        <a href="listaaKaikki.php" class="active"><i class="fa fa-fw fa-edit"></i> Hae / Poista</a>
                     </li>
                     <li>
                         <a href="asetukset.php"><i class="fa fa-fw fa-wrench"></i> Asetukset</a>
@@ -161,21 +161,21 @@ if (isset($_COOKIE[session_name()]))  {
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Listaa kaikki asiakkaat
+                            Hae / muokkaa / poista asiakastietoja
                         </h1>
                         <!--  Debuggausta varten
                         <?php 
-                           echo ' nimi: ' .$asiakkaanNimiVirhe;
-  				 echo ' pvm: ' .$asennusPaivamaaraVirhe;
-   				echo ' os: ' .$kayttoJarjestelmaVirhe;
-   				?>
-   				-->
+                        	echo ' nimi: ' .$asiakkaanNimiVirhe;
+			  				echo ' pvm: ' .$asennusPaivamaaraVirhe;
+			   				echo ' os: ' .$kayttoJarjestelmaVirhe;
+			   			?>
+			   				-->
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.php">Etusivu</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-edit"></i> Listaa kaikki
+                                <i class="fa fa-edit"></i> Hae / Poista
                             </li>
                         </ol>
                     </div> <!-- /. heading col-lg-12 -->
@@ -338,7 +338,7 @@ if (isset($_COOKIE[session_name()]))  {
                          		<div class="pull-right input-group" style="background:yellow; margin-top:0.5%;">
                          	   <?php 
                         		try {
-                        			require_once "listaaKaikkiPDO.php";
+                        			require_once "PDO.php";
                         			$Database = new Database();
                         			
 									echo ' DB Yhteys: ' .($Database->isConnected() ? 'ON' : 'OFF');
@@ -382,12 +382,8 @@ if (isset($_COOKIE[session_name()]))  {
  	
                            try {
                            
-	                        	//   	require_once "listaaKaikkiPDO.php";
-	                        	//   	require_once "lisaaLuokka.php";
-									$kantakasittely = new listaaPDO();
-									
+									$kantakasittely = new listaa();							
 									$rivit = $kantakasittely->haeAsiakas($lisaa);
-							//		print("<p>Yhteensä " . print_r(array_values($rivit)) . " riviä</p>");
 									
 								//	print json_encode($tulos);
 							

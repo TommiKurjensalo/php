@@ -1,0 +1,45 @@
+drop table lisaa;
+drop table kayttojarjestelma;
+drop lisaa_kayttojarjestelma;
+
+CREATE TABLE lisaa
+(
+ lisaaId INTEGER NOT NULL AUTO_INCREMENT,
+ asiakkaanNimi CHAR(50) NOT NULL,
+ sahkopostiosoite CHAR(50) NOT NULL,
+ puhelinNumero CHAR(20) NOT NULL,
+ asennusPaivamaara DATE NOT NULL,
+ levytila INTEGER NOT NULL,
+ lisatietoa TEXT(500) NULL,
+PRIMARY KEY (lisaaId)
+);
+
+ALTER TABLE lisaa AUTO_INCREMENT=1;
+
+CREATE TABLE kayttojarjestelma
+(
+ kayttoJarjestelmaId INTEGER NOT NULL AUTO_INCREMENT,
+ kayttoJarjestelmaNimi CHAR(50) NOT NULL,
+PRIMARY KEY (kayttoJarjestelmaId)
+);
+
+CREATE TABLE lisaa_kayttojarjestelma
+(
+ kayttoJarjestelmaId INTEGER NOT NULL,
+ lisaaId INTEGER NOT NULL,
+PRIMARY KEY (kayttoJarjestelmaId, lisaaId),
+INDEX ind_lisaaOS (kayttoJarjestelmaId, lisaaId),
+CONSTRAINT fk_kayttoJarjestelma_kayttoJarjestelmaId
+FOREIGN KEY (kayttoJarjestelmaId) REFERENCES kayttojarjestelma (kayttoJarjestelmaId),
+CONSTRAINT fk_lisaa_lisaaId
+FOREIGN KEY (lisaaId) REFERENCES lisaa (lisaaId)
+);
+
+		
+		
+		
+		ON UPDATE NO ACTION ON DELETE NO ACTION
+
+
+
+

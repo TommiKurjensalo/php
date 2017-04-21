@@ -2,36 +2,37 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="\n" key="selection"/>
+		<item value="Lisää asi" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="\n"/>
-			<item value="hy093"/>
-			<item value="lisaa.p"/>
-			<item value="$rivit"/>
-			<item value="nykyhetki"/>
-			<item value="lisaaid"/>
-			<item value="setlisaa"/>
-			<item value="lisaai"/>
+			<item value="lisää asi"/>
+			<item value="$asetukset"/>
+			<item value="else isset cookie debug sisältö"/>
+			<item value="if cookie de"/>
+			<item value="_SESSION"/>
+			<item value="SESSION"/>
+			<item value="cookie"/>
+			<item value="&lt;form"/>
 		</list>
 		<list key="replacehistory">
-			<item value="$lisaa"/>
-			<item value="lisaa"/>
 			<item value=""/>
-			<item value="$this"/>
-			<item value="&quot;&quot; =&gt; "/>
-			<item value="$listaaKaikki"/>
-			<item value="/&gt;"/>
+			<item value="$stmt_lisaa"/>
+			<item value="=== FALSE"/>
+			<item value="$asennusPaivamaara"/>
+			<item value="$lisaa-&gt;getKayttoJarjestelma()"/>
+			<item value="$lisaa-&gt;getVuosi()"/>
+			<item value="$lisaa-&gt;getKuukausi()"/>
+			<item value="$lisaa-&gt;getPaiva()"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="257" key="DIALOG_WIDTH"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 		<item value="381" key="DIALOG_HEIGHT"/>
-		<item value="1327" key="DIALOG_X_ORIGIN"/>
-		<item value="356" key="DIALOG_Y_ORIGIN"/>
+		<item value="1353" key="DIALOG_X_ORIGIN"/>
+		<item value="578" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

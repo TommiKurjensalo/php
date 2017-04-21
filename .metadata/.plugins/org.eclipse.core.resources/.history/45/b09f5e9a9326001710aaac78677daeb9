@@ -1,0 +1,31 @@
+<?php
+
+class Asetukset {
+	
+
+	// luokan attribuutit
+	private $debug = FALSE;
+
+	
+	
+	// Luokan konstruktori asetukset toimintoa varten
+	public function __construct($uusiDebug = "")
+	{
+
+		// trim poistaa tyhjät merkkijonon alusta ja lopusta
+		$this->debug = ($uusiDebug);
+
+	}
+	
+	// Muuttaa/asettaa debug-attribuutin
+	public function setDebug($uusiDebug) {
+		$this->debug = $uusiDebug;
+	}
+	
+	// Palauttaa debug-attribuutin
+	public function getDebug() {
+		return $this->debug;
+	}
+
+} // Luokka Asetukset
+?>

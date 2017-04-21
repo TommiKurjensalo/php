@@ -1,0 +1,19 @@
+;###### pdo_settings.ini ######
+db_driver=mysql
+db_user=a1300879
+db_password=neKY6v59t
+
+[dsn]
+host=localhost
+port=3306
+dbname=a1300879
+connect_timeout=60
+
+[db_options]
+PDO::MYSQL_ATTR_INIT_COMMAND=set names utf8
+
+[db_attributes]
+PDO::ATTR_ERRMODE=PDO::ERRMODE_EXCEPTION
+PDO::ATTR_EMULATE_PREPARES=false
+
+;############ Source: http://php.net/manual/en/class.pdo.php

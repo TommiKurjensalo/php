@@ -1,3 +1,92 @@
+<?php 
+
+// Käynnistetään sessio
+session_start ();
+
+// Onko painettu tallenna-painiketta
+if (isset($_POST["tallenna"])) {
+	if (isset($_COOKIE["isDebug"])) {
+		echo "<div style='padding-left:300px;'>";
+		echo "post debug: ".(isset($_POST["debug"]) 
+				? $_POST["debug"] : 'notSet') ."  tallenna painike valittu </div>";
+	}
+	// Viedään muodostimelle kenttien arvot	
+		if (isset($_POST["debug"])) {
+			$asetukset = true;
+			
+			// Kirjoitetaan session tiedot talteen
+			$_SESSION ["asetukset"] = true;
+			session_write_close ();
+			
+			// Asetetaan cookie, koska debug haluttiin päälle
+			setcookie("isDebug", $_POST["debug"], time() +86400, "/sivut/"); // 86400 = 1 day
+			
+			echo (isset($_COOKIE["isDebug"]) ? "<br><div style='padding-left:300px;'> Cookies are enabled </div>" : ''); 
+			
+		} else {
+
+				// Tuhotaan cookie, koska käyttäjä niin halusi
+				setcookie("isDebug", "", time() - 3600, "/sivut/");
+				
+				echo (isset($_COOKIE["isDebug"]) ? "<br><div style='padding-left:300px;'>  if isset post debug else tuhotaan " : '');
+				
+				$_SESSION = array ();
+				
+					if (isset ( $_COOKIE [session_name ()] )) {
+						setcookie ( session_name (), '', time () - 100, '/' );
+					}
+				
+				session_destroy ();
+				$asetukset = false;
+				
+				echo (isset($_COOKIE["isDebug"]) ? "<br> Cookies are disabled" :''). "</div>";
+		}
+	
+	echo (isset($_COOKIE["isDebug"]) 
+			? "<div style='padding-left:300px;'>if cookie debug sisältö: " .(isset($_COOKIE["isDebug"]) 
+					? $_COOKIE["isDebug"] :'false'). "</div>" : '</div>');
+	
+} 
+
+elseif (isset ( $_POST ["debug"] )) {
+	if (isset ( $_SESSION ["asetukset"] )) {
+		echo (isset($_COOKIE["isDebug"]) ? "<div style='padding-left:300px;'> elseif isset post&session </div>" :'');
+		$_SESSION = array ();
+
+		if (isset ( $_COOKIE [session_name ()] )) {
+			setcookie ( session_name (), '', time () - 100, '/' );
+		}
+
+		session_destroy ();
+	}
+		
+} else {
+			
+	// Sivulle tultiin ensimmäistä kertaa
+	// Tehdään false muuttuja
+	$asetukset = false;
+	
+	if (isset ($_COOKIE["isDebug"] )) {
+		if (isset ( $_SESSION ["asetukset"] )) {
+			echo (isset($_COOKIE["isDebug"]) ? "<div style='padding-left:300px;'><br>else isset session asetukset sisältö: " .$_SESSION ["asetukset"]. "</div>" :'');
+			$asetukset = true;
+		}
+		
+		$asetukset = true;
+		echo (isset($_COOKIE["isDebug"]) ?
+		"<div style='padding-left:300px;'>" .
+		" else isset cookie debug sisältö: " .$_COOKIE["isDebug"]. "</div>":'');
+		
+	} elseif (isset ( $_SESSION ["asetukset"] )) {
+		$asetukset = true;
+	}
+		
+
+	
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,7 +140,7 @@
                         <a href="muokkaa.php"><i class="fa fa-fw fa-edit"></i> Muokkaa</a>
                     </li>
                     <li>
-                        <a href="listaaKaikki.php"><i class="fa fa-fw fa-edit"></i> Listaa kaikki</a>
+                        <a href="listaaKaikki.php"><i class="fa fa-fw fa-edit"></i> Hae / Poista</a>
                     </li>
                     <li>
                         <a href="asetukset.php" class="active"><i class="fa fa-fw fa-wrench"></i> Asetukset</a>
@@ -74,7 +163,7 @@
                         </h1>
                         <ol class="breadcrumb">
                             <li>
-                                <i class="fa fa-dashboard"></i>  <a href="index.php">Hallintapaneli</a>
+                                <i class="fa fa-dashboard"></i>  <a href="index.php">Etusivu</a>
                             </li>
                             <li class="active">
                                 <i class="fa fa-edit"></i> Asetukset
@@ -87,61 +176,25 @@
                 <div class="row">
                     <div class="col-lg-4">
 
-                        <form role="form">
+                        <form class="form-inline" role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
 
-                            <div class="form-group">
-                                <label>Asiakkaan nimi</label>
-                                <input class="form-control" type="text" placeholder="Neste Oy">
-                            </div>
+                            <div class="form-check form-check-inline">
+  							  <label class="form-check-label"> Debug tulostus päälle?
+	                                	<input name="debug" type="checkbox" class="form-check-input" value="true"
+	                                	<?php echo (($asetukset ===true) ? ' checked' : ''); ?> /> Kyllä</label>
+	                                </div>
 
-                            <div class="form-group">
-                                <label>Sähköpostiosoite</label>
-                                <input class="form-control" type="email" placeholder="nimi@esimerkki.fi"></input>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Puhelinnumero</label>
-                                <input class="form-control" type="tel" placeholder="040-3493384"></input>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Asennuspäivämäärä</label>
-                                <input class="form-control" type="date" placeholder="27.03.2017"></input>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Levytila (Gt)</label>
-                                <input class="form-control" type="number" placeholder="100"></input>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Käyttöjärjestelmä</label>
-                                <select class="form-control">
-                                    <option>Windows Server 2008</option>
-                                    <option>Windows Server 2008 R2</option>
-                                    <option>Windows Server 2012 R2</option>
-                                    <option>Windows Server 2016</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Lisätietoa</label>
-                                <textarea class="form-control" rows="3"></textarea>
-                            </div>
-                          
-                          
                           	<div class="form-group">
-                          	<div class="pull-left">
-                            <input name="tallenna" type="submit" class="btn btn-primary px-2" value="Tallenna"></input>                        
-                 			</div>
-                 			<div class="pull-right">
-                            <input name="peruuta" type="submit" class="btn btn-danger" value="Peruuta"></input>
-                             </div>
-                            </div>
+                          		
+                            		<input name="tallenna" type="submit" class="btn btn-primary px-2" value="Tallenna"/>                        
+                 				
+							</div>
+							
+
                             
                         </form>
 
-                    </div>
+                    </div> <!-- ./col-lg-4 -->
                     
                 </div>
                 <!-- /.row -->
