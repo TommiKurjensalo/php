@@ -1,0 +1,241 @@
+<?php 
+require_once "asetuksetLuokka.php";
+
+// Käynnistetään sessio
+session_start ();
+
+// Onko painettu tallenna-painiketta
+if (isset($_POST["tallenna"])) {
+	if (isset($_COOKIE["isDebug"])) {
+		echo "<div style='padding-left:300px;'>";
+		echo "post debug: ".(isset($_POST["debug"]) 
+				? $_POST["debug"] : 'notSet') ."  tallenna painike valittu </div>";
+	}
+	// Viedään muodostimelle kenttien arvot	
+		if (isset($_POST["debug"])) {
+			$asetukset = true;
+			
+			// Kirjoitetaan session tiedot talteen
+			$_SESSION ["asetukset"] = true;
+			session_write_close ();
+			
+			// Asetetaan cookie, koska debug haluttiin päälle
+			setcookie("isDebug", $_POST["debug"], time() +86400, "/sivut/"); // 86400 = 1 day
+			
+			echo (isset($_COOKIE["isDebug"]) ? "<br><div style='padding-left:300px;'> Cookies are enabled </div>" : ''); 
+			
+		} else {
+
+				// Tuhotaan cookie, koska käyttäjä niin halusi
+				setcookie("isDebug", "", time() - 3600, "/sivut/");
+				
+				echo (isset($_COOKIE["isDebug"]) ? "<br><div style='padding-left:300px;'>  if isset post debug else tuhotaan " : '');
+				
+				$_SESSION = array ();
+				
+					if (isset ( $_COOKIE [session_name ()] )) {
+						setcookie ( session_name (), '', time () - 100, '/' );
+					}
+				
+				session_destroy ();
+				$asetukset = false;
+				
+				echo (isset($_COOKIE["isDebug"]) ? "<br> Cookies are disabled" :''). "</div>";
+		}
+	
+	echo (isset($_COOKIE["isDebug"]) 
+			? "<div style='padding-left:300px;'>if cookie debug sisältö: " .(isset($_COOKIE["isDebug"]) 
+					? $_COOKIE["isDebug"] :'false'). "</div>" : '</div>');
+	
+} elseif (isset ( $_POST ["debug"] )) {
+	if (isset ( $_SESSION ["asetukset"] )) {
+		echo (isset($_COOKIE["isDebug"]) ? "<div style='padding-left:300px;'> elseif isset post&session </div>" :'');
+		$_SESSION = array ();
+
+		if (isset ( $_COOKIE [session_name ()] )) {
+			setcookie ( session_name (), '', time () - 100, '/' );
+		}
+
+		session_destroy ();
+	}
+		
+} else {
+			
+	// Sivulle tultiin ensimmäistä kertaa
+	// Tehdään false muuttuja
+	$asetukset = false;
+	
+	if (isset ($_COOKIE["isDebug"] )) {
+		if (isset ( $_SESSION ["asetukset"] )) {
+			echo (isset($_COOKIE["isDebug"]) ? "<div style='padding-left:300px;'><br>else isset session asetukset sisältö: " .$_SESSION ["asetukset"]. "</div>" :'');
+			$asetukset = true;
+		}
+		
+		$asetukset = true;
+		echo (isset($_COOKIE["isDebug"]) ?
+		"<div style='padding-left:300px;'>" .
+		" else isset cookie debug sisältö: " .$_COOKIE["isDebug"]. "</div>":'');
+		
+	} elseif (isset ( $_SESSION ["asetukset"] )) {
+		$asetukset = true;
+	}
+		
+
+	
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Notes</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/sb-admin.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                 <a class="navbar-brand" href="index.php">Notes for business</a>
+                
+            </div>
+            
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li>
+                        <a href="lisaa.php"> <i class="fa fa-fw fa-edit"></i> Lisää</a>
+                    </li>
+                    <li>
+                        <a href="muokkaa.php"><i class="fa fa-fw fa-edit"></i> Muokkaa</a>
+                    </li>
+                    <li>
+                        <a href="listaaKaikki.php"><i class="fa fa-fw fa-edit"></i> Hae / Poista</a>
+                    </li>
+                    <li>
+                        <a href="asetukset.php" class="active"><i class="fa fa-fw fa-wrench"></i> Asetukset</a>
+                    </li>
+                                     
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Asetukset
+                        </h1>
+                        <ol class="breadcrumb">
+                            <li>
+                                <i class="fa fa-dashboard"></i>  <a href="index.php">Etusivu</a>
+                            </li>
+                            <li class="active">
+                                <i class="fa fa-edit"></i> Asetukset
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                <div class="row">
+                    <div class="col-lg-4">
+
+                        <form class="form-inline" role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+
+                            <div class="form-check form-check-inline">
+  							  <label class="form-check-label"> Debug tulostus päälle?
+	                                	<input name="debug" type="checkbox" class="form-check-input" value="true"
+	                                	<?php echo (($asetukset ===true) ? ' checked' : ''); ?> /> Kyllä</label>
+	                                </div>
+
+                          	<div class="form-group">
+                          		
+                            		<input name="tallenna" type="submit" class="btn btn-primary px-2" value="Tallenna"/>                        
+                 					<input name="luoTestiAsiakkaita" type="submit" class="btn btn-primary px-2" value="Luo 10 testi asiakasta"/> 
+							</div> <!-- ./form-group -->
+						 </form>
+						 
+					</div> <!-- ./col-lg-4 -->
+					
+						<div class="col-lg-4">
+							<?php
+							if (isset($_POST["luoTestiAsiakkaita"])) {
+							try {
+							
+								$asiakas = new Asetukset();
+								$rivit = $asiakas->lisaaTestiAsiakkaita();
+							
+							echo ((stripos($rivit[0], 'lisaa ok') !== FALSE && stripos($rivit[1], 
+			                      'lisaa_kayttojarjestelma ok') !== FALSE)
+			                       ? '<h3 style="color:green"><i class="glyphicon glyphicon-ok">
+			                       </i> Testi asiakkaat on lisätty onnistuneesti! <br> Lisättyjä rivejä: ' 
+			                       .$rivit[2]. '</h3>': '<h3>Lisäys epäonnistui</h3>');
+							} catch (Exception $error) {
+		
+								print($error->getMessage());
+								echo "<br>";
+								}
+							}
+							?>
+						</div> <!-- ./col-lg-4 -->
+                            
+                       
+
+                    
+                    
+                </div>
+                <!-- /.row -->
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

@@ -1,4 +1,5 @@
 <?php 
+require_once "asetuksetLuokka.php";
 
 // Käynnistetään sessio
 session_start ();
@@ -46,9 +47,7 @@ if (isset($_POST["tallenna"])) {
 			? "<div style='padding-left:300px;'>if cookie debug sisältö: " .(isset($_COOKIE["isDebug"]) 
 					? $_COOKIE["isDebug"] :'false'). "</div>" : '</div>');
 	
-} 
-
-elseif (isset ( $_POST ["debug"] )) {
+} elseif (isset ( $_POST ["debug"] )) {
 	if (isset ( $_SESSION ["asetukset"] )) {
 		echo (isset($_COOKIE["isDebug"]) ? "<div style='padding-left:300px;'> elseif isset post&session </div>" :'');
 		$_SESSION = array ();
@@ -174,7 +173,7 @@ elseif (isset ( $_POST ["debug"] )) {
                 <!-- /.row -->
 
                 <div class="row">
-                    <div class="col-lg-4">
+                    <div class="col-lg-2">
 
                         <form class="form-inline" role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
 
@@ -187,15 +186,40 @@ elseif (isset ( $_POST ["debug"] )) {
                           	<div class="form-group">
                           		
                             		<input name="tallenna" type="submit" class="btn btn-primary px-2" value="Tallenna"/>                        
-                 				
-							</div>
+							</div> <!-- ./form-group -->
+						 
+						 
+					</div> <!-- ./col-lg-2 - debug tulostus -->
+					
+						<div class="col-lg-2"> <!-- luo testi asiakkaita -->
+						<label>Luodaanko 10kpl testiasiakkaita?</label>
+							<?php
+							if (isset($_POST["luoTestiAsiakkaita"])) {
+							try {
 							
-
+								$asiakas = new Asetukset();
+								$rivit = $asiakas->lisaaTestiAsiakkaita();
+							
+							echo ((stripos($rivit[0], 'lisaa ok') !== FALSE && stripos($rivit[1], 
+			                      'lisaa_kayttojarjestelma ok') !== FALSE)
+			                       ? '<h3 style="color:green"><i class="glyphicon glyphicon-ok">
+			                       </i> Testi asiakkaat on lisätty onnistuneesti!' 
+									: '<h3>Lisäys epäonnistui</h3>');
+							} catch (Exception $error) {
+		
+								print($error->getMessage());
+								echo "<br>";
+								}
+							}
+							?>
+							
+							<div class="form-group">
+                 					<input name="luoTestiAsiakkaita" type="submit" class="btn btn-primary px-2" value="Kyllä"/> 
+							</div> <!-- ./form-group -->
+							
+						</div> <!-- ./col-lg-2 - luo testi asiakkaita -->
                             
-                        </form>
-
-                    </div> <!-- ./col-lg-4 -->
-                    
+                    </form>
                 </div>
                 <!-- /.row -->
 

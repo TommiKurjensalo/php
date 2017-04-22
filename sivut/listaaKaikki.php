@@ -360,7 +360,18 @@ if (isset($_COOKIE[session_name()]))  {
                          	<div id="haettuLista" class="col-sm-12"> <!-- tulostetut col-sm-12 -->
                         
                          <?php 
+                        // Jos käyttäjä poisti jonkun 
+                         if (isset($_POST["asiakasNro"])) {
+                         	$kantakasittely = new Listaa();
+                         	$poistaRivi = $kantakasittely->poistaAsiakas($_POST["asiakasNro"]);
+                         	
+                         	echo (($poistaRivi > 0) 
+                         	? '<h3 style="color:green"><i class="glyphicon glyphicon-ok"></i>Asiakas ' .$_POST["asiakkaanNimi"]. ' poistettu onnistuneesti</h3>'
+   							:'<h3 style="color:red"><i class="glyphicon glyphicon glyphicon-info-sign"></i>Asiakasta ' .$_POST["asiakkaanNimi"]. ' ei onnistuttu poistamaan</h3>');
+                         }
+                         //echo 'asiakasNro: ' .(isset($_POST["asiakasNro"]) ? $_POST["asiakasNro"] : '');
 						
+                         // Tulostetaan sivun otsikot
                          echo '<div class="table-responsive">';
 	                         echo '<table class="table table-striped table-hover">';
 		                         echo '<thead>';
@@ -373,22 +384,20 @@ if (isset($_COOKIE[session_name()]))  {
 				                         echo '<th>Asennuspäivamäärä</th>';
 				                         echo '<th>Levytila(Gt)</th>';
 				                         echo '<th>Lisätietoa</th>';
+				                         echo '<th>Poista</th>';
 			                         echo '</tr>';
 		                         echo '</thead>';
                          echo '<tbody>';
                         
+                         	// Jos käyttäjä klikkasi "hae" painiketta
                          	if (isset($_POST["hae"])) {
                          		
- 	
                            try {
-                           
-									$kantakasittely = new listaa();							
+                           			// Luodaan uusi olio, jotta voidaan hakea asiakkaita $lisaa olion avulla
+									$kantakasittely = new Listaa();							
 									$rivit = $kantakasittely->haeAsiakas($lisaa);
-									
-								//	print json_encode($tulos);
 							
-
-	
+									// Tulostetaan haetut rivit
 									foreach ( $rivit as $lisaa) {
 								    	print("<tr>");
 									    	print("<td>".utf8_encode($lisaa->getLisaaId())."</td>");
@@ -399,9 +408,15 @@ if (isset($_COOKIE[session_name()]))  {
 									    	print("<td>".DateTime::createFromFormat('Y-m-d', $lisaa->getAsennusPaivamaara())->format('d.m.Y')."</td>");
 									    	print("<td>".utf8_encode($lisaa->getLevytila())."</td>");
 									    	print("<td>".$lisaa->getLisatietoa()."</td>");
+									    	print '<form class="inline-form" role="form" action="'.htmlspecialchars($_SERVER["PHP_SELF"]).'" method="post">';
+									    	print '<input type="hidden" name="asiakasNro" value="'.$lisaa->getLisaaId().'"/>';
+									    	print '<input type="hidden" name="asiakkaanNimi" value="'.$lisaa->getAsiakkaanNimi().'"/>';
+									    	print '<td><button type="submit" name="poistaRivi" value="poistaAsiakasRivi" class="btn btn-danger">
+    										<i class="glyphicon glyphicon glyphicon-remove"></i></button></td>';
+									    	print '</form>';
 								   	print("</tr>");
 									}
-								
+									
 							 	} catch (Exception $error) {
 									print($error->getMessage());
 								}
@@ -413,7 +428,7 @@ if (isset($_COOKIE[session_name()]))  {
 						echo '</div>';
 						 
 						//  Kyselyn tulosrivien määrä
-						print("<p>Yhteensä " . (isset($rivit) && ($rivit !=null) ? count($rivit) : ' 0') . " riviä</p>");
+						print("<p>Haettu yhteensä " . (isset($rivit) && ($rivit !=null) ? count($rivit) : ' 0') . " riviä</p>");
                          
 						?>
  					

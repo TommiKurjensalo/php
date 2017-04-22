@@ -538,6 +538,8 @@ class Lisaa {
 	
 	
 	} // function lisaaAsiakas
+	
+	
 } // Luokka Lisaa
 
 ?>

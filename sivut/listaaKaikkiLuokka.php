@@ -2,7 +2,7 @@
 require_once "lisaaLuokka.php";
 require_once "PDO.php";
 
-class listaa {
+class Listaa {
 	
 
 	public function haeKaikkiAsiakkaat() {
@@ -169,6 +169,57 @@ class listaa {
 		return $tulos;
 		
 	} // haeAsiakas
+	
+	public function poistaAsiakas($lisaaId) {
+	
+		$sql_poista_lk = "DELETE FROM lisaa_kayttojarjestelma WHERE lisaaId=:lisaaId";
+		$sql_poista_lisaa = "DELETE FROM lisaa WHERE lisaaId=:lisaaId";
+	
+	
+		// Valmistellaan lauseet
+		$stmt_lk = Database :: prepare($sql_poista_lk);
+		$stmt_lisaa = Database :: prepare($sql_poista_lisaa);
+	
+		// *** lisaa taulun poisto
+		// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
+		if (! $stmt_lk = Database :: prepare($sql_poista_lk)) {
+			$virhe_poista_lk = Database :: errorInfo();
+	
+			throw new PDOException($virhe_poista_lk[2], $virhe_poista_lk[1]);
+		}
+	
+		// Laita parametrit
+		$stmt_lk->bindValue ( ":lisaaId", $lisaaId );
+		
+		// Jos SQL kyselylausekkeen ajo epäonnistuu, näytetään virheviesti
+		if (! $stmt_lk->execute()) {
+			$virhe_poista_lk = $stmt->errorInfo();
+		
+			throw new PDOException($virhe_poista_lk[2], $virhe_poista_lk[1]);
+		}
+	
+		// *** lisaa_kayttojarjestelma taulun poisto
+		// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
+		if (! $stmt_lisaa = Database :: prepare($sql_poista_lisaa)) {
+			$virhe_poista_lisaa = Database :: errorInfo();
+	
+			throw new PDOException($virhe_poista_lisaa[2], $virhe_poista_lisaa[1]);
+		}
+	
+		// Laita parametrit
+		$stmt_lisaa->bindValue ( ":lisaaId", $lisaaId );
+		
+		// Jos SQL kyselylausekkeen ajo epäonnistuu, näytetään virheviesti
+		if (! $stmt_lisaa->execute()) {
+			$virhe_poista_lisaa = $stmt->errorInfo();
+		
+			throw new PDOException($virhe_poista_lisaa[2], $virhe_poista_lisaa[1]);
+		}
+	
+		$tulos = $stmt_lisaa->rowCount ();
+		$tulos = $tulos + $stmt_lisaa->rowCount ();
+		return $tulos;
+	} // poistaAsiakas
 	
 
 } // class listaa

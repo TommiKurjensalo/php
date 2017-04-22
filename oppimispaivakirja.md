@@ -1,3 +1,16 @@
+# 22.4.2017
+
+* Lisätty asiakkaan poisto toiminto Hae / Poista valikkoon
+
+* Lisätty "luo 10 testi asiakasta" Asetukset valikkoon
+
+Tänään kaikki meni suhteellisen kivasti, pientä säätöä on aina, mutta ei tullut lukkoja.
+
+Toisin kuin eilen, en ole enää 100% varma, että teenko hae / poista sivulle myös muokkaus ominaisuuden vai en.
+Ajatuksissa oli luoda oma nappula, jota painamalla asiakkaan tiedot siirrettäisiin Muokkaa sivulle.
+
+Aikaa meni 4 tuntia.
+
 # 21.4.2017
 
 * Tehty asetukset sivu, lisätty "debug tila on/off"
