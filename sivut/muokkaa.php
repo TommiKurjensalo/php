@@ -143,9 +143,11 @@ else {
 // Jos käyttäjä valitsi kirjaudu ulos
 if (isset($_GET["kirjauduUlos"])) {
 
+
+	
 	// Poistetaan PHPSESSID selaimesta
 	if ( isset( $_COOKIE[session_name()] ) )
-		setcookie( session_name(), “”, time()-3600, “/” );
+		setcookie( session_name(), "", time()-3600, "/" );
 	// Tyhjennetään sessiot globaalisti
 	$_SESSION = array();
 	// Tyhjennetään sessiot paikallisesti

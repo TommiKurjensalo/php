@@ -68,23 +68,22 @@ session_start ();
 	
 }  else {
 	
-
 	$now = time(); // Laitetaan nykyhetki muuttujaan
 	// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
-	if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
+	if (isset($_SESSION['onKirjauduttu'])) {
+		if (is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
 		
-		// Jos sivulle tultiin ensimmäistä kertaa
-		// Tarkistetaan onko sessiota jo olemassa
-		if (!isset($_SESSION['message'])) {
-			$_SESSION['message'] = "";
-			$_SESSION['onKirjauduttu'] = false;
-		} elseif ($_SESSION['onKirjauduttu'] === true) {
-			$_SESSION['onKirjauduttu'] = true;
+			// Jos sivulle tultiin ensimmäistä kertaa
+			// Tarkistetaan onko sessiota jo olemassa
+			if (!isset($_SESSION['message'])) {
+				$_SESSION['message'] = "";
+				$_SESSION['onKirjauduttu'] = false;
+				session_write_close ();
+			} 
 		}
-	
 	} else {
-	
-			
+		session_destroy();
+		
 	}
 	
 }
@@ -92,11 +91,26 @@ session_start ();
 // Jos käyttäjä valitsi kirjaudu ulos
 if (isset($_GET["kirjauduUlos"])) {
 
+	session_start();
+	
+	if (isset($_SERVER['HTTP_COOKIE']))
+	{
+		$cookies = explode(';', $_SERVER['HTTP_COOKIE']);
+		foreach($cookies as $cookie)
+		{
+			$mainCookies = explode('=', $cookie);
+			$name = trim($mainCookies[0]);
+			setcookie($name, '', time()-1000);
+			setcookie($name, '', time()-1000, '/');
+		}
+	}
+	
 	// Poistetaan PHPSESSID selaimesta
 	if ( isset( $_COOKIE[session_name()] ) )
-	setcookie( session_name(), “”, time()-3600, “/” );
+	setcookie( session_name(), "", time()-3600, "/" );
 	// Tyhjennetään sessiot globaalisti
 	$_SESSION = array();
+
 	// Tyhjennetään sessiot paikallisesti
 	session_destroy();
 	// Ohjataan takaisin etusivulle
@@ -158,8 +172,9 @@ if (isset($_GET["kirjauduUlos"])) {
                 <?php 
                $now = time(); // Laitetaan nykyhetki muuttujaan
                 // Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
-                if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
-                	
+
+                if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true))  {
+                	if ($now <= $_SESSION['expire']) {
                     print '<li>
                         <a href="lisaa.php"> <i class="fa fa-fw fa-edit"></i> Lisää</a>
                     </li>
@@ -176,9 +191,11 @@ if (isset($_GET["kirjauduUlos"])) {
                 		<a href="?kirjauduUlos"><i class="fa fa-fw fa-power-off"></i> KIRJAUDU ULOS</a> 
                 	</li>
 					';
-                } ?>
+                } 
+                	}
+                	
+                ?>
  
-
                 </ul>
                 
             </div>
@@ -219,8 +236,8 @@ if (isset($_GET["kirjauduUlos"])) {
 		if (isset($_COOKIE["isDebug"])) {
 			echo '<div style="color:white;">';
 			echo (isset($_SESSION['onKirjauduttu']) ? 'onKirjauduttu: true ':'onKirjauduttu: false ');
-			echo (isset($_SESSION['expire']) ? ' exp: ' .$now.'<=' .$_SESSION['expire'] :' false ');
-			echo (isset($_SESSION['start']) ? ' start: '. $_SESSION['start'] :' false ');
+			echo (isset($_SESSION['expire']) ? ' exp: ' .$now.'<=' .$_SESSION['expire'] :' exp: false ');
+			echo (isset($_SESSION['start']) ? ' start: '. $_SESSION['start'] :' start: false ');
 			echo '</div>';
 		}
 		print '</form>'."\n";
