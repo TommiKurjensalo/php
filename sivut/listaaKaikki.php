@@ -3,6 +3,8 @@
 require_once "lisaaLuokka.php";
 require_once "listaaKaikkiLuokka.php";
 
+// Käynnistetään sessio
+session_start ();
 	
 // Alustetaan muuttuja $syottoVirhe
 $syottoVirhe = FALSE;
@@ -19,49 +21,59 @@ if (isset($_POST["hae"])) {
    		$_POST["vuosi"],
    		$_POST["kayttoJarjestelma"]
    		);
-
-   // Aloitetaan istunto
-   //session_start();
-    
-   //$_SESSION["lisaa"] = $lisaa;
-   
-   // kirjoitetaan istunnon tiedot talteen
-  	//session_write_close();
    
    // Haetaan mahdolliset virhekoodit
    $asiakkaanNimiVirhe = $lisaa->checkAsiakkaanNimi(FALSE,0,50);
    $asennusPaivamaaraVirhe = $lisaa->checkAsennusPaivamaara(FALSE);
    $kayttoJarjestelmaVirhe = $lisaa->checkKayttoJarjestelma(FALSE);
     
-   
    // Haetaan mahdolliset syöttövirheet ja annetaan boolean tyyppinen true tai false arvo
    if ($asiakkaanNimiVirhe > 0) $syottoVirhe = TRUE;
    if ($asennusPaivamaaraVirhe > 0) $syottoVirhe = TRUE;
    if ($kayttoJarjestelmaVirhe > 0) $syottoVirhe = TRUE;
-
    
 }
 
 // Sivulle tultiin ensimmäistä kertaa
 else {
 
-	   // Tehdään tyhjä olio
-	   $lisaa = new Lisaa();
-	   // Nollataan virhekoodit
-	   $asiakkaanNimiVirhe = 0;
-	   $puhelinNumeroVirhe = 0;
-	   $asennusPaivamaaraVirhe = 0;
-	   $kayttoJarjestelmaVirhe = 0;
-		}
-
-
-if (isset($_COOKIE[session_name()]))  {
-	// Poistetaan istunnon tunniste käyttäjän koneelta
-	setcookie(session_name(), '', time()-100, '/');
+	$now = time(); // Laitetaan nykyhetki muuttujaan
+	// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
+	if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
+	
+		// Tehdään tyhjä olio
+		$lisaa = new Lisaa();
+		// Nollataan virhekoodit
+		$asiakkaanNimiVirhe = 0;
+		$puhelinNumeroVirhe = 0;
+		$asennusPaivamaaraVirhe = 0;
+		$kayttoJarjestelmaVirhe = 0;
+		
+	} else {
+	
+		header('Location: index.php');
+		exit;
+			
+	}
+	
 }
 
-// Tuhotaan istunto
-//session_destroy();
+// Jos käyttäjä valitsi kirjaudu ulos
+if (isset($_GET["kirjauduUlos"])) {
+
+	// Poistetaan PHPSESSID selaimesta
+	if ( isset( $_COOKIE[session_name()] ) )
+		setcookie( session_name(), “”, time()-3600, “/” );
+	// Tyhjennetään sessiot globaalisti
+	$_SESSION = array();
+	// Tyhjennetään sessiot paikallisesti
+	session_destroy();
+	// Ohjataan takaisin etusivulle
+	header('Location: index.php');
+	exit;
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -136,19 +148,28 @@ if (isset($_COOKIE[session_name()]))  {
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li>
+               <?php 
+               $now = time(); // Laitetaan nykyhetki muuttujaan
+                // Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
+               if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
+                	
+                    print '<li>
                         <a href="lisaa.php"> <i class="fa fa-fw fa-edit"></i> Lisää</a>
                     </li>
                     <li>
                         <a href="muokkaa.php"><i class="fa fa-fw fa-edit"></i> Muokkaa</a>
                     </li>
                     <li>
-                        <a href="listaaKaikki.php" class="active"><i class="fa fa-fw fa-edit"></i> Hae / Poista</a>
+                        <a href="listaaKaikki.php"><i class="fa fa-fw fa-edit"></i> Hae / Poista</a>
                     </li>
                     <li>
                         <a href="asetukset.php"><i class="fa fa-fw fa-wrench"></i> Asetukset</a>
                     </li>
-                                     
+					<li>
+                		<a href="?kirjauduUlos"><i class="fa fa-fw fa-power-off"></i> KIRJAUDU ULOS</a>
+                	</li>
+					';
+                } ?>     
                 </ul>
             </div> <!-- /.navbar-collapse -->
         </nav> <!-- /.navbar header -->
@@ -165,9 +186,11 @@ if (isset($_COOKIE[session_name()]))  {
                         </h1>
                         <!--  Debuggausta varten
                         <?php 
+                        if (isset($_COOKIE["isDebug"])) {
                         	echo ' nimi: ' .$asiakkaanNimiVirhe;
 			  				echo ' pvm: ' .$asennusPaivamaaraVirhe;
 			   				echo ' os: ' .$kayttoJarjestelmaVirhe;
+                        }
 			   			?>
 			   				-->
                         <ol class="breadcrumb">

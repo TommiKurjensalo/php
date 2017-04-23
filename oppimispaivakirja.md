@@ -1,3 +1,16 @@
+# 23.4.2017
+
+* Tehty login sivu valmiiksi, hyödyntäen sessio ja cookie ominaisuuksia
+
+* Lisätty logoff toiminto jokaiselle sivulle
+
+Siinä se aika sitten menikin kun ihmetteli funktioita, syntakseja ja useamman yritys/erehdyksen kautta
+tajusi kuinka homma voisi toimia.
+
+Enää puuttuu muokkaus sivun tekeminen ja homma on valmis.
+
+Aikaa meni 8tuntia.
+
 # 22.4.2017
 
 * Lisätty asiakkaan poisto toiminto Hae / Poista valikkoon

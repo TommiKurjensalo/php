@@ -3,11 +3,11 @@
 require_once "lisaaLuokka.php";
 require_once "PDO.php";
 
-// Alustetaan muuttuja $syottoVirhe
-$syottoVirhe = TRUE;
-
 // Käynnistetään sessio
 session_start ();
+
+// Alustetaan muuttuja $syottoVirhe
+$syottoVirhe = TRUE;
 
 // Onko painettu tallenna-painiketta
 if (isset($_POST["tallenna"])) {
@@ -128,19 +128,47 @@ else {
 	} // if (isset ( $_SESSION ["lisaa"] ))
 
 	// Sivulle tultiin ensimmäistä kertaa
-	else {
-	   // Tehdään tyhjä olio
-	   $lisaa = new Lisaa();
-	   // Nollataan virhekoodit
-	   $asiakkaanNimiVirhe = 0;
-	   $sahkopostiosoiteVirhe = 0;
-	   $puhelinNumeroVirhe = 0;
-	   $asennusPaivamaaraVirhe = 0;
-	   $levytilaVirhe = 0;
-	   $kayttoJarjestelmaVirhe = 0;
-	   $lisatietoaVirhe = 0;
-	} // elseif else
+else {
+
+	$now = time(); // Laitetaan nykyhetki muuttujaan
+	// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
+	if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
+	
+		// Tehdään tyhjä olio
+		$lisaa = new Lisaa();
+		// Nollataan virhekoodit
+			$asiakkaanNimiVirhe = 0;
+			$sahkopostiosoiteVirhe = 0;
+			$puhelinNumeroVirhe = 0;
+			$asennusPaivamaaraVirhe = 0;
+			$levytilaVirhe = 0;
+			$kayttoJarjestelmaVirhe = 0;
+			$lisatietoaVirhe = 0;
+		
+	} else {
+	
+		header('Location: index.php');
+		exit;
+			
+	}
+
+}
 } // eka else
+	
+// Jos käyttäjä valitsi kirjaudu ulos
+if (isset($_GET["kirjauduUlos"])) {
+
+	// Poistetaan PHPSESSID selaimesta
+	if ( isset( $_COOKIE[session_name()] ) )
+		setcookie( session_name(), “”, time()-3600, “/” );
+	// Tyhjennetään sessiot globaalisti
+	$_SESSION = array();
+	// Tyhjennetään sessiot paikallisesti
+	session_destroy();
+	// Ohjataan takaisin etusivulle
+	header('Location: index.php');
+	exit;
+}
 
 ?>
 
@@ -216,8 +244,13 @@ else {
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li>
-                        <a href="lisaa.php" class="active"> <i class="fa fa-fw fa-edit"></i> Lisää</a>
+               <?php 
+               $now = time(); // Laitetaan nykyhetki muuttujaan
+                // Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
+               if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
+                	
+                    print '<li>
+                        <a href="lisaa.php"> <i class="fa fa-fw fa-edit"></i> Lisää</a>
                     </li>
                     <li>
                         <a href="muokkaa.php"><i class="fa fa-fw fa-edit"></i> Muokkaa</a>
@@ -228,6 +261,11 @@ else {
                     <li>
                         <a href="asetukset.php"><i class="fa fa-fw fa-wrench"></i> Asetukset</a>
                     </li>
+					<li>
+                		<a href="?kirjauduUlos"><i class="fa fa-fw fa-power-off"></i> KIRJAUDU ULOS</a> 
+                	</li>
+					';
+                } ?>
                                      
                 </ul>
             </div> <!-- /.navbar-collapse -->
@@ -245,7 +283,7 @@ else {
                         </h1>
                         
                          <?php
-                        /* 
+                         if (isset($_COOKIE["isDebug"])) {
                         	echo ' nimi: ' .$asiakkaanNimiVirhe.
                         		' email: ' .$sahkopostiosoiteVirhe.
                         		' puh: ' .$puhelinNumeroVirhe.
@@ -253,7 +291,7 @@ else {
 			  				 	' hdd: ' .$levytilaVirhe.
 			   				 	' os: ' .$kayttoJarjestelmaVirhe.
                         		' info: ' .$lisatietoaVirhe;
-                         */
+                         }
 			   			?>
 			   			
                         <ol class="breadcrumb">

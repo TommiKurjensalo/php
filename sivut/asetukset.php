@@ -37,7 +37,7 @@ if (isset($_POST["tallenna"])) {
 						setcookie ( session_name (), '', time () - 100, '/' );
 					}
 				
-				session_destroy ();
+				session_unset();
 				$asetukset = false;
 				
 				echo (isset($_COOKIE["isDebug"]) ? "<br> Cookies are disabled" :''). "</div>";
@@ -56,32 +56,56 @@ if (isset($_POST["tallenna"])) {
 			setcookie ( session_name (), '', time () - 100, '/' );
 		}
 
-		session_destroy ();
+		session_unset();
 	}
 		
 } else {
-			
-	// Sivulle tultiin ensimmäistä kertaa
+	
 	// Tehdään false muuttuja
 	$asetukset = false;
 	
-	if (isset ($_COOKIE["isDebug"] )) {
-		if (isset ( $_SESSION ["asetukset"] )) {
-			echo (isset($_COOKIE["isDebug"]) ? "<div style='padding-left:300px;'><br>else isset session asetukset sisältö: " .$_SESSION ["asetukset"]. "</div>" :'');
+	$now = time(); // Laitetaan nykyhetki muuttujaan
+	// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
+	if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
+	
+		
+		if (isset ($_COOKIE["isDebug"] )) {
+			if (isset ( $_SESSION ["asetukset"] )) {
+				echo (isset($_COOKIE["isDebug"]) ? "<div style='padding-left:300px;'><br>else isset session asetukset sisältö: " .$_SESSION ["asetukset"]. "</div>" :'');
+				$asetukset = true;
+			}
+		
+			$asetukset = true;
+			echo (isset($_COOKIE["isDebug"]) ?
+					"<div style='padding-left:300px;'>" .
+					" else isset cookie debug sisältö: " .$_COOKIE["isDebug"]. "</div>":'');
+		
+		} elseif (isset ( $_SESSION ["asetukset"] )) {
 			$asetukset = true;
 		}
-		
-		$asetukset = true;
-		echo (isset($_COOKIE["isDebug"]) ?
-		"<div style='padding-left:300px;'>" .
-		" else isset cookie debug sisältö: " .$_COOKIE["isDebug"]. "</div>":'');
-		
-	} elseif (isset ( $_SESSION ["asetukset"] )) {
-		$asetukset = true;
-	}
-		
-
 	
+	} else {
+	
+		header('Location: index.php');
+		exit;
+			
+	}
+	
+}
+
+// Jos käyttäjä valitsi kirjaudu ulos
+if (isset($_GET["kirjauduUlos"])) {
+
+	// Poistetaan PHPSESSID selaimesta
+	if ( isset( $_COOKIE[session_name()] ) )
+		setcookie( session_name(), “”, time()-3600, “/” );
+	// Tyhjennetään sessiot globaalisti
+	$_SESSION = array();
+	// Tyhjennetään sessiot paikallisesti
+	session_destroy();
+	// Ohjataan takaisin etusivulle
+	header('Location: index.php');
+	exit;
 }
 
 ?>
@@ -132,7 +156,12 @@ if (isset($_POST["tallenna"])) {
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li>
+              <?php 
+               $now = time(); // Laitetaan nykyhetki muuttujaan
+                // Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
+               if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
+                	
+                    print '<li>
                         <a href="lisaa.php"> <i class="fa fa-fw fa-edit"></i> Lisää</a>
                     </li>
                     <li>
@@ -142,9 +171,13 @@ if (isset($_POST["tallenna"])) {
                         <a href="listaaKaikki.php"><i class="fa fa-fw fa-edit"></i> Hae / Poista</a>
                     </li>
                     <li>
-                        <a href="asetukset.php" class="active"><i class="fa fa-fw fa-wrench"></i> Asetukset</a>
+                        <a href="asetukset.php"><i class="fa fa-fw fa-wrench"></i> Asetukset</a>
                     </li>
-                                     
+					<li>
+                		<a href="?kirjauduUlos"><i class="fa fa-fw fa-power-off"></i> KIRJAUDU ULOS</a>
+                	</li>
+					';
+                } ?>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->

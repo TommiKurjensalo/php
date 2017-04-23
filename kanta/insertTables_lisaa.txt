@@ -21,11 +21,35 @@ alter table lisaa_kayttojarjestelma drop foreign key fk_lisaa_lisaaId;
 
 
 -- lisaa
-INSERT INTO lisaa ( asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
-VALUES ('Neste Oy', 'asiakaspalvelu@neste.fi', '09-123 345', '2010-10-10', 140, 'Lis‰tietoja liittyen Neste Oyn tarjontaan' );
+INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
+VALUES (1,'Neste Oy', 'asiakaspalvelu@neste.fi', '09-123 345', '2010-10-10', 140, 'Lis‰tietoja liittyen Neste Oyn tarjontaan' );
 
-INSERT INTO lisaa ( asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
-VALUES ('Mobil Oy', 'asiakaspalvelu@mobil.fi', '09-666 888', '2008-03-08', 180, 'Lis‰tietoja liittyen Mobil Oyn tarjontaan' );
+INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
+VALUES (2,'Mobil Oy', 'asiakaspalvelu@mobil.fi', '09-666 888', '2008-03-08', 180, 'Lis‰tietoja liittyen Mobil Oyn tarjontaan' );
+
+INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
+VALUES (3,'Asiakas1', 'asiakaspalvelu@asiakas.fi', '09-123 345', '2010-10-10', 140, 'Lis‰tietoja liittyen Asiakas tarjontaan' );
+
+INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
+VALUES (4,'Asiakas1', 'asiakaspalvelu@asiakas.fi', '09-123 345', '2010-10-10', 140, 'Lis‰tietoja liittyen Asiakas tarjontaan' );
+
+INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
+VALUES (5,'Asiakas1', 'asiakaspalvelu@asiakas.fi', '09-123 345', '2010-10-10', 140, 'Lis‰tietoja liittyen Asiakas tarjontaan' );
+
+INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
+VALUES (6,'Asiakas1', 'asiakaspalvelu@asiakas.fi', '09-123 345', '2010-10-10', 140, 'Lis‰tietoja liittyen Asiakas tarjontaan' );
+
+INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
+VALUES (7,'Asiakas1', 'asiakaspalvelu@asiakas.fi', '09-123 345', '2010-10-10', 140, 'Lis‰tietoja liittyen Asiakas tarjontaan' );
+
+INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
+VALUES (8,'Asiakas1', 'asiakaspalvelu@asiakas.fi', '09-123 345', '2010-10-10', 140, 'Lis‰tietoja liittyen Asiakas tarjontaan' );
+
+INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
+VALUES (9,'Asiakas1', 'asiakaspalvelu@asiakas.fi', '09-123 345', '2010-10-10', 140, 'Lis‰tietoja liittyen Asiakas tarjontaan' );
+
+INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,asennusPaivamaara,levytila,lisatietoa )
+VALUES (10,'Asiakas1', 'asiakaspalvelu@asiakas.fi', '09-123 345', '2010-10-10', 140, 'Lis‰tietoja liittyen Asiakas tarjontaan' );
 
 -- lisaa_kayttojarjestelmat
 
@@ -34,6 +58,30 @@ VALUES (1,1);
 
 INSERT INTO lisaa_kayttojarjestelma ( kayttoJarjestelmaId,lisaaId )
 VALUES (3,2);
+
+INSERT INTO lisaa_kayttojarjestelma ( kayttoJarjestelmaId,lisaaId )
+VALUES (1,3);
+
+INSERT INTO lisaa_kayttojarjestelma ( kayttoJarjestelmaId,lisaaId )
+VALUES (2,4);
+
+INSERT INTO lisaa_kayttojarjestelma ( kayttoJarjestelmaId,lisaaId )
+VALUES (4,5);
+
+INSERT INTO lisaa_kayttojarjestelma ( kayttoJarjestelmaId,lisaaId )
+VALUES (3,6);
+
+INSERT INTO lisaa_kayttojarjestelma ( kayttoJarjestelmaId,lisaaId )
+VALUES (2,7);
+
+INSERT INTO lisaa_kayttojarjestelma ( kayttoJarjestelmaId,lisaaId )
+VALUES (4,8);
+
+INSERT INTO lisaa_kayttojarjestelma ( kayttoJarjestelmaId,lisaaId )
+VALUES (2,9);
+
+INSERT INTO lisaa_kayttojarjestelma ( kayttoJarjestelmaId,lisaaId )
+VALUES (3,10);
 
 
 
@@ -49,11 +97,16 @@ inner join lisaa l on l.lisaaId=lk.lisaaId
 inner join kayttojarjestelma k on k.kayttoJarjestelmaId=lk.kayttoJarjestelmaId
 order by lk.lisaaId ASC;
 
-select t.tayteNimi
-from pizza_tayte pt
-inner join pizza p on p.pizzaId=pt.pizzaId
-inner join tayte t on t.tayteId=pt.tayteId
-where p.poistomerkitty is null
-and p.nimi = 'Pizza Capricciosa'
-order by t.tayteNimi ASC;
+INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero, asennusPaivamaara,levytila,lisatietoa) 
+VALUE (:lisaaId,"asiakas2","asiakas@osoite.org","040-988443","2016-7-30","800","Lis‰‰tietoa asiakas2 liittyen");
+
+INSERT INTO lisaa_kayttojarjestelma (kayttoJarjestelmaId,lisaaId) VALUE ("4","36");
+
+-- keijo
+
+INSERT INTO keijo (keijoNimi, keijoKovaKasi)
+VALUES ("john mcclane","jippikayjei");
+
+INSERT INTO keijo (keijoNimi, keijoKovaKasi)
+VALUES ("Tommi","kovaluu");
 

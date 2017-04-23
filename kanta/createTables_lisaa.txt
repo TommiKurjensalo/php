@@ -35,10 +35,13 @@ CONSTRAINT fk_lisaa_lisaaId
 FOREIGN KEY (lisaaId) REFERENCES lisaa (lisaaId)
 );
 
-		
-		
-		
-		ON UPDATE NO ACTION ON DELETE NO ACTION
+CREATE TABLE keijo
+(
+ keijoId INTEGER NOT NULL AUTO_INCREMENT,
+ keijoNimi CHAR(50) NOT NULL,
+ keijoKovaKasi CHAR(40) NOT NULL,
+PRIMARY KEY (keijoId)
+);
 
 
 

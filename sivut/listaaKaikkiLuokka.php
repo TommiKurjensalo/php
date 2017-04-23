@@ -216,7 +216,7 @@ class Listaa {
 			throw new PDOException($virhe_poista_lisaa[2], $virhe_poista_lisaa[1]);
 		}
 	
-		$tulos = $stmt_lisaa->rowCount ();
+		$tulos = $stmt_lk->rowCount ();
 		$tulos = $tulos + $stmt_lisaa->rowCount ();
 		return $tulos;
 	} // poistaAsiakas
