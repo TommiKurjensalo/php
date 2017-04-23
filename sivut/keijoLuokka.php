@@ -2,6 +2,42 @@
 require_once "PDO.php";
 
 class Keijo {
+	
+	// luokan attribuutit
+	private $keijoNimi = "";
+	private $keijoKovaKasi = "";
+	
+	
+	// Luokan konstruktori keijoLuokka toimintoa varten
+	public function __construct($uusiKeijoNimi="", $uusiKeijoKovaKasi = "")
+	{
+		// trim poistaa tyhjät merkkijonon alusta ja lopusta
+		$this->keijoNimi = trim($uusiKeijoNimi);
+		$this->keijoKovaKasi = trim($uusiKeijoKovaKasi);
+	}
+	
+	// Muuttaa/asettaa keijoNimi-attribuutin
+	public function setKeijoNimi($uusiKeijoNimi) {
+		$this->keijoNimi = $uusiKeijoNimi;
+	}
+	
+	// Palauttaa keijoNimi-attribuutin
+	public function getKeijoNimi() {
+		return $this->keijoNimi;
+	}
+	
+	// Muuttaa/asettaa keijoKovaKasi-attribuutin
+	public function setKeijoKovaKasi($uusiKeijoKovaKasi) {
+		$this->keijoKovaKasi = $uusiKeijoKovaKasi;
+	}
+	
+	// Palauttaa keijoKovaKasi-attribuutin
+	public function getKeijoKovaKasi() {
+		return $this->keijoKovaKasi;
+	}
+	
+	
+	// Kovakäsi metodi
 	public function keijollaOnKovaKasi($keijoNimi,$keijoKovaKasi) {
 
 	// Luodaan SQL kysely tietojen lisäystä varten
@@ -40,19 +76,46 @@ class Keijo {
 	} 
 	
 	// debuggausta varten
-	if (isset($_COOKIE["isDebug"])) {
-		echo "<div style='padding-left:300px;'> nimi: ".	$keijoNimi. " pw: " .$keijoKovaKasi. "<br>";
-		echo "SELECT keijoNimi, keijoKovaKasi 
+//	if (isset($_COOKIE["isDebug"])) {
+		echo "<div style='padding-left:300px;'> nimi: ".$keijoNimi. " pw: " .$keijoKovaKasi. "<br>";
+		echo "SELECT keijoNimi, keijoKovaKasi
 			FROM keijo
 			WHERE (keijoNimi = \"".$keijoNimi."\"
 			AND keijoKovaKasi = \"".$keijoKovaKasi."\");</div>";
 			
 		echo '<br>';
-	}
+//	}
 	
-	$lkm = $stmt->rowCount();
+	// Käsitellän/siirretään saatu tulos $keijo olioon
+	while ($rivi = $stmt->fetchObject()) {
+		$keijo = new Keijo();
+		$keijo->setKeijoNimi(utf8_encode($rivi->keijoNimi));
+		$keijo->setKeijoKovaKasi(utf8_encode($rivi->keijoKovaKasi));
+	
+		if (strtolower($keijoNimi) == strtolower($rivi->keijoNimi) && strtolower($keijoKovaKasi) == strtolower($rivi->keijoKovaKasi)) {
+		$keijoTulos[0] = $stmt->rowCount();
+		$keijoTulos[1] = true;
+		
+	} else {
+		$keijoTulos[0] = $stmt->rowCount();
+		$keijoTulos[1] = false;
+	
+	}
+	}
+	return $keijoTulos;
+	/*
+	if (strtolower($keijoNimi) == strtolower($this->getKeijoNimi()) && strtolower($keijoKovaKasi) == strtolower($this->getKeijoKovaKasi())) {
+		$keijoTulos[0] = $stmt->rowCount();
+		$keijoTulos[1] = "yes";
+		return $keijoTulos;
+	} else {
+		$keijoTulos[0] = $stmt->rowCount();
+		$keijoTulos[1] = "no";
+		return $keijoTulos;
+	}
 
-	return $lkm;
+	*/
+
 
 	} // function keijollaOnKovaKasi
 } // Luokka Keijo
