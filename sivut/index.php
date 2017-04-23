@@ -20,20 +20,20 @@ session_start ();
 		
 		if ($lkm > 0) {
 			
-			// Jos käyttäjä valitsi muista minut, asetetaan cookie joka on voimassa 30päivää
-			if (!empty($_POST["muistaMinut"])) {
-				setcookie("member_keijo", $_POST["keijoNimi"], time() + (86400 * 30), "/"); // 86400 = 1 pv
-				setcookie("member_kovaKasi", $_POST["keijoKovaKasi"], time() + (86400 * 30), "/"); // 86400 = 1 pv
-			} else {
-				if(isset($_COOKIE["member_keijo"])) {
-					setcookie ("member_keijo","");
+				// Jos käyttäjä valitsi muista minut, asetetaan cookie joka on voimassa 30päivää
+				if (!empty($_POST["muistaMinut"])) {
+					setcookie("member_keijo", $_POST["keijoNimi"], time() + (86400 * 30), "/"); // 86400 = 1 pv
+					setcookie("member_kovaKasi", $_POST["keijoKovaKasi"], time() + (86400 * 30), "/"); // 86400 = 1 pv
+				} else {
+					if(isset($_COOKIE["member_keijo"])) {
+						setcookie ("member_keijo","");
+					}
+					if(isset($_COOKIE["member_kovaKasi"])) {
+						setcookie ("member_kovaKasi","");
+					}
 				}
-				if(isset($_COOKIE["member_kovaKasi"])) {
-					setcookie ("member_kovaKasi","");
-				}
-			}
 			
-			$_SESSION['onKirjauduttu'] = true;
+			
 			
 			// Asetetaan nimi ja salasana tiedot sessioon
 			$_SESSION['keijoNimi'] = $_POST["keijoNimi"];
@@ -44,11 +44,13 @@ session_start ();
 			// Päätetään istunto 60min kirjautumisesta.
 			$_SESSION['expire'] = $_SESSION['start'] + (60 * 60);
 			$_SESSION['tervetuloa'] = "Tervetuloa ".$_SESSION['keijoNimi'];
+			$_SESSION['onKirjauduttu'] = true;
 			session_write_close ();
 			header('Location: index.php');
 			exit();
 		} else {
 			$_SESSION['onKirjauduttu'] = false;
+			$_SESSION['expire'] = time()-1000;
 			$_SESSION['message'] = "Virheellinen käyttäjätunnus tai salasana";
 			session_write_close ();
 			header('Location: index.php');		
@@ -187,7 +189,7 @@ if (isset($_GET["kirjauduUlos"])) {
                     <li>
                         <a href="asetukset.php"><i class="fa fa-fw fa-wrench"></i> Asetukset</a>
                     </li>
-			<li>
+					<li>
                 		<a href="?kirjauduUlos"><i class="fa fa-fw fa-power-off"></i> KIRJAUDU ULOS</a> 
                 	</li>
 					';
@@ -209,7 +211,8 @@ if (isset($_GET["kirjauduUlos"])) {
 	print '<form class="form-signin" role="form" action="'.htmlspecialchars($_SERVER["PHP_SELF"]).'" method="post">'."\n";
 			
 			
-	if (!isset($_SESSION['onKirjauduttu'])) {
+	   if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true))  {
+       		if ($now >= $_SESSION['expire']) {
 		
 		print '<div style="background: rgba(60, 60, 60, 0.5); border:1px solid black; padding:10%;">'."\n".
 				'<h2 style="color:white;">Kirjautuminen</h2>'."\n".
@@ -225,7 +228,8 @@ if (isset($_GET["kirjauduUlos"])) {
 		echo ((isset($_SESSION['message']))
 				? '<h3 style="color:red; padding: 0 0 0 20%;"><b>'.$_SESSION['message'].'</b></h3>'
 				:'');				
-	} 
+		} 
+	   		}
 			
 		echo ((isset($_SESSION['tervetuloa']))
 				? '<h3 style="color:green; padding: 0 0 0 30%;"><b>'.$_SESSION['tervetuloa'].'</b></h3>'
