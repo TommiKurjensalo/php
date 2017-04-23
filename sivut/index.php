@@ -187,7 +187,7 @@ if (isset($_GET["kirjauduUlos"])) {
                     <li>
                         <a href="asetukset.php"><i class="fa fa-fw fa-wrench"></i> Asetukset</a>
                     </li>
-					<li>
+			<li>
                 		<a href="?kirjauduUlos"><i class="fa fa-fw fa-power-off"></i> KIRJAUDU ULOS</a> 
                 	</li>
 					';
@@ -196,8 +196,6 @@ if (isset($_GET["kirjauduUlos"])) {
                 	
                 ?>
  
-                </ul>
-                
             </div>
             <!-- /.navbar-collapse -->
         </nav>
