@@ -42,7 +42,7 @@ class Listaa {
 			$lisaa->setAsiakkaanNimi(utf8_encode($rivi->asiakkaanNimi));
 			$lisaa->setSahkopostiosoite(utf8_encode($rivi->sahkopostiosoite));
 			$lisaa->setPuhelinNumero(utf8_encode($rivi->puhelinNumero));
-			$lisaa->setKayttoJarjestelma(utf8_encode($rivi->kayttoJarjestelmaNimi));
+			$lisaa->setKayttoJarjestelmaId(utf8_encode($rivi->kayttoJarjestelmaNimi));
 			$lisaa->setAsennusPaivamaara(utf8_encode($rivi->asennusPaivamaara));
 			$lisaa->setLevytila(utf8_encode($rivi->levytila));
 			$lisaa->setLisatietoa(utf8_encode($rivi->lisatietoa));
@@ -157,7 +157,7 @@ class Listaa {
 			$lisaa->setAsiakkaanNimi(utf8_encode($rivi->asiakkaanNimi));
 			$lisaa->setSahkopostiosoite(utf8_encode($rivi->sahkopostiosoite));
 			$lisaa->setPuhelinNumero(utf8_encode($rivi->puhelinNumero));
-			$lisaa->setKayttoJarjestelma(utf8_encode($rivi->kayttoJarjestelmaNimi));
+			$lisaa->setKayttoJarjestelmaId(utf8_encode($rivi->kayttoJarjestelmaNimi));
 			$lisaa->setAsennusPaivamaara(utf8_encode($rivi->asennusPaivamaara));
 			$lisaa->setLevytila(utf8_encode($rivi->levytila));
 			$lisaa->setLisatietoa(utf8_encode($rivi->lisatietoa));

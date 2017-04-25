@@ -43,7 +43,7 @@ class Lisaa {
 	private $kuukausi = "";
 	private $vuosi = "";
 	private $levytila = "";
-	private $kayttoJarjestelma = "";
+	private $kayttoJarjestelmaId = "";
 	private $lisatietoa = "";
 	private $NykyHetki = "";
 	
@@ -61,7 +61,7 @@ class Lisaa {
 	// Luokan konstruktori
 	public function __construct10($uusiId="", $uusiAsiakkaanNimi = "", $uusiSahkopostiosoite = "", $uusiPuhelinNumero = "", 
 			$uusiPaiva = "", $uusiKuukausi = "", $uusiVuosi = "",
-			$uusiLevytila = "", $uusiKayttoJarjestelma = "", $uusiLisatietoa = "") 
+			$uusiLevytila = "", $uusikayttoJarjestelmaId = "", $uusiLisatietoa = "") 
 		{
 
 		// trim poistaa tyhjät merkkijonon alusta ja lopusta
@@ -73,14 +73,14 @@ class Lisaa {
 		$this->kuukausi = trim($uusiKuukausi);
 		$this->vuosi = trim($uusiVuosi);
 		$this->levytila = trim($uusiLevytila);
-		$this->kayttoJarjestelma = trim($uusiKayttoJarjestelma);
+		$this->kayttoJarjestelmaId = trim($uusikayttoJarjestelmaId);
 		$this->lisatietoa = trim($uusiLisatietoa);		
 	}
 	
 	// Luokan konstruktori listaaKaikki toimintoa varten
 	public function __construct6($uusiId="", $uusiAsiakkaanNimi = "",
 			$uusiPaiva = "", $uusiKuukausi = "", $uusiVuosi = "",
-			$uusiKayttoJarjestelma = "")
+			$uusikayttoJarjestelmaId = "")
 	{
 
 		// trim poistaa tyhjät merkkijonon alusta ja lopusta
@@ -89,7 +89,7 @@ class Lisaa {
 		$this->paiva = trim($uusiPaiva);
 		$this->kuukausi = trim($uusiKuukausi);
 		$this->vuosi = trim($uusiVuosi);
-		$this->kayttoJarjestelma = trim($uusiKayttoJarjestelma);
+		$this->kayttoJarjestelmaId = trim($uusikayttoJarjestelmaId);
 	}
 	
 	// Muuttaa/asettaa lisaaId-attribuutin
@@ -323,25 +323,25 @@ class Lisaa {
 	}
 	
 	// *******************************************************
-	// Muuttaa/asettaa kayttoJarjestelma-attribuutin
-	public function setKayttoJarjestelma($uusiKayttoJarjestelma) {
-		$this->kayttoJarjestelma = $uusiKayttoJarjestelma;
+	// Muuttaa/asettaa kayttoJarjestelmaId-attribuutin
+	public function setKayttoJarjestelmaId($uusiKayttoJarjestelmaId) {
+		$this->kayttoJarjestelma = $uusiKayttoJarjestelmaId;
 	}
 	
-	// Palauttaa kayttoJarjestelma-attribuutin
-	public function getKayttoJarjestelma() {
-		return $this->kayttoJarjestelma;
+	// Palauttaa kayttoJarjestelmaId-attribuutin
+	public function getKayttoJarjestelmaId() {
+		return $this->kayttoJarjestelmaId;
 	}
 	
 	public function checkKayttoJarjestelma($required) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required === FALSE && strlen($this->kayttoJarjestelma) == 0)
+		if ($required === FALSE && strlen($this->kayttoJarjestelmaId) == 0)
 			return 0;
 	
 		if ($required === TRUE) {
 			// Jos käyttöjärjestelmää ei ole valittu
-			if (strpos($this->kayttoJarjestelma, 'none') !==FALSE) 
+			if (strpos($this->kayttoJarjestelmaId, 'none') !==FALSE) 
 				return 12;
 		}
 		// Ei ollut virheitä
@@ -349,12 +349,12 @@ class Lisaa {
 	}
 	
 	// *******************************************************
-	// Muuttaa/asettaa kayttoJarjestelma-attribuutin
+	// Muuttaa/asettaa lisätietoja-attribuutin
 	public function setLisatietoa($uusiLisatietoa) {
 		$this->lisatietoa = $uusiLisatietoa;
 	}
 	
-	// Palauttaa kayttoJarjestelma-attribuutin
+	// Palauttaa lisätietoja-attribuutin
 	public function getLisatietoa() {
 		return $this->lisatietoa;
 	}

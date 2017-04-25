@@ -494,27 +494,27 @@ if (isset($_GET["kirjauduUlos"])) {
                              <!-- Jos syöttökentässä on ollut virhe, palautetaan annettu arvo -->   
                                 <select name="kayttoJarjestelma" class="form-control">
 							<?php 
-							echo '<option value="none"', ($lisaa->getKayttoJarjestelma() == 'none') 
+							echo '<option value="none"', ($lisaa->getKayttoJarjestelmaId() == 'none') 
 								? 'selected':'' ,'>Valitse käyttöjärjestelmä</option>';
 							echo "\n"; 
 							
 							echo '<option value="'.(($syottoVirhe == FALSE) ? '1">Windows Server 2008'
-								: (($lisaa->getKayttoJarjestelma() === '1') 
+								: (($lisaa->getKayttoJarjestelmaId() === '1') 
 								? '1" selected>Windows Server 2008' : '1">Windows Server 2008' ));
 							echo "</option>\n";
 							
 							echo '<option value="'.(($syottoVirhe == FALSE) ? '2">Windows Server 2008 R2'
-									: (($lisaa->getKayttoJarjestelma() === '2')
+									: (($lisaa->getKayttoJarjestelmaId() === '2')
 									? '2" selected>Windows Server 2008 R2' : '2">Windows Server 2008 R2' ));
 							echo "</option>\n";
 							
 							echo '<option value="'.(($syottoVirhe == FALSE) ? '3">Windows Server 2012'
-									: (($lisaa->getKayttoJarjestelma() === '3')
+									: (($lisaa->getKayttoJarjestelmaId() === '3')
 									? '3" selected>Windows Server 2012' : '3">Windows Server 2012' ));
 							echo "</option>\n";
 							
 							echo '<option value="'.(($syottoVirhe == FALSE) ? '4">Windows Server 2016'
-									: (($lisaa->getKayttoJarjestelma() === '4')
+									: (($lisaa->getKayttoJarjestelmaId() === '4')
 									? '4" selected>Windows Server 2016' : '4">Windows Server 2016' ));
 							echo "</option>\n";
 							

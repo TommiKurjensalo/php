@@ -151,7 +151,7 @@ if (isset($_GET["kirjauduUlos"])) {
                <?php 
                $now = time(); // Laitetaan nykyhetki muuttujaan
                 // Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
-               if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
+               if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true && $now <= $_SESSION['expire']) {
                 	
                     print '<li>
                         <a href="lisaa.php"> <i class="fa fa-fw fa-edit"></i> Lisää</a>
@@ -182,7 +182,7 @@ if (isset($_GET["kirjauduUlos"])) {
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Hae / muokkaa / poista asiakastietoja
+                            Hae / Poista asiakastietoja
                         </h1>
                         <!--  Debuggausta varten
                         <?php 
@@ -321,27 +321,27 @@ if (isset($_GET["kirjauduUlos"])) {
 											
 								<select name="kayttoJarjestelma" class="form-control">
 							<?php 
-							echo '<option value="none"', ($lisaa->getKayttoJarjestelma() == 'none') 
+							echo '<option value="none"', ($lisaa->getKayttoJarjestelmaId() == 'none') 
 								? 'selected':'' ,'>Valitse käyttöjärjestelmä</option>';
 							echo "\n"; 
 									
 							echo '<option value="'.(($syottoVirhe == FALSE) ? '1">Windows Server 2008'
-								: (($lisaa->getKayttoJarjestelma() === '1') 
+								: (($lisaa->getKayttoJarjestelmaId() === '1') 
 								? '1" selected>Windows Server 2008' : '1">Windows Server 2008' ));
 							echo "</option>\n";
 							
 							echo '<option value="'.(($syottoVirhe == FALSE) ? '2">Windows Server 2008 R2'
-									: (($lisaa->getKayttoJarjestelma() === '2')
+									: (($lisaa->getKayttoJarjestelmaId() === '2')
 									? '2" selected>Windows Server 2008 R2' : '2">Windows Server 2008 R2' ));
 							echo "</option>\n";
 							
 							echo '<option value="'.(($syottoVirhe == FALSE) ? '3">Windows Server 2012'
-									: (($lisaa->getKayttoJarjestelma() === '3')
+									: (($lisaa->getKayttoJarjestelmaId() === '3')
 									? '3" selected>Windows Server 2012' : '3">Windows Server 2012' ));
 							echo "</option>\n";
 							
 							echo '<option value="'.(($syottoVirhe == FALSE) ? '4">Windows Server 2016'
-									: (($lisaa->getKayttoJarjestelma() === '4')
+									: (($lisaa->getKayttoJarjestelmaId() === '4')
 									? '4" selected>Windows Server 2016' : '4">Windows Server 2016' ));
 							echo "</option>\n";
 							
@@ -427,7 +427,7 @@ if (isset($_GET["kirjauduUlos"])) {
 									    	print("<td>".utf8_encode($lisaa->getAsiakkaanNimi())."</td>");
 									    	print("<td>".utf8_encode($lisaa->getSahkopostiosoite())."</td>");
 									    	print("<td>".utf8_encode($lisaa->getPuhelinNumero())."</td>");
-									    	print("<td>".utf8_encode($lisaa->getKayttoJarjestelma())."</td>");
+									    	print("<td>".utf8_encode($lisaa->getKayttoJarjestelmaId())."</td>");
 									    	print("<td>".DateTime::createFromFormat('Y-m-d', $lisaa->getAsennusPaivamaara())->format('d.m.Y')."</td>");
 									    	print("<td>".utf8_encode($lisaa->getLevytila())."</td>");
 									    	print("<td>".$lisaa->getLisatietoa()."</td>");
