@@ -1,0 +1,25 @@
+poista yksittäinen asiakas
+DELETE l,lk
+FROM lisaa l
+INNER JOIN lisaa_kayttojarjestelma lk ON l.lisaaId=lk.lisaaId
+WHERE l.lisaaId = "45";
+
+DELETE lk,l
+FROM lisaa_kayttojarjestelma AS lk
+INNER JOIN lisaa AS l
+WHERE lk.lisaaId = l.lisaaId
+AND l.lisaaId="70";
+
+DELETE FROM lisaa_kayttojarjestelma,lisaa
+USING lisaa_kayttojarjestelma,lisaa
+WHERE lisaa_kayttojarjestelma.lisaaId=lisaa.lisaaId
+AND lisaa.lisaaId=70;
+
+DELETE FROM lisaa_kayttojarjestelma
+WHERE lisaaId="70";
+
+DELETE FROM lisaa
+WHERE lisaaId="70";
+
+UPDATE lisaa SET asiakkaanNimi = 'Asiakas134', sahkopostiosoite = 'asiakas1@asiakas.org', puhelinNumero = '040-123 451', asennusPaivamaara = '2016-05-08', levytila = '201', lisatietoa = 'Lisätietoja koskien asiakasta1' WHERE lisaaId=96;
+
