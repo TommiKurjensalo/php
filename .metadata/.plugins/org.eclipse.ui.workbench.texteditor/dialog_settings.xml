@@ -2,30 +2,30 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="Debug" key="selection"/>
+		<item value="asiakasNimi" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="debug"/>
-			<item value="sahkopostiosoiteVirhe "/>
-			<item value="destroy"/>
-			<item value="h2 style"/>
-			<item value="h2 st"/>
-			<item value="$msg"/>
-			<item value="$_SESSION[&apos;message&apos;]"/>
-			<item value="nimi:"/>
+			<item value="asiakasNimi"/>
+			<item value="sahkoposti"/>
+			<item value="$asiakkaat"/>
+			<item value="getAsiakkaanNimi()"/>
+			<item value="getA"/>
+			<item value="$stmt_lisaa"/>
+			<item value="$lisaa"/>
+			<item value="select"/>
 		</list>
 		<list key="replacehistory">
+			<item value="$stmt"/>
+			<item value="$muokkaa"/>
+			<item value="asiakkaanNimi"/>
+			<item value="lisaaId"/>
 			<item value="$_SESSION[&apos;message&apos;]"/>
 			<item value="$msg"/>
 			<item value="asiakasNro"/>
 			<item value=""/>
-			<item value="$stmt_lisaa"/>
-			<item value="=== FALSE"/>
-			<item value="$asennusPaivamaara"/>
-			<item value="$lisaa-&gt;getKayttoJarjestelma()"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

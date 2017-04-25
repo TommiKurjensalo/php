@@ -1,8 +1,37 @@
+# 25.4.2017
+
+SE ON TÄMÄ TÄSSÄ ! SIVU ON TARPEEKSI VALMIS JA VOIMAT ON LOPPU !
+
+* Muokkaa sivu valmis
+
+Pirun vaikeeta oli tajuta kuinka php käsittelee sivuja ja kuinka luoda järkevä dynaaminen sql lauseke.
+
+Ne ihanat heittomerkit, niin yksöis ja kaksois on aiheuttanut kokoajan ongelmia.
+
+Ongelmia on vielä jonkunverran (ehkä) session aikojen kanssa.
+
+Toki salasanat pitäisi salata kantaan ja käsittelyssä, mutta taitaa olla toinen projekti se.
+
+Aikaa meni 8tuntia.
+
+# 24.4.2017
+
+* Muokkaa sivua aloitettu.
+
+Tajusin pitkän testailun jälkeen, että php sivu latautuu oikeasti ylhäältä alaspäin ja että funktioita tai arvoja ei voi käyttää
+ellei ne ole vielä latautuneet, ts. pyyntö on ennen arvoa/metodia.
+
+Ongelmia saada muuttujia, arraylistoja, olioita siirtymään php sivun sisässä toisiin php lohkoihin.
+
+Aikaa meni 8tuntia.
+
 # 23.4.2017
 
 * Tehty login sivu valmiiksi, hyödyntäen sessio ja cookie ominaisuuksia
 
 * Lisätty logoff toiminto jokaiselle sivulle
+
+* Korjattu login/logout ongelma (jälkikäteen)
 
 Siinä se aika sitten menikin kun ihmetteli funktioita, syntakseja ja useamman yritys/erehdyksen kautta
 tajusi kuinka homma voisi toimia.

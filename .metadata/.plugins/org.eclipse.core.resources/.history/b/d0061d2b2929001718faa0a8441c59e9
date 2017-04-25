@@ -1,0 +1,23 @@
+<?php 
+getAsTiedot($a);
+?>
+
+<?php
+//$a = "";
+
+if(1==1) {
+	$a = array("moi","hei");
+}
+
+function getAsTiedot($a) {
+	global $a;
+
+	var_dump($a);
+	echo "<br>";
+	array_push($a, "apple", "raspberry");
+	return $a;
+}
+
+
+var_dump($a);
+?>

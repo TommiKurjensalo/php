@@ -12,7 +12,7 @@ class Lisaa {
 			4 => "Sähköpostiosoite ei voi olla tyhjä",
 			5 => "Sähköpostiosoite on virheellinen, hyväksytyt merkit ovat (A-Z a-z 0-9 .-) ja maatunnus 2-4 merkkiä (A-Z a-z)",
 			6 => "Puhelinnumero ei voi olla tyhjä",
-			7 => "Puhelinnumerossa voi olla vain numeroita ja '-' (väliviiva)",
+			7 => "Puhelinnumerossa voi olla vain numeroita, välilyönti ja väliviiva",
 			8 => "Asennuspäivämäärä ei voi olla tyhjä",
 			9 => "Asennuspäivämäärä ei voi olla tulevaisuudessa",
 			10 => "Levytilan määritys ei voi olla tyhjä",
@@ -200,8 +200,9 @@ class Lisaa {
 				return 20;
 			}
 				// Jos kentässä on sinne kuulumattomia merkkejä
-				// Sallittu vain numerot 0-9 ja välimerkki '-'
-				elseif (!preg_match('/^(\d){0,4}[-]{1}(\d){0,17}$/D', $this->puhelinNumero)) {
+				// Sallittu vain numerot 0-9, välilyönti ja välimerkki '-'
+				elseif (!preg_match('/^(\d){0,4}[-]{1}[(\d\s)]{0,17}$/D', $this->puhelinNumero)) {
+			
 					return 7;
 				}
 
@@ -476,13 +477,13 @@ class Lisaa {
 		// debuggausta varten
 		
 		if (isset($_COOKIE["isDebug"])) {
-		echo "<br>var_dump: ".	var_dump($lisaa). "<br>";
-		echo "INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,
-				asennusPaivamaara,levytila,lisatietoa)
-				VALUE (:lisaaId,\"".$lisaa->getAsiakkaanNimi()."\",\"" .$lisaa->getSahkopostiosoite(). "\",\"" .$lisaa->getPuhelinNumero()."\",
-				\"".$asennusPaivamaara."\",\"".$lisaa->getLevytila()."\",\"".$lisaa->getLisatietoa()."\");";
-			
-		echo '<br>';
+			echo "<br>var_dump: ".	var_dump($lisaa). "<br>";
+			echo "INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,
+					asennusPaivamaara,levytila,lisatietoa)
+					VALUE (:lisaaId,\"".$lisaa->getAsiakkaanNimi()."\",\"" .$lisaa->getSahkopostiosoite(). "\",\"" .$lisaa->getPuhelinNumero()."\",
+					\"".$asennusPaivamaara."\",\"".$lisaa->getLevytila()."\",\"".$lisaa->getLisatietoa()."\");";
+				
+			echo '<br>';
 		}
 		
 		$tulos = array();
@@ -502,9 +503,9 @@ class Lisaa {
 	
 		// Jos käyttöjärjestelmä kenttä on tyhjä tai arvo 'none', annetaan kyselylausekeen arvoksi mitä tahansa ()
 		// Muutoin annetaan kayttoJarjestelman arvo oliosta
-		(empty($lisaa->getKayttoJarjestelma()) || (strpos($lisaa->getKayttoJarjestelma(), 'none') !== FALSE)
+		(empty($lisaa->getKayttoJarjestelmaId()) || (strpos($lisaa->getKayttoJarjestelmaId(), 'none') !== FALSE)
 		? $stmt_linkkaus->bindValue(":kayttoJarjestelmaId", utf8_decode(""), PDO::PARAM_STR)
-		: $stmt_linkkaus->bindValue(":kayttoJarjestelmaId", utf8_decode($lisaa->getKayttoJarjestelma()), PDO::PARAM_STR));
+		: $stmt_linkkaus->bindValue(":kayttoJarjestelmaId", utf8_decode($lisaa->getKayttoJarjestelmaId()), PDO::PARAM_STR));
 		
 		// Jos käyttöjärjestelmä on syötetty, haetaan viimeksi syötetty lisaaId
 		// Muutoin käytetään arvoa mitä tahansa ""
@@ -514,7 +515,7 @@ class Lisaa {
 		
 		if (isset($_COOKIE["isDebug"])) {
 		echo "INSERT INTO lisaa_kayttojarjestelma (kayttoJarjestelmaId,lisaaId)
-                        VALUE (\"".$lisaa->getKayttoJarjestelma()."\",\"".Database::lastInsertId()."\");";
+                        VALUE (\"".$lisaa->getKayttoJarjestelmaId()."\",\"".Database::lastInsertId()."\");";
 		}		
 
 		

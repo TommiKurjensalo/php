@@ -23,9 +23,8 @@ if (isset($_POST["tallenna"])) {
 			!isset($_POST["kayttoJarjestelma"]) ||
 			!isset($_POST["lisatietoa"])) {
 				die('LÄHETYS ESTETTY! Kaavake jota yritit lähettää näyttäisi olevan kenttiä, jotaka eivät ole alkuperäisessä kaavakkeessa.');
-	}
+	} else {
 																	
-			
    $lisaa = new Lisaa(0,
    		$_POST["asiakkaanNimi"],
    		$_POST["sahkopostiosoite"],
@@ -37,7 +36,7 @@ if (isset($_POST["tallenna"])) {
    		$_POST["kayttoJarjestelma"],
    		$_POST["lisatietoa"]
    		);
-
+	}
 
    // Kirjoitetaan session tiedot talteen
    $_SESSION ["lisaa"] = $lisaa;
@@ -86,13 +85,14 @@ elseif (isset($POST["peruuta"])) {
 
 elseif (isset ( $_POST ["tallenna"] )) {
 	if (isset ( $_SESSION ["lisaa"] )) {
-		$_SESSION = array ();
-
-		if (isset ( $_COOKIE [session_name ()] )) {
-			setcookie ( session_name (), '', time () - 100, '/' );
-		}
-
-		session_destroy ();
+		
+		// Poistetaan PHPSESSID selaimesta
+		if ( isset( $_COOKIE[session_name()] ) )
+			setcookie( session_name(), "", time()-3600, "/" );
+		// Tyhjennetään sessiot globaalisti
+		$_SESSION = array();
+		// Tyhjennetään sessiot paikallisesti
+		session_destroy();
 
 		header ( "Location: lisaa.php" );
 		exit ();

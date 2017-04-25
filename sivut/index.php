@@ -77,21 +77,27 @@ session_start ();
 	
 	session_write_close ();
 	
-	
+	// Jos sivulle tultiin ensimmäistä kertaa
 }  else {
 	
 	$now = time(); // Laitetaan nykyhetki muuttujaan
 	// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
-	if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true)) {
+	if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true) {
 		
+		// Jos sessio on mennyt umpeen, muutetaan onKirjauduttu = false
+		if ($now >= $_SESSION['expire']) {
+			$_SESSION['onKirjauduttu'] = false;
+			$_SESSION['message'] = "";
+			$_SESSION['tervetuloa'] = "";
+		}
 			
-			// Jos sivulle tultiin ensimmäistä kertaa
 			// Tarkistetaan onko sessiota jo olemassa
 			if (!isset($_SESSION['message'])) {
 				$_SESSION['message'] = "";
-				
-				session_write_close (); 
-		}
+			}
+					
+			// Kirjoitetaan session datat talteen	 
+			session_write_close ();
 	} else {
 		session_destroy();
 		
@@ -184,7 +190,7 @@ if (isset($_GET["kirjauduUlos"])) {
                $now = time(); // Laitetaan nykyhetki muuttujaan
                 // Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
 
-                if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true))  {
+                if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true)  {
                 	if ($now <= $_SESSION['expire']) {
                     print '<li>
                         <a href="lisaa.php"> <i class="fa fa-fw fa-edit"></i> Lisää</a>
@@ -227,9 +233,9 @@ if (isset($_GET["kirjauduUlos"])) {
 		
 		print '<div style="background: rgba(60, 60, 60, 0.5); border:1px solid black; padding:10%;">'."\n".
 				'<h2 style="color:white;">Kirjautuminen</h2>'."\n".
-		    	'<input type="text" class="form-control" name="keijoNimi" placeholder="Tunnus" value="'.(isset($_COOKIE["member_keijo"]) ? $_COOKIE["keijoNimi"].'"'
+		    	'<input type="text" class="form-control" name="keijoNimi" placeholder="Tunnus" value="'.(isset($_COOKIE["member_keijo"]) ? $_COOKIE["member_keijo"].'"'
 		    			:"").'" required autofocus />'."\n".
-		    	'<input type="password" class="form-control" name="keijoKovaKasi" value="'.(isset($_COOKIE["member_kovaKasi"]) ? $_COOKIE["keijoKovaKasi"]
+		    	'<input type="password" class="form-control" name="keijoKovaKasi" value="'.(isset($_COOKIE["member_kovaKasi"]) ? $_COOKIE["member_kovaKasi"]
 		    			:"").'" required placeholder="Salasana" />'."\n".      
 		    	'<label class="checkbox" style="color:white; padding-left:6%;">'."\n".
 		    	'<input type="checkbox" value="remember-me" id="rememberMe" name="muistaMinut" '.(isset($_COOKIE["member_keijo"]) ? 'checked':"").' > Muista minut</label>'."\n".
@@ -248,9 +254,9 @@ if (isset($_GET["kirjauduUlos"])) {
 		
 		if (isset($_COOKIE["isDebug"])) {
 			echo '<div style="color:white;">';
-			echo (isset($_SESSION['onKirjauduttu']) ? (is_bool($_SESSION['onKirjauduttu'] === true) ? 'onKirjauduttu: true ':'onKirjauduttu: false ') : ' false ');
+			echo ((isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true) ? 'onKirjauduttu: true ':'onKirjauduttu: false ');
 			echo (isset($_SESSION['expire']) ? ' exp: ' .$now.'<=' .$_SESSION['expire'] :' exp: false ');
-			echo (isset($_SESSION['start']) ? ' start: '. $_SESSION['start'] :' start: false ');
+			echo (isset($_SESSION['start']) && ($_SESSION['start'] <= $_SESSION['expire']) ? ' sessio expired ' :' sessio valid ');
 			echo ' rivi0: ' .(isset($_SESSION['rivi0']) ? $_SESSION['rivi0']:' false ');
 			echo ' rivi1: ' .(isset($_SESSION['rivi1']) ? (is_bool($_SESSION['rivi1'] === true) ? $_SESSION['rivi1'] : ' false ') :' false ') ;
 			echo '</div>';

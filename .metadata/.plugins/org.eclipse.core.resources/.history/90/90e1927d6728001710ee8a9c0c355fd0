@@ -1,0 +1,125 @@
+<?php
+require_once "PDO.php";
+
+class Keijo {
+	
+	// luokan attribuutit
+	private $keijoId = "";
+	private $keijoNimi = "";
+	private $keijoKovaKasi = "";
+	
+	
+	// Luokan konstruktori listaaKaikki toimintoa varten
+	public function __construct($uusiKeijoId = "", $uusiKeijoNimi="", $uusiKeijoKovaKasi = "")
+	{
+		// trim poistaa tyhjät merkkijonon alusta ja lopusta
+		$this->keijoId = ($uusiKeijoId);
+		$this->keijoNimi = trim($uusiKeijoNimi);
+		$this->keijoKovaKasi = trim($uusiKeijoKovaKasi);
+	}
+	
+	// Muuttaa/asettaa keijoId-attribuutin
+	public function setKeijoId($uusiKeijoId) {
+		$this->keijoId = $uusiKeijoId;
+	}
+	
+	// Palauttaa keijoId-attribuutin
+	public function getKeijoId() {
+		return $this->keijoId;
+	}
+	
+	// Muuttaa/asettaa keijoNimi-attribuutin
+	public function setKeijoNimi($uusiKeijoNimi) {
+		$this->keijoNimi = $uusiKeijoNimi;
+	}
+	
+	// Palauttaa keijoNimi-attribuutin
+	public function getKeijoNimi() {
+		return $this->keijoNimi;
+	}
+	
+	// Muuttaa/asettaa keijoKovaKasi-attribuutin
+	public function setKeijoKovaKasi($uusiKeijoKovaKasi) {
+		$this->keijoKovaKasi = $uusiKeijoKovaKasi;
+	}
+	
+	// Palauttaa keijoKovaKasi-attribuutin
+	public function getKeijoKovaKasi() {
+		return $this->keijoKovaKasi;
+	}
+	
+	public function keijollaOnKovaKasi($keijoNimi,$keijoKovaKasi) {
+
+	// Luodaan SQL kysely tietojen lisäystä varten
+	$sql = "SELECT keijoNimi, keijoKovaKasi 
+			FROM keijo
+			WHERE (keijoNimi = :keijoNimi
+			AND keijoKovaKasi = :keijoKovaKasi)";
+
+	// Valmistellaan lause
+	$stmt = Database :: prepare($sql);
+
+	// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
+	if (! $stmt = Database :: prepare($sql)) {
+		$virhe = Database :: errorInfo();
+
+		throw new PDOException($virhe[2], $virhe[1]);
+	}
+	
+	// Asetetaan keijoNimi
+	$stmt->bindValue(":keijoNimi", utf8_decode($keijoNimi), PDO::PARAM_STR);
+
+	// Asetetaan keijoKovaKasi
+	$stmt->bindValue(":keijoKovaKasi", utf8_decode($keijoKovaKasi), PDO::PARAM_STR);
+	
+	$tulos = array();
+	$keijoTulos = array();
+
+	// Jos SQL kyselylausekkeen ajo epäonnistuu, näytetään virheviesti
+	if (! $stmt->execute()) {
+		$virhe = $stmt->errorInfo();
+		$tulos[] = $virhe;
+
+		if ($virhe[0] == "HY093") {
+			$virhe[2] = "Invalid parameter";
+		}
+		throw new PDOException($virhe[2], $virhe[1]);
+	} 
+	
+	// debuggausta varten
+	if (isset($_COOKIE["isDebug"])) {
+		echo "<div style='padding-left:300px;'> nimi: ".	$keijoNimi. " pw: " .$keijoKovaKasi. "<br>";
+		echo "SELECT keijoNimi, keijoKovaKasi
+			FROM keijo
+			WHERE (keijoNimi = \"".$keijoNimi."\"
+			AND keijoKovaKasi = \"".$keijoKovaKasi."\");</div>";
+			
+		echo '<br>';
+	}
+	
+	// Käsitellän/siirretään saatu tulos $keijo olioon
+	while ($rivi = $stmt->fetchObject()) {
+		$keijo = new Keijo();
+		$keijo->setKeijoId($rivi->keijoId);
+		$keijo->setKeijoNimi(utf8_encode($rivi->keijoNimi));
+		$keijo->setKeijoKovaKasi(utf8_encode($rivi->keijoKovaKasi));
+	
+		$apinaaKoiataan[] = $keijo;
+	}
+	
+	if (strtolower($keijoNimi) == strtolower($apinaaKoiataan[1]) && strtolower($keijoKovaKasi) == strtolower($apinaaKoiataan[2])) {
+		$keijoTulos[0] = $stmt->rowCount();
+		$keijoTulos[1] = true;
+		return $keijoTulos;
+	} else {
+		$keijoTulos[0] = $stmt->rowCount();
+		$keijoTulos[1] = false;
+		return $keijoTulos;
+	}
+
+	
+
+
+	} // function keijollaOnKovaKasi
+} // Luokka Keijo
+?>

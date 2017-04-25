@@ -1,0 +1,39 @@
+<?php 
+
+(isset($_POST["nappi1"]) ? getAsTiedot("oma") :'');		
+?>
+
+<?php
+$a = "";
+
+
+echo '<form action="'.htmlspecialchars($_SERVER["PHP_SELF"]).'" method="post">';
+
+if(isset($_POST["nappi1"])) {
+	$a = array("moi1","hei1");
+}
+
+function getAsTiedot($b) {
+//	if(isset($_POST["nappi1"])) {
+//		$a = array("moi2","hei2");
+//	}
+global $a;
+	array_push($a,$b);
+	echo "<br>";
+	echo 'funktion sisällä: ';
+		var_dump($a);
+	echo "<br>";
+
+	return $a;
+}
+
+echo '<input name="nappi1" type="submit" value="Hae">';
+echo '</form>';
+echo 'loppu dump: ';
+		var_dump($a);
+
+?>
+
+<?php 
+
+?>

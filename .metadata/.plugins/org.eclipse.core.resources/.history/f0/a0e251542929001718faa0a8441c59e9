@@ -1,0 +1,23 @@
+<?php 
+getAsTiedot("oma");
+?>
+
+<?php
+//$a = "";
+
+if(1==1) {
+	$a = array("moi","hei");
+}
+
+function getAsTiedot($b) {
+	global $a;
+
+	var_dump($a);
+	echo "funktion sisällä <br>";
+	array_push($a,$b);
+	return $a;
+}
+
+
+var_dump($a);
+?>

@@ -116,9 +116,9 @@ class Listaa {
 		
 		
 		
-		(empty($lisaa->getKayttoJarjestelma()) || (strpos($lisaa->getKayttoJarjestelma(), 'none') !== FALSE) 
+		(empty($lisaa->getKayttoJarjestelmaId()) || (strpos($lisaa->getKayttoJarjestelmaId(), 'none') !== FALSE) 
 		? $stmt->bindValue(":kayttoJarjestelmaId", utf8_decode("%"), PDO::PARAM_STR)
-		: $stmt->bindValue(":kayttoJarjestelmaId", utf8_decode("%".$lisaa->getKayttoJarjestelma()."%"), PDO::PARAM_STR));
+		: $stmt->bindValue(":kayttoJarjestelmaId", utf8_decode("%".$lisaa->getKayttoJarjestelmaId()."%"), PDO::PARAM_STR));
 		
 		// debuggausta varten
 
@@ -132,13 +132,13 @@ class Listaa {
 						INNER JOIN kayttojarjestelma k on k.kayttoJarjestelmaId=lk.kayttoJarjestelmaId
 						WHERE (l.asiakkaanNimi LIKE "%'.$lisaa->getAsiakkaanNimi().'%"
 						AND l.asennusPaivamaara LIKE "%'.(!empty($asennusPaivamaara) ? $asennusPaivamaara : '').'%"
-						AND k.kayttoJarjestelmaId LIKE "%'.((strpos($lisaa->getKayttoJarjestelma(), 'none') === FALSE) ? $lisaa->getKayttoJarjestelma() : '').'%")
+						AND k.kayttoJarjestelmaId LIKE "%'.((strpos($lisaa->getKayttoJarjestelmaId(), 'none') === FALSE) ? $lisaa->getKayttoJarjestelmaId() : '').'%")
 						ORDER BY lk.lisaaId ASC;"';
 				echo '<br>';
 				echo 'nimi: '. '"%'.$lisaa->getAsiakkaanNimi().'%"'
 					.' | pp.kk.vvvv: ' .$lisaa->getPaiva().'.'.$lisaa->getKuukausi().'.'.$lisaa->getVuosi()
 					.' | pvm: '. '"%'. (!empty($asennusPaivamaara) ? $asennusPaivamaara : ''). '%"'
-					.' | Os: '. '"%'.((strpos($lisaa->getKayttoJarjestelma(), 'none') === FALSE) ? $lisaa->getKayttoJarjestelma() : ''). '%"'
+					.' | Os: '. '"%'.((strpos($lisaa->getKayttoJarjestelmaId(), 'none') === FALSE) ? $lisaa->getKayttoJarjestelmaId() : ''). '%"'
 					;
 			}
 		
