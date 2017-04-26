@@ -352,7 +352,7 @@ if (isset($_GET["kirjauduUlos"])) {
                             <input name="asiakkaanNimi" class="form-control" type="text" value=
                             <?php echo (($syottoVirhe == FALSE)) ? '""' : '"'.$lisaa->getAsiakkaanNimi().'"';?> placeholder="Neste Oy"/>
 							
-							 <?php  echo 'Syöttövirheet: ' . (($syottoVirhe == TRUE) ? 'true' : 'false'); ?> 
+				<!-- <?php  echo 'Syöttövirheet: ' . (($syottoVirhe == TRUE) ? 'true' : 'false'); ?> -->
                             	<?php echo '</div> <!-- ./input-group -->' ?>
 							</div> <!-- ./form-group -->
 							
