@@ -6,11 +6,7 @@ session_start ();
 
 // Onko painettu tallenna-painiketta
 if (isset($_POST["tallenna"])) {
-	if (isset($_COOKIE["isDebug"])) {
-		echo "<div style='padding-left:300px;'>";
-		echo "post debug: ".(isset($_POST["debug"]) 
-				? $_POST["debug"] : 'notSet') ."  tallenna painike valittu </div>";
-	}
+	
 	// Viedään muodostimelle kenttien arvot	
 		if (isset($_POST["debug"])) {
 			$asetukset = true;
@@ -42,10 +38,17 @@ if (isset($_POST["tallenna"])) {
 				
 				echo (isset($_COOKIE["isDebug"]) ? "<br> Cookies are disabled" :''). "</div>";
 		}
-	
-	echo (isset($_COOKIE["isDebug"]) 
+
+		if (isset($_COOKIE["isDebug"])) {
+		echo "<div style='padding-left:300px;'>";
+		echo "post debug: ".(isset($_POST["debug"]) 
+				? $_POST["debug"] : 'notSet') ."  tallenna painike valittu </div>";
+				
+		echo (isset($_COOKIE["isDebug"]) 
 			? "<div style='padding-left:300px;'>if cookie debug sisältö: " .(isset($_COOKIE["isDebug"]) 
-					? $_COOKIE["isDebug"] :'false'). "</div>" : '</div>');
+				? $_COOKIE["isDebug"] :'false'). "</div>" : '</div>');
+	}
+
 	
 } elseif (isset ( $_POST ["debug"] )) {
 	if (isset ( $_SESSION ["asetukset"] )) {
