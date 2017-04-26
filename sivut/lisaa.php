@@ -38,22 +38,7 @@ if (isset($_POST["tallenna"])) {
    		);
 	}
 
-   // Kirjoitetaan session tiedot talteen
-   $_SESSION ["lisaa"] = $lisaa;
-   session_write_close ();
-   
-try {
-		                            	 
-	$kantakasittely = new Lisaa();
-	$rivit = $kantakasittely->lisaaAsiakas($_SESSION["lisaa"]);
-	
-		 } catch (Exception $error) {
-		
-			print($error->getMessage());
-			echo "<br>";
-		 }
-
-   // Haetaan mahdolliset virhekoodit
+	   // Haetaan mahdolliset virhekoodit
    $asiakkaanNimiVirhe = $lisaa->checkAsiakkaanNimi(TRUE,3,50);
    $sahkopostiosoiteVirhe = $lisaa->checkSahkopostiosoite(TRUE);
    $puhelinNumeroVirhe = $lisaa->checkPuhelinNumero(TRUE,8,20);
@@ -71,6 +56,23 @@ try {
    if ($levytilaVirhe > 0) $syottoVirhe = TRUE;
    if ($kayttoJarjestelmaVirhe > 0) $syottoVirhe = TRUE;
    if ($lisatietoaVirhe > 0) $syottoVirhe = TRUE;
+	
+   // Kirjoitetaan session tiedot talteen
+   $_SESSION ["lisaa"] = $lisaa;
+   session_write_close ();
+   
+	if ($syottoVirhe === FALSE) {
+try {
+		                            	 
+	$kantakasittely = new Lisaa();
+	$rivit = $kantakasittely->lisaaAsiakas($_SESSION["lisaa"]);
+	
+		 } catch (Exception $error) {
+		
+			print($error->getMessage());
+			echo "<br>";
+		 }
+	}
    
 }
 
