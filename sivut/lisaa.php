@@ -41,7 +41,22 @@ if (isset($_POST["tallenna"])) {
    // Kirjoitetaan session tiedot talteen
    $_SESSION ["lisaa"] = $lisaa;
    session_write_close ();
-    
+   
+try {
+		                            	 
+	$kantakasittely = new Lisaa();
+	$rivit = $kantakasittely->lisaaAsiakas($_SESSION["lisaa"]);
+	
+	echo ((stripos($rivit[0], 'lisaa ok') !== FALSE && stripos($rivit[1], 
+	'lisaa_kayttojarjestelma ok') !== FALSE)
+	? '<h3 style="color:green"><i class="glyphicon glyphicon-ok">
+	</i> Asiakas on lisätty onnistuneesti! <br> Lisättyjä rivejä: ' 
+	.$rivit[2]. '</h3>': '<h3>Lisäys epäonnistui</h3>');
+		 } catch (Exception $error) {
+		
+			print($error->getMessage());
+			echo "<br>";
+		 }
 
    // Haetaan mahdolliset virhekoodit
    $asiakkaanNimiVirhe = $lisaa->checkAsiakkaanNimi(TRUE,3,50);
@@ -568,40 +583,7 @@ if (isset($_GET["kirjauduUlos"])) {
 								<div class="input-group">
 									<p>
 		                            <?php 
-
-		                            if (isset($_POST["tallenna"])) {
-		                            
-		                            	// Tarkistetaan, että tarvittavat kentät on syötetty
-		                            	// Jos ei, niin ei lähetetä pyyntöä eteenpäin
-		                            	if (!isset($_POST["asiakkaanNimi"]) &&
-		                            			!isset($_POST["sahkopostiosoite"]) &&
-		                            			!isset($_POST["puhelinNumero"]) &&
-		                            			!isset($_POST["paiva"]) &&
-		                            			!isset($_POST["kuukausi"]) &&
-		                            			!isset($_POST["vuosi"]) &&
-		                            			!isset($_POST["levytila"]) &&
-		                            			!isset($_POST["kayttoJarjestelma"])) { 
-		                            			
-		                            			
-		                            	try {
-		                            	 
-			                            	$kantakasittely = new Lisaa();
-			                            	$rivit = $kantakasittely->lisaaAsiakas($_SESSION["lisaa"]);
-	
-			                            	echo ((stripos($rivit[0], 'lisaa ok') !== FALSE && stripos($rivit[1], 
-			                            			'lisaa_kayttojarjestelma ok') !== FALSE)
-			                            	? '<h3 style="color:green"><i class="glyphicon glyphicon-ok">
-			                            			</i> Asiakas on lisätty onnistuneesti! <br> Lisättyjä rivejä: ' 
-			                            			.$rivit[2]. '</h3>': '<h3>Lisäys epäonnistui</h3>');
-				                         } catch (Exception $error) {
 		
-													print($error->getMessage());
-													echo "<br>";
-										   }
-		                            	} 
-		                            }
-
-
 		                            echo ((!empty($virheviesti) && $virheviesti != null) ? '<span style="color:red";>' .$virheviesti. '</span>':'');
 
 		                            echo (($lisaa->getVirhe($asiakkaanNimiVirhe)) 
