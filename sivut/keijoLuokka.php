@@ -6,6 +6,7 @@ class Keijo {
 	// luokan attribuutit
 	private $keijoNimi = "";
 	private $keijoKovaKasi = "";
+	$keijoTulos = array();
 	
 	
 	// Luokan konstruktori keijoLuokka toimintoa varten
