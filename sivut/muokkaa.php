@@ -396,7 +396,7 @@ if (isset($_GET["kirjauduUlos"])) {
                               (isset($_POST["haeAsiakkaat"]) ? '"'.$asTiedot[1].'"' 
                             		: '""');?> placeholder="Neste Oy"/>
 							
-				 <!--  echo '<br>SyöttöVirheet: '. (($syottoVirhe === TRUE) ? 'true' : 'false');  -->
+				// echo '<br>SyöttöVirheet: '. (($syottoVirhe === TRUE) ? 'true' : 'false');
                             	 echo '</div> <!-- ./input-group -->' ?>
 							</div> <!-- ./form-group -->
 							
