@@ -580,7 +580,7 @@ if (isset($_GET["kirjauduUlos"])) {
 								<div class="input-group">
 									<p>
 		                            <?php 
-					    if (!empty($rivit) {
+					    if (!empty($rivit)) {
 						echo ((stripos($rivit[0], 'lisaa ok') !== FALSE && stripos($rivit[1], 
 						'lisaa_kayttojarjestelma ok') !== FALSE)
 						? '<h3 style="color:green"><i class="glyphicon glyphicon-ok">
