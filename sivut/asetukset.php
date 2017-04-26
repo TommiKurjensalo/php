@@ -88,7 +88,7 @@ if (isset($_POST["tallenna"])) {
 	
 	} else {
 	
-		header('Location: index.php');
+		header('Location: asetukset.php');
 		exit;
 			
 	}
