@@ -28,7 +28,7 @@ if (isset($_POST["tallenna"])) {
 				setcookie("isDebug", "", time() - 3600, "/");
 					
 				
-				$_SESSION = array ();
+				// $_SESSION = array ();
 				
 					if (isset ( $_COOKIE [session_name ()] )) {
 						setcookie ( session_name (), '', time () - 100, '/' );
@@ -54,7 +54,7 @@ if (isset($_POST["tallenna"])) {
 } elseif (isset ( $_POST ["debug"] )) {
 	if (isset ( $_SESSION ["asetukset"] )) {
 		echo (isset($_COOKIE["isDebug"]) ? "<div style='padding-left:300px;'> elseif isset post&session </div>" :'');
-		$_SESSION = array ();
+		//$_SESSION = array ();
 
 		if (isset ( $_COOKIE [session_name ()] )) {
 			setcookie ( session_name (), '', time () - 100, '/' );
@@ -164,7 +164,7 @@ if (isset($_GET["kirjauduUlos"])) {
                $now = time(); // Laitetaan nykyhetki muuttujaan
                 // Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
                if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true && $now <= $_SESSION['expire']) {
-                	
+        
                     print '<li>
                         <a href="lisaa.php"> <i class="fa fa-fw fa-edit"></i> Lisää</a>
                     </li>
