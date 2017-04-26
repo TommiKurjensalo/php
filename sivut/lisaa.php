@@ -580,13 +580,13 @@ if (isset($_GET["kirjauduUlos"])) {
 								<div class="input-group">
 									<p>
 		                            <?php 
-		
+					    if (!empty($rivit) {
 						echo ((stripos($rivit[0], 'lisaa ok') !== FALSE && stripos($rivit[1], 
 						'lisaa_kayttojarjestelma ok') !== FALSE)
 						? '<h3 style="color:green"><i class="glyphicon glyphicon-ok">
 						</i> Asiakas on lisätty onnistuneesti! <br> Lisättyjä rivejä: ' 
 						.$rivit[2]. '</h3>': '<h3>Lisäys epäonnistui</h3>');
-				    
+					    }
 		                            echo ((!empty($virheviesti) && $virheviesti != null) ? '<span style="color:red";>' .$virheviesti. '</span>':'');
 
 		                            echo (($lisaa->getVirhe($asiakkaanNimiVirhe)) 
