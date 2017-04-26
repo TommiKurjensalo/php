@@ -30,9 +30,9 @@ if (isset($_POST["tallenna"])) {
 				
 				// $_SESSION = array ();
 				
-				//	if (isset ( $_COOKIE [session_name ()] )) {
-				//		setcookie ( session_name (), '', time () - 100, '/' );
-				//	}
+					if (isset ( $_COOKIE [session_name ()] )) {
+						setcookie ( session_name (), '', time () - 100, '/' );
+					}
 				
 				//session_unset();
 				$asetukset = false;
@@ -79,14 +79,12 @@ if (isset($_POST["tallenna"])) {
 				$asetukset = true;
 			}
 		
-			$asetukset = true;
+			
 			echo (isset($_COOKIE["isDebug"]) ?
 					"<div style='padding-left:300px;'>" .
 					" else isset cookie debug sisältö: " .$_COOKIE["isDebug"]. "</div>":'');
 		
-		} elseif (isset ( $_SESSION ["asetukset"] )) {
-			$asetukset = true;
-		}
+		} 
 	
 	} else {
 	
