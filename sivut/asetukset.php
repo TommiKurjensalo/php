@@ -16,7 +16,7 @@ if (isset($_POST["tallenna"])) {
 			session_write_close ();
 			
 			// Asetetaan cookie, koska debug haluttiin päälle
-			setcookie("isDebug", $_POST["debug"], time() +86400, "/sivut/"); // 86400 = 1 day
+			setcookie("isDebug", $_POST["debug"], time() +86400, "/"); // 86400 = 1 day
 			
 			echo (isset($_COOKIE["isDebug"]) ? "<br><div style='padding-left:300px;'> Cookies are enabled </div>" : ''); 
 			
@@ -33,7 +33,7 @@ if (isset($_POST["tallenna"])) {
 						setcookie ( session_name (), '', time () - 100, '/' );
 					}
 				
-				session_unset();
+				//session_unset();
 				$asetukset = false;
 				
 				echo (isset($_COOKIE["isDebug"]) ? "<br> Cookies are disabled" :''). "</div>";
@@ -59,7 +59,7 @@ if (isset($_POST["tallenna"])) {
 			setcookie ( session_name (), '', time () - 100, '/' );
 		}
 
-		session_unset();
+		//session_unset();
 	}
 		
 } else {
