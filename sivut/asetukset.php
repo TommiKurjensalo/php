@@ -30,8 +30,8 @@ if (isset($_POST["tallenna"])) {
 				
 				// $_SESSION = array ();
 				
-					if (isset ( $_COOKIE [session_name ()] )) {
-						setcookie ( session_name (), '', time () - 100, '/' );
+					if (isset ( $_COOKIE["isDebug"] )) {
+						setcookie ("isDebug", "", time () - 100, '/' );
 					}
 				
 				//session_unset();
