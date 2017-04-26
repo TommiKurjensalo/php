@@ -21,11 +21,12 @@ if (isset($_POST["tallenna"])) {
 			echo (isset($_COOKIE["isDebug"]) ? "<br><div style='padding-left:300px;'> Cookies are enabled </div>" : ''); 
 			
 		} else {
-
-				// Tuhotaan cookie, koska käyttäjä niin halusi
-				setcookie("isDebug", "", time() - 3600, "/sivut/");
-				
 				echo (isset($_COOKIE["isDebug"]) ? "<br><div style='padding-left:300px;'>  if isset post debug else tuhotaan " : '');
+				echo (isset($_COOKIE["isDebug"]) ? "<br> Cookies are disabled" :''). "</div>";
+			
+				// Tuhotaan cookie, koska käyttäjä niin halusi
+				setcookie("isDebug", "", time() - 3600, "/");
+					
 				
 				$_SESSION = array ();
 				
@@ -36,7 +37,7 @@ if (isset($_POST["tallenna"])) {
 				//session_unset();
 				$asetukset = false;
 				
-				echo (isset($_COOKIE["isDebug"]) ? "<br> Cookies are disabled" :''). "</div>";
+				
 		}
 
 		if (isset($_COOKIE["isDebug"])) {
@@ -69,7 +70,7 @@ if (isset($_POST["tallenna"])) {
 	
 	$now = time(); // Laitetaan nykyhetki muuttujaan
 	// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
-	if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
+	if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true && $now <= $_SESSION['expire']) {
 	
 		
 		if (isset ($_COOKIE["isDebug"] )) {
@@ -162,7 +163,7 @@ if (isset($_GET["kirjauduUlos"])) {
               <?php 
                $now = time(); // Laitetaan nykyhetki muuttujaan
                 // Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
-               if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
+               if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true && $now <= $_SESSION['expire']) {
                 	
                     print '<li>
                         <a href="lisaa.php"> <i class="fa fa-fw fa-edit"></i> Lisää</a>
