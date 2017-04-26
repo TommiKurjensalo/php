@@ -7,7 +7,7 @@ require_once "PDO.php";
 session_start ();
 
 // Alustetaan muuttuja $syottoVirhe
-$syottoVirhe = TRUE;
+$syottoVirhe = FALSE;
 
 // Onko painettu tallenna-painiketta
 if (isset($_POST["tallenna"])) {
