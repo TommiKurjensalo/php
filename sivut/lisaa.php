@@ -47,11 +47,6 @@ try {
 	$kantakasittely = new Lisaa();
 	$rivit = $kantakasittely->lisaaAsiakas($_SESSION["lisaa"]);
 	
-	echo ((stripos($rivit[0], 'lisaa ok') !== FALSE && stripos($rivit[1], 
-	'lisaa_kayttojarjestelma ok') !== FALSE)
-	? '<h3 style="color:green"><i class="glyphicon glyphicon-ok">
-	</i> Asiakas on lisätty onnistuneesti! <br> Lisättyjä rivejä: ' 
-	.$rivit[2]. '</h3>': '<h3>Lisäys epäonnistui</h3>');
 		 } catch (Exception $error) {
 		
 			print($error->getMessage());
@@ -584,6 +579,12 @@ if (isset($_GET["kirjauduUlos"])) {
 									<p>
 		                            <?php 
 		
+						echo ((stripos($rivit[0], 'lisaa ok') !== FALSE && stripos($rivit[1], 
+						'lisaa_kayttojarjestelma ok') !== FALSE)
+						? '<h3 style="color:green"><i class="glyphicon glyphicon-ok">
+						</i> Asiakas on lisätty onnistuneesti! <br> Lisättyjä rivejä: ' 
+						.$rivit[2]. '</h3>': '<h3>Lisäys epäonnistui</h3>');
+				    
 		                            echo ((!empty($virheviesti) && $virheviesti != null) ? '<span style="color:red";>' .$virheviesti. '</span>':'');
 
 		                            echo (($lisaa->getVirhe($asiakkaanNimiVirhe)) 
