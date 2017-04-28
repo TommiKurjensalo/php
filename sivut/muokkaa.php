@@ -6,6 +6,8 @@ require_once "muokkaaLuokkaa.php";
 // Alustetaan muuttuja $syottoVirhe
 $syottoVirhe = FALSE;
 
+$valittuAsiakas = "";
+
 // Käynnistetään sessio
 session_start ();
 
@@ -214,8 +216,6 @@ else {
 // Jos käyttäjä valitsi kirjaudu ulos
 if (isset($_GET["kirjauduUlos"])) {
 
-
-	session_start();
 	// Tyhjennetään sessiot globaalisti
 	$_SESSION = array();
 
