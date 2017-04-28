@@ -1,0 +1,49 @@
+<?php
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Kello testi</title>
+    
+
+</head>
+<body>
+
+ <label>Kello</label>
+<br><br>
+
+
+	
+<script type="text/javascript">
+function display_c(){   
+    var refresh = 1000; // Refresh rate in milli seconds    
+    mytime = setTimeout('display_ct()', refresh)    
+}
+
+function display_ct() {
+
+    var strcount    
+    var currentdate = new Date();
+
+    document.getElementById('ct').innerHTML = currentdate.toDateString() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
+    tt = display_c();   
+}
+</script>
+
+<script>
+id = 'ct'     // Replace in Your id
+onload = "display_ct();"     // Type inside a Body Tag
+	</script>
+
+</body>
+</html>

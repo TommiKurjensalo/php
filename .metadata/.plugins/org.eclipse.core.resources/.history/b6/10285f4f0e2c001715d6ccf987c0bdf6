@@ -1,0 +1,43 @@
+<?php
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Kello testi</title>
+    
+
+</head>
+<body>
+
+ <label>Kello</label>
+<br><br>
+
+
+
+
+<script type="text/javascript">
+TargetDate = new Date().toLocaleTimeString('fi-FI', { hour12: false, 
+    hour: "numeric", 
+    minute: "numeric"});
+BackColor = "palegreen";
+ForeColor = "navy";
+CountActive = true;
+CountStepper = +1;
+LeadingZero = true;
+DisplayFormat = "%%H%% Hours, %%M%% Minutes, %%S%% Seconds";
+FinishMessage = "";
+</script>
+
+<script type="text/javascript" src="//scripts.hashemian.com/js/countdown.js"></script>
+
+</body>
+</html>

@@ -10,6 +10,7 @@ $syottoVirhe = FALSE;
 session_start ();
 
 // Onko painettu tallenna-painiketta
+// Tarkistetaan, että ei ole syöttövirheitä ts. on syötetty tarvittavat tiedot.
 if (isset($_POST["tallenna"])) {
    // Viedään muodostimelle kenttien arvot
 	if (!isset($_POST["lisaaId"]) ||
@@ -23,180 +24,113 @@ if (isset($_POST["tallenna"])) {
 			!isset($_POST["kayttoJarjestelma"]) ||
 			!isset($_POST["lisatietoa"])) {
 				die('LÄHETYS ESTETTY! Kaavake jota yritit lähettää näyttäisi olevan kenttiä, jotaka eivät ole alkuperäisessä kaavakkeessa.');
-	} else {
-																	
-   $muokkaa = new Muokkaa($_POST["lisaaId"],
-   		$_POST["asiakkaanNimi"],
-   		$_POST["sahkopostiosoite"],
-   		$_POST["puhelinNumero"],
-   		$_POST["paiva"],
-   		$_POST["kuukausi"],
-   		$_POST["vuosi"],
-   		$_POST["levytila"],
-   		$_POST["kayttoJarjestelma"],
-   		$_POST["lisatietoa"]
-   		);
-	
-   // Kirjoitetaan session tiedot talteen
-   $_SESSION ["muokkaa"] = $muokkaa;
-   session_write_close ();
-   
-   try {
-   
-   	$kantakasittely = new Muokkaa();
-   	$rivit = $kantakasittely->muokkaaAsiakas($muokkaa);
-   
-   } catch (Exception $error) {
-   
-   	print($error->getMessage());
-   	echo "<br>";
-   }
-   
-	} // if (isset($_POST["tallenna"]))
-
-  
-   // Haetaan mahdolliset virhekoodit
-   $asiakkaanNimiVirhe = $muokkaa->checkAsiakkaanNimi(TRUE,3,50);
-   $sahkopostiosoiteVirhe = $muokkaa->checkSahkopostiosoite(TRUE);
-   $puhelinNumeroVirhe = $muokkaa->checkPuhelinNumero(TRUE,8,20);
-   $asennusPaivamaaraVirhe = $muokkaa->checkAsennusPaivamaara(FALSE);
-   $levytilaVirhe = $muokkaa->checkLevytila(TRUE);
-   $kayttoJarjestelmaVirhe = $muokkaa->checkKayttoJarjestelma(TRUE);
-   $lisatietoaVirhe = $muokkaa->checkLisatietoa(FALSE,10,500);
-   
-
-   // Haetaan mahdolliset syöttövirheet ja annetaan boolean tyyppinen true tai false arvo
-   
-   if ($asiakkaanNimiVirhe > 0) $syottoVirhe = TRUE;
-   if ($sahkopostiosoiteVirhe > 0) $syottoVirhe = TRUE;
-   if ($puhelinNumeroVirhe > 0) $syottoVirhe = TRUE;
-   if ($asennusPaivamaaraVirhe > 0) $syottoVirhe = TRUE;
-   if ($levytilaVirhe > 0) $syottoVirhe = TRUE;
-   if ($kayttoJarjestelmaVirhe > 0) $syottoVirhe = TRUE;
-   if ($lisatietoaVirhe > 0) $syottoVirhe = TRUE;
-   
-}
-// Onko painettu peruuta painiketta
-elseif (isset($POST["peruuta"])) {
-	
-	$syottoVirhe = FALSE;
-	
-	// Siirretään SESSION tiedot arraylistaan
-	$_SESSION = array ();
-		// Jos COOKIE on asetettu, määritetään sille miinus arvoinen säilytysaika
-		if (isset ( $_COOKIE [session_name ()] )) {
-			setcookie ( session_name (), "", time () - 100, "/" );
-		}
-
-	// Tuhotaan sessio
-	session_destroy ();
-
-	header("location: muokkaa.php");
-	exit;
-} // elseif (isset($POST["peruuta"])
-
-elseif (isset ( $_POST ["tallenna"] )) {
-	if (isset ( $_SESSION ["muokkaa"] )) {
-		$_SESSION = array ();
-
-		if (isset ( $_COOKIE [session_name ()] )) {
-			setcookie ( session_name (), '', time () - 100, '/' );
-		}
-
-		session_destroy ();
-
-		header ( "Location: muokkaa.php" );
-		exit ();
-	} else {
+		} else {
+																		
+	   $muokkaa = new Muokkaa($_POST["lisaaId"],
+	   		$_POST["asiakkaanNimi"],
+	   		$_POST["sahkopostiosoite"],
+	   		$_POST["puhelinNumero"],
+	   		$_POST["paiva"],
+	   		$_POST["kuukausi"],
+	   		$_POST["vuosi"],
+	   		$_POST["levytila"],
+	   		$_POST["kayttoJarjestelma"],
+	   		$_POST["lisatietoa"]
+	   		);
 		
-		header ( "location: muokkaa.php?" );
-		exit ();
-	}
-} // elseif (isset ( $_POST ["tallenna"] ))
+	   
+	   // Kirjoitetaan session tiedot talteen
+	   $_SESSION["muokkaa"] = $muokkaa;
+	   
+	   (isset($_SESSION["asTiedot"]) ? $asTiedot = $_SESSION["asTiedot"] :'');
+	   (isset($_SESSION["valittuAsiakas"]) ? $valittuAsiakas = $_SESSION["valittuAsiakas"] :'');
+	      
+	   session_write_close ();
+	   
+	   // Haetaan mahdolliset virhekoodit
+	   $asiakkaanNimiVirhe = $muokkaa->checkAsiakkaanNimi(TRUE,3,50);
+	   $sahkopostiosoiteVirhe = $muokkaa->checkSahkopostiosoite(TRUE);
+	   $puhelinNumeroVirhe = $muokkaa->checkPuhelinNumero(TRUE,8,20);
+	   $asennusPaivamaaraVirhe = $muokkaa->checkAsennusPaivamaara(TRUE);
+	   $levytilaVirhe = $muokkaa->checkLevytila(TRUE);
+	   $kayttoJarjestelmaVirhe = $muokkaa->checkKayttoJarjestelmaId(TRUE);
+	   $lisatietoaVirhe = $muokkaa->checkLisatietoa(FALSE,10,500);
+	    
+	   
+	   // Haetaan mahdolliset syöttövirheet ja annetaan boolean tyyppinen true tai false arvo
+	    
+	   if ($asiakkaanNimiVirhe > 0) $syottoVirhe = TRUE;
+	   if ($sahkopostiosoiteVirhe > 0) $syottoVirhe = TRUE;
+	   if ($puhelinNumeroVirhe > 0) $syottoVirhe = TRUE;
+	   if ($asennusPaivamaaraVirhe > 0) $syottoVirhe = TRUE;
+	   if ($levytilaVirhe > 0) $syottoVirhe = TRUE;
+	   if ($kayttoJarjestelmaVirhe > 0) $syottoVirhe = TRUE;
+	   if ($lisatietoaVirhe > 0) $syottoVirhe = TRUE;
+	   
+		   // Luodaan uusi olio, jolla lisätään asiakastiedot
+		   if ($syottoVirhe === FALSE) {
+				   try {
+				   
+					   	$kantakasittely = new Muokkaa();
+					   	$rivit = $kantakasittely->muokkaaAsiakas($muokkaa);
+					   
+					   } catch (Exception $error) {
+					   
+					   	print($error->getMessage());
+					   	echo "<br>";
+				   	}
+		   	}
+		} // if -> else (isset($_POST["tallenna"]))
 
+   
+} // if (isset($_POST["tallenna"]))
+	
+	// Onko painettu peruuta painiketta
+	elseif (isset($POST["peruuta"])) {
+		
+		// Laitetaan syöttövirheen false tilaan
+		$syottoVirhe = FALSE;
+		
+		// Tyjennetään SESSION tiedot
+		(isset($muokkaa) ? $muokkaa = New Muokkaa():'');
+		(isset($_SESSION["muokkaa"]) ? $_SESSION["muokkaa"] = array():'');
+		(isset($_SESSION["asTiedot"]) ? $_SESSION["asTiedot"] = array():'');
+		(isset($_SESSION['valittuAsiakas']) ? $_SESSION['valittuAsiakas'] = array():'');
+		
+	
+		header("location: muokkaa.php");
+		exit();
+	} // elseif (isset($POST["peruuta"])
+
+	// Onko painettu tallenna painiketta ja onko sessiossa muokkaa olio talletettu
+	elseif (isset ( $_POST ["tallenna"] )) {
+		if (isset ( $_SESSION ["muokkaa"] )) {
+			 
+			//Tyhjennetään SESSION tiedot
+			$_SESSION["muokkaa"]= array ();
+			$_SESSION['asTiedot']= array();
+			$_SESSION['valittuAsiakas']= array();
+	
+			header ( "Location: muokkaa.php" );
+			exit ();
+		} else {
+			
+			header ( "location: muokkaa.php?" );
+			exit ();
+		}
+	} // elseif (isset ( $_POST ["tallenna"] ))
+
+	// Jos hae painike on valittuna
 elseif (isset($_POST["haeAsiakkaat"]) && !empty($_POST["haeAsiakkaat"])) {
 
-	// Erottelee stringin arrayksi, erottimena |
-	$asParse = explode('|',$_POST['asiakasNimi']);
+	if (isset($_SESSION ["muokkaa"]) && !empty($_SESSION ["muokkaa"])) {
 	
-	// Loopataan $asTiedot arraylista saatujen $_POST[asiakasnimi] perusteella
-	for ($i=0; $i<count($asParse); $i++) {
-		$asTiedot[]=$asParse[$i];
-	}
-
-	//$asTiedot = array($asParse[0],$asParse[1],$asParse[2],
-	//		$asParse[3],$asParse[4],$asParse[5],$asParse[6],$asParse[7]);
+		// Haetaan session tieto muuttujalle
+		$muokkaa = $_SESSION["muokkaa"];
 	
-	// Otetaan päivämäärä kenttä stringiin
-	//$pvmParse = array_slice($asTiedot,4,1);
-	
-	// Erotellaan pp kk ja vvvv
-	//$pvmTemp = implode('|',$pvmParse);
-	
-	// Otetaan pvm,kk ja pv arvot omiin muuttujiin
-	//list($uusiVuosi,$uusiKuukausi,$uusiPaiva) = explode('-',$pvmTemp);
-	
-	// Otetaan etunolla pois kuukaudesta, jotta alasvetovalikon selected ehto toimisi
-	$uusiKuukausi = substr($asParse[5],1);
-	
-	//Korvataan nykyinen timedate() päivällä ja lisätään kk ja vuosi tiedot arraylistan väliin
-	//array_splice($asTiedot,4,1,$uusiPaiva);
-	array_splice($asTiedot,5,1,$uusiKuukausi);
-	//array_splice($asTiedot,6,0,$uusiVuosi);
-	
-	//echo '<div style="padding-left:300px;">';
-	//ECHO '<br>array_splice: '; var_dump($asTiedot);
-	//echo 'uusikk: ' .$uusiKuukausi;
-	//echo '</div>';
-	
-	
-	 if (isset($_COOKIE["isDebug"])) {
-	 	echo '<div style="padding-left:300px;">';
-	 	ECHO '$_POST[asiakasNimi]: '.$_POST['asiakasNimi'];
-		ECHO '<br>vvvv|kk|pp: ' .$uusiVuosi.'|'.$uusiKuukausi.'|'.$uusiPaiva;
-		
-		ECHO '<br>array_splice: '; var_dump($asTiedot);
-		echo '<br>SyöttöVirheet: '. (($syottoVirhe === TRUE) ? 'true' : 'false'); 
-		echo '<br>(!isset($_POST["haeAsiakkaat"])): '. (!isset($_POST["haeAsiakkaat"]) ? 'ei ole asetetu':' on asetettu');
-		echo '</div>';
-	 }
-} 
-else {
-
-	if (isset ( $_SESSION ["muokkaa"] )) {
-		$muokkaa = $_SESSION ["muokkaa"];
-
-		// Haetaan mahdolliset virhekoodit
-		$asiakkaanNimiVirhe = $muokkaa->checkAsiakkaanNimi(TRUE,3,50);
-		$sahkopostiosoiteVirhe = $muokkaa->checkSahkopostiosoite(TRUE);
-		$puhelinNumeroVirhe = $muokkaa->checkPuhelinNumero(TRUE,8,20);
-		$asennusPaivamaaraVirhe = $muokkaa->checkAsennusPaivamaara(TRUE);
-		$levytilaVirhe = $muokkaa->checkLevytila(TRUE);
-		$kayttoJarjestelmaVirhe = $muokkaa->checkKayttoJarjestelma(TRUE);
-		$lisatietoaVirhe = $muokkaa->checkLisatietoa(FALSE,10,500);
-
-
-		// Haetaan mahdolliset syöttövirheet ja annetaan boolean tyyppinen true tai false arvo
-		if ($asiakkaanNimiVirhe > 0) $syottoVirhe = TRUE;
-		if ($sahkopostiosoiteVirhe > 0) $syottoVirhe = TRUE;
-		if ($puhelinNumeroVirhe > 0) $syottoVirhe = TRUE;
-		if ($asennusPaivamaaraVirhe > 0) $syottoVirhe = TRUE;
-		if ($levytilaVirhe > 0) $syottoVirhe = TRUE;
-		if ($kayttoJarjestelmaVirhe > 0) $syottoVirhe = TRUE;
-		if ($lisatietoaVirhe > 0) $syottoVirhe = TRUE;
-	} // if (isset ( $_SESSION ["muokkaa"] ))
-
-	// Sivulle tultiin ensimmäistä kertaa
-	else {
-		
-
-		
-		$now = time(); // Laitetaan nykyhetki muuttujaan
-			// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
-			if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true && $now <= $_SESSION['expire']) {
-			
-				// Tehdään tyhjä olio
-				$muokkaa = new Muokkaa();
+	} 			
+	 
+				
 				// Nollataan virhekoodit
 				$asiakkaanNimiVirhe = 0;
 				$sahkopostiosoiteVirhe = 0;
@@ -207,27 +141,92 @@ else {
 				$lisatietoaVirhe = 0;
 				$syottoVirhe = FALSE;
 				
-			} else {
-			
-				header('Location: index.php');
-				exit;
-					
-			}
 	
-	} // elseif else
-} // eka else
+	// Luo stringin $_POST[asiakasnimi] tiedot $asParse arrayksi, erottimena |
+	$asParse = explode('|',$_POST['asiakasNimi']);
+	$valittuAsiakas = current(explode('|',$_POST['asiakasNimi']));
+	
+	// Loopataan $asTiedot arraylista saatujen $_POST[asiakasnimi] perusteella
+	for ($i=0; $i<count($asParse); $i++) {
+		$asTiedot[]=$asParse[$i];
+	}
+	
+	// Otetaan etunolla pois kuukaudesta, jotta alasvetovalikon selected ehto toimisi
+	$uusiKuukausi = substr($asParse[5],1);
+	
+	//Korvataan nykyinen kuukausi arvo, poistetulla etunolla arvolla
+	array_splice($asTiedot,5,1,$uusiKuukausi);
 
-$syottoVirhe = FALSE;
+	// Haetaan sessiosta tiedot muuttujille
+	$_SESSION['asTiedot'] = $asTiedot;
+	$_SESSION['valittuAsiakas'] = $valittuAsiakas;
+	session_write_close();
+	
+	// Debuggausta varten
+	 if (isset($_COOKIE["isDebug"])) {
+	 	echo '<div style="padding-left:300px;">';
+	 	ECHO '$_POST[asiakasNimi]: '.$_POST['asiakasNimi'];
+		ECHO '<br>vvvv|kk|pp: ' .$asParse[4].'|'.$uusiKuukausi.'|'.$asParse[6];
+		echo '<br>valittuasiakas: ' .$valittuAsiakas;
+		echo '<br>var dump $muokkaa: '; echo (isset($muokkaa) ? var_dump($muokkaa) : 'not set');
+		ECHO '<br>asTiedot: '; var_dump($asTiedot);
+		echo '<br>SyöttöVirheet: '. (($syottoVirhe === TRUE) ? 'true' : 'false'); 
+		echo '<br>(!isset($_POST["haeAsiakkaat"])): '. (!isset($_POST["haeAsiakkaat"]) ? 'ei ole asetetu':' on asetettu');
+		echo '</div>';
+	 }
+} // elseif (isset(POST["haeAsiakkaat"])
+
+// Jos hae painiketta ei ole valittu
+// Sivulle tultiin ensimmäistä kertaa
+else {
+	
+	$now = time(); // Laitetaan nykyhetki muuttujaan
+	// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
+	if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true && $now <= $_SESSION['expire']) {
+		
+			// Tehdään tyhjä olio
+      	 	$muokkaa = new Muokkaa();
+      	 	// Viedään se sessioon	
+      	 	$_SESSION["muokkaa"] = $muokkaa;
+     	 	
+     	 	// Nollataan virhekoodit
+     	 	$asiakkaanNimiVirhe = 0;
+        	$sahkopostiosoiteVirhe = 0;
+        	$puhelinNumeroVirhe = 0;
+  		    $asennusPaivamaaraVirhe = 0;
+ 			$levytilaVirhe = 0;
+ 			$kayttoJarjestelmaVirhe = 0;
+ 			$lisatietoaVirhe = 0;
+			$syottoVirhe = FALSE;
+		
+	
+			
+		} // eof Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
+		else { 		
+			header('Location: index.php');
+			exit;
+		}
+				
+	
+	} //else -> elseif (isset(POST["haeAsiakkaat"])
+
+
 // Jos käyttäjä valitsi kirjaudu ulos
 if (isset($_GET["kirjauduUlos"])) {
 
 
-	$syottoVirhe = FALSE;
-	// Poistetaan PHPSESSID selaimesta
-	if ( isset( $_COOKIE[session_name()] ) )
-		setcookie( session_name(), "", time()-3600, "/" );
+	session_start();
 	// Tyhjennetään sessiot globaalisti
 	$_SESSION = array();
+
+	if (ini_get("session.use_cookies")) {
+		$params = session_get_cookie_params();
+		setcookie(session_name(), '', time() - 42000,
+				$params["path"], $params["domain"],
+				$params["secure"], $params["httponly"]
+		);
+	}
+	
 	// Tyhjennetään sessiot paikallisesti
 	session_destroy();
 	// Ohjataan takaisin etusivulle
@@ -290,7 +289,25 @@ if (isset($_GET["kirjauduUlos"])) {
     }
 </style>
 
+    <script type="text/javascript">
+		function GetClock(){
+		var d=new Date();
+		var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
+		if(nyear<1000) nyear+=1900;
+		var nhour=d.getHours(),nmin=d.getMinutes(),nsec=d.getSeconds();
+		if(nmin<=9) nmin="0"+nmin
+		if(nsec<=9) nsec="0"+nsec;
+		
+		document.getElementById('clockbox').innerHTML=""+ndate+"."+(nmonth+1)+"."+nyear+" "+nhour+":"+nmin+":"+nsec+"";
+		}
+		
+		window.onload=function(){
+		GetClock();
+		setInterval(GetClock,1000);
+		}
+		// http://www.webestools.com/scripts_tutorials-code-source-7-display-date-and-time-in-javascript-real-time-clock-javascript-date-time.html
 
+	</script>
     
 </head>
 
@@ -303,7 +320,16 @@ if (isset($_GET["kirjauduUlos"])) {
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                  <a class="navbar-brand" href="index.php">Notes for business</a>
-                
+                    <div class="form-inline" style="font-size:1.2em; color:#F0F0F0; margin:0.7% 0 0 73%; width:30%">
+			              <?php 
+			              // Määritetään oletus aikavyöhyke ja maa-asetukset
+			              date_default_timezone_set('Europe/Helsinki');
+			              setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
+			              
+			              echo 'Sessio vanhenee: '. date("j.n.Y H:i:s ",$_SESSION['expire']) .
+			                	' Pvm/klo: <span id="clockbox"></span>';
+			              ?>
+               		 </div>  
             </div> <!-- ./ navbar-header -->
             
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -386,7 +412,7 @@ if (isset($_GET["kirjauduUlos"])) {
                                 <label>Asiakkaan nimi</label>
 							
 							<!-- Tarkistetaan onko syöttökentässä virhe, jos on korostetaan kehys punaisella -->
-                             <?php echo (($syottoVirhe === FALSE) 
+                             <?php echo (($muokkaa->getVirhe($asiakkaanNimiVirhe) == null)
                              		? '<div class="input-group">' : '<div class="input-group has-error">' );?>
                                
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
@@ -394,11 +420,14 @@ if (isset($_GET["kirjauduUlos"])) {
                             <!-- Haetaan haetun asiakkaan nimi -->
                             <?php echo '<input name="asiakkaanNimi" class="form-control" type="text" value='.
                               (isset($_POST["haeAsiakkaat"]) ? '"'.$asTiedot[1].'"' 
-                            		: '""');?> placeholder="Neste Oy"/>
-							
-			    <?php // echo '<br>SyöttöVirheet: '. (($syottoVirhe === TRUE) ? 'true' : 'false');
-                            	 echo '</div> <!-- ./input-group -->' 
-			     ?>
+                            		: (($syottoVirhe === TRUE) ? '"'.$muokkaa->getAsiakkaanNimi().'"'
+                            				:'""')) .' placeholder="Neste Oy"/>'.
+
+                            			 (isset($_COOKIE["isDebug"]) ?
+			   				    			'<br>SyöttöVirheet: '. (($syottoVirhe === TRUE) ? 'true' : 'false') : '').
+                            			
+                            	  '</div> <!-- ./input-group -->';
+			     			?>
 							</div> <!-- ./form-group -->
 							
 							
@@ -406,17 +435,20 @@ if (isset($_GET["kirjauduUlos"])) {
                                 <label>Sähköpostiosoite</label>
                             
                             <!-- Tarkistetaan onko syöttökentässä virhe, jos on korostetaan kehys punaisella -->
-                              <?php echo (($syottoVirhe === FALSE) 
+                              <?php echo (($muokkaa->getVirhe($sahkopostiosoiteVirhe) == null)
                              	? '<div class="input-group">' : '<div class="input-group has-error">' );?>
                             
                                 	<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
                                 
                                  <!-- Haetaan haetun asiakkaan sähköpostiosoite -->
                                 
-                                <input name="sahkopostiosoite" class="form-control" type="text" value= 
-                                <?php echo (isset($_POST["haeAsiakkaat"]) ? '"'.$asTiedot[2].'"' : '""');?> placeholder="nimi@esimerkki.fi"/>
-                           
-                            	<?php echo '</div> <!-- ./input-group -->' ?>
+                              <?php echo '<input name="sahkopostiosoite" class="form-control" type="text" value='. 
+                                  (isset($_POST["haeAsiakkaat"]) ? '"'.$asTiedot[2].'"'
+                                		: (($syottoVirhe === TRUE) ? '"'.$muokkaa->getSahkopostiosoite().'"' 
+                                				: '""')) .' placeholder="nimi@esimerkki.fi"/>'.
+                                
+                            	  '</div> <!-- ./input-group -->';
+                              ?>
 							</div> <!-- ./form-group -->
                             
                               <!-- ** PUHELINNUMERO ** -->
@@ -424,15 +456,20 @@ if (isset($_GET["kirjauduUlos"])) {
                                 <label>Puhelinnumero</label>
                               
                               <!-- Tarkistetaan onko syöttökentässä virhe, jos on korostetaan kehys punaisella -->  
-                              <?php echo (($syottoVirhe === FALSE) 
+                              <?php echo (($muokkaa->getVirhe($puhelinNumeroVirhe) == null)
                              	? '<div class="input-group">' : '<div class="input-group has-error">' );?>
                             
                                 	<span class="input-group-addon"><i class="glyphicon glyphicon-phone"></i></span>
                                 
                                 <!-- Jos syöttökentässä on ollut virhe, palautetaan annettu arvo -->
-                                <input name="puhelinNumero" class="form-control" type="tel" value=
-                            	<?php echo (isset($_POST["haeAsiakkaat"]) ? '"'.$asTiedot[3].'"' : '""');?> placeholder="040-3493384"/>
-                            	<?php echo '</div> <!-- ./input-group -->' ?>
+                                 
+                                <?php echo '<input name="puhelinNumero" class="form-control" type="tel" value='.
+                            	 (isset($_POST["haeAsiakkaat"]) ? '"'.$asTiedot[3].'"' 
+                            			: (($syottoVirhe === TRUE) ? '"'.$muokkaa->getPuhelinNumero().'"'
+                            					:'""')) .' placeholder="040-3493384"/>'.
+                            	 '</div> <!-- ./input-group -->'; 
+                            	
+                            	?>
 							</div> <!-- ./form-group -->
 
 							  <!-- ** ASENNUSPÄIVÄMÄÄRÄ ** -->
@@ -442,7 +479,7 @@ if (isset($_GET["kirjauduUlos"])) {
                             	<label>Asennuspäivämäärä</label>
                            	
                             	<!-- Tarkistetaan onko syöttökentässä virhe, jos on korostetaan kehys punaisella -->  
-                             <?php echo (($syottoVirhe === FALSE) 
+                             <?php echo (($muokkaa->getVirhe($asennusPaivamaaraVirhe) == null)
                              	? '<div class="input-group">' : '<div class="input-group has-error">' );?>
 							
 
@@ -471,8 +508,8 @@ if (isset($_GET["kirjauduUlos"])) {
                             	for($pvmNro=1;$pvmNro<=31;$pvmNro++){
 									$pv=strftime($format, mktime(0,0,0,0,$pvmNro));
 									
-									 echo '<option value="'.(($syottoVirhe === FALSE && (isset($asTiedot[4]) != $pv)) ? $pv .'">' .$pvmNro 
-									 	: (($asTiedot[4] == $pv) ? $pv .'" selected>' .$pv : $pv .'">' .$pvmNro ));
+									 echo '<option value="'.((isset($_POST["haeAsiakkaat"]) && isset($asTiedot[4]) != $pv) ? $pv .'">' .$pvmNro 
+									 	: ((isset($_POST["haeAsiakkaat"]) && $asTiedot[4] == $pv) ? $pv .'" selected>' .$pv : $pv .'">' .$pvmNro ));
 									 echo "</option>" ."\n";
                             	}
                             	echo "</select>" ."\n";
@@ -487,8 +524,8 @@ if (isset($_GET["kirjauduUlos"])) {
 								for($kkNro=1;$kkNro<=12;$kkNro++){
 									$kk=strftime('%B', mktime(0,0,0,$kkNro));
 
-									 echo '<option value="'.(($syottoVirhe === FALSE && (isset($asTiedot[5]) != $kkNro)) ? $kkNro .'">' .$kk
-									 	: (($asTiedot[5] == $kkNro) ? $kkNro .'" selected>' .$kk : $kkNro .'">' .$kk ));
+									 echo '<option value="'.((isset($_POST["haeAsiakkaat"]) && isset($asTiedot[5]) != $kkNro) ? $kkNro .'">' .$kk
+									 	: ((isset($_POST["haeAsiakkaat"]) && $asTiedot[5] == $kkNro) ? $kkNro .'" selected>' .$kk : $kkNro .'">' .$kk ));
 									 echo "</option>" ."\n";
 								}
 								echo "</select>\n";
@@ -508,8 +545,8 @@ if (isset($_GET["kirjauduUlos"])) {
 											$vuos=strftime('%Y', mktime(0,0,0,0,0,$vuosNro));
 											if ($vuos<=$nykyVuosi) {
 												
-									 echo '<option value="'.(($syottoVirhe === FALSE && (isset($asTiedot[6]) != $vuos)) ? $vuos .'">' .$vuos
-									 	: (($asTiedot[6] == $vuos) ? $vuos .'" selected>' .$vuos : $vuos .'">' .$vuos ));
+									 echo '<option value="'.((isset($_POST["haeAsiakkaat"]) && isset($asTiedot[6]) != $vuos) ? $vuos .'">' .$vuos
+									 	: ((isset($_POST["haeAsiakkaat"]) && $asTiedot[6] == $vuos) ? $vuos .'" selected>' .$vuos : $vuos .'">' .$vuos ));
 									 echo "</option>" ."\n";
 											}
 										
@@ -525,14 +562,18 @@ if (isset($_GET["kirjauduUlos"])) {
                                 <label>Levytila (Gt)</label>
                               
 	                              	<!-- Tarkistetaan onko syöttökentässä virhe, jos on korostetaan kehys punaisella --> 
-	                             	<?php echo (($syottoVirhe === FALSE) 
+	                             	<?php echo (($muokkaa->getVirhe($levytilaVirhe) == null)
 	                             	? '<div class="input-group">' : '<div class="input-group has-error">' );?>
 	                                
 	                                <span class="input-group-addon"><i class="glyphicon glyphicon-hdd"></i></span>
 	                                
-	                                <input name="levytila" class="form-control" type="number" min="1" value=<?php 
-	                             		echo (!empty($asTiedot[7])  ? $asTiedot[7] : '""')?> placeholder="100"/>
-                            	<?php echo '</div> <!-- ./input-group -->' ?>
+	                                <?php echo '<input name="levytila" class="form-control" type="number" min="1" value='. 
+	                             		 (isset($_POST["haeAsiakkaat"]) ? '"'.$asTiedot[7].'"' 
+	                             				: (($syottoVirhe === TRUE) ? $muokkaa->getLevytila()
+	                             						:'""')) .' placeholder="100"/>'.
+                            	  		'</div> <!-- ./input-group -->'; 
+                            	  		
+                            	  		?>
 							</div> <!-- ./form-group -->
 
 							  <!-- ** KÄYTTÖJÄRJESTELMÄ ** -->
@@ -541,7 +582,7 @@ if (isset($_GET["kirjauduUlos"])) {
                                 <label>Käyttöjärjestelmä</label>
 
                              <!-- Tarkistetaan onko syöttökentässä virhe, jos on korostetaan kehys punaisella --> 
-                             <?php echo (($syottoVirhe === FALSE) 
+                             <?php echo (($muokkaa->getVirhe($kayttoJarjestelmaVirhe) == null)
                              	? '<div class="input-group">' : '<div class="input-group has-error">' );?>
                                 
 
@@ -557,24 +598,28 @@ if (isset($_GET["kirjauduUlos"])) {
 								? ' selected':'' ,'>Valitse käyttöjärjestelmä</option>';
 							echo "\n"; 
 							
-							echo '<option value="'.(($syottoVirhe == FALSE && (isset($asTiedot[8]) != 1)) ? '1">Windows Server 2008'
-								: (($asTiedot[8] == 1) 
-								? '1" selected>Windows Server 2008' : '1">Windows Server 2008' ));
+							echo '<option value="'.((isset($_POST["haeAsiakkaat"]) && isset($asTiedot[8]) != 1) ? '1">Windows Server 2008'
+								: ((isset($_POST["haeAsiakkaat"]) && $asTiedot[8] == '1') 
+								? '1" selected>Windows Server 2008' : (($syottoVirhe === TRUE) ? $muokkaa->getKayttoJarjestelmaId() == 1
+										: '1">Windows Server 2008' )));
 							echo "</option>\n";
 							
-							echo '<option value="'.(($syottoVirhe == FALSE && (isset($asTiedot[8]) != 2)) ? '2">Windows Server 2008 R2'
-									: (($asTiedot[8] == 2)
-									? '2" selected>Windows Server 2008 R2' : '2">Windows Server 2008 R2' ));
+							echo '<option value="'.((isset($_POST["haeAsiakkaat"]) && isset($asTiedot[8]) != 2) ? '2">Windows Server 2008 R2'
+									: ((isset($_POST["haeAsiakkaat"]) && $asTiedot[8] == '2')
+									? '2" selected>Windows Server 2008 R2' : (($syottoVirhe === TRUE) ? $muokkaa->getKayttoJarjestelmaId() == 2
+											: '2">Windows Server 2008 R2' )));
 							echo "</option>\n";
 							
-							echo '<option value="'.(($syottoVirhe == FALSE && (isset($asTiedot[8]) != 3)) ? '3">Windows Server 2012'
-									: (($asTiedot[8] == 3)
-									? '3" selected>Windows Server 2012' : '3">Windows Server 2012' ));
+							echo '<option value="'.((isset($_POST["haeAsiakkaat"]) && isset($asTiedot[8]) != 3) ? '3">Windows Server 2012'
+									: ((isset($_POST["haeAsiakkaat"]) && $asTiedot[8] == '3')
+									? '3" selected>Windows Server 2012' : (($syottoVirhe === TRUE) ? $muokkaa->getKayttoJarjestelmaId() == 3
+											: '3">Windows Server 2012' )));
 							echo "</option>\n";
 							
-							echo '<option value="'.(($syottoVirhe == FALSE && (isset($asTiedot[8]) != 4)) ? '4">Windows Server 2016'
-									: (($asTiedot[8] == 4)
-									? '4" selected>Windows Server 2016' : '4">Windows Server 2016' ));
+							echo '<option value="'.((isset($_POST["haeAsiakkaat"]) && isset($asTiedot[8]) != 4) ? '4">Windows Server 2016'
+									: ((isset($_POST["haeAsiakkaat"]) && $asTiedot[8] == '4')
+									? '4" selected>Windows Server 2016' : (($syottoVirhe === TRUE) ? $muokkaa->getKayttoJarjestelmaId() == 4
+											: '4">Windows Server 2016' )));
 							echo "</option>\n";
 							
 							
@@ -588,7 +633,7 @@ if (isset($_GET["kirjauduUlos"])) {
                                 <label>Lisätietoa</label>
                              
                              <!-- Tarkistetaan onko syöttökentässä virhe, jos on korostetaan kehys punaisella -->    
-                             <?php echo (($syottoVirhe == FALSE)
+                             <?php echo (($muokkaa->getVirhe($lisatietoaVirhe) == null)
                              	? '<div class="input-group">' : '<div class="input-group has-error">' );?>
 
                                 	<span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>  
@@ -597,7 +642,9 @@ if (isset($_GET["kirjauduUlos"])) {
                                 <textarea name="lisatietoa" class="form-control" rows="3"><?php 
     
                           
-                             echo (!empty($asTiedot[9]) ? $asTiedot[9] : ''); ?></textarea>
+                             
+							echo (isset($_POST["haeAsiakkaat"]) ? $asTiedot[9]
+							 : (($syottoVirhe === TRUE) ? $muokkaa->getLisatietoa() :''));?></textarea>
                             
                             <?php echo "</div> <!-- ./input-group -->\n" ?>
 							</div> <!-- ./form-group -->
@@ -632,23 +679,50 @@ if (isset($_GET["kirjauduUlos"])) {
 									<select class="selectpicker" data-width="auto" name="asiakasNimi">
 									
 										<?php 
+
 										
-										// Luodaan olio, jolla käsitellä Muokkaa luokkaa
-										// haetaan asiakkaat tietokannasta
-										$kantakasittely = new Muokkaa();
-										$asiakkaat = $kantakasittely->haeAsiakaat();
+										try {
 										
+
+											
+											// Luodaan olio, jolla käsitellä Muokkaa luokkaa
+											// haetaan asiakkaat tietokannasta
+											$kantakasittely = new Muokkaa();
+											$asiakkaat = $kantakasittely->haeAsiakkaat();
+											
+											//var_dump($asiakkaat);
+
+											
+											// Loopataan asiakasnimet alasvetovalikkoon
+											// Liitetään value kenttään muut arvot, jotta ne on helpompi poimia sieltä omiin kenttiinsä
+											// Kun valinta on tehty, laitetaan sama asiakas alasvetovalikkoon
+											foreach ($asiakkaat as $asiakas) {
+												echo '<option value="'.(($asiakas->getLisaaId() != $valittuAsiakas) ?							
+												$asiakas->getLisaaId()."|".$asiakas->getAsiakkaanNimi()."|".$asiakas->getSahkopostiosoite()."|".
+												$asiakas->getPuhelinNumero()."|".$asiakas->getPaiva()."|".$asiakas->getKuukausi()."|".$asiakas->getVuosi()."|".
+												$asiakas->getLevytila()."|".$asiakas->getKayttoJarjestelmaId()."|".
+												$asiakas->getLisatietoa().
+														
+												'">'.$asiakas->getAsiakkaanNimi()
+												: (($asiakas->getLisaaId() == $valittuAsiakas) ? 
+												$asiakas->getLisaaId()."|".$asiakas->getAsiakkaanNimi()."|".$asiakas->getSahkopostiosoite()."|".
+												$asiakas->getPuhelinNumero()."|".$asiakas->getPaiva()."|".$asiakas->getKuukausi()."|".$asiakas->getVuosi()."|".
+												$asiakas->getLevytila()."|".$asiakas->getKayttoJarjestelmaId()."|".
+												$asiakas->getLisatietoa().
+																
+																'" selected>'.utf8_encode($asiakas->getAsiakkaanNimi()):'' ));
+												echo "</option>\n";
+													
+											}
+											
 										
-										// Loopataan asiakasnimet alasvetovalikkoon
-										// Liitetään value kenttään muut arvot, jotta ne on helpompi poimia sieltä omiin kenttiinsä
-										foreach ($asiakkaat as $asiakas) {
-											echo '<option value="'.utf8_encode($asiakas->getLisaaId()."|".$asiakas->getAsiakkaanNimi()."|".$asiakas->getSahkopostiosoite())."|".
-											$asiakas->getPuhelinNumero()."|".$asiakas->getPaiva()."|".$asiakas->getKuukausi()."|".$asiakas->getVuosi()."|".
-											$asiakas->getLevytila()."|".$asiakas->getKayttoJarjestelmaId()."|".
-											$asiakas->getLisatietoa().'">'.utf8_encode($asiakas->getAsiakkaanNimi());
-											echo "</option>\n";
-							
+										} catch (Exception $error) {
+										
+											print($error->getMessage());
+											echo "<br>";
 										}
+										
+
 										
 										
 										?>
@@ -659,25 +733,28 @@ if (isset($_GET["kirjauduUlos"])) {
 										 	<span class="icon-input-btn"><span class="glyphicon glyphicon-ok"></span>
 			                             	<input name="haeAsiakkaat" type="submit" class="btn btn-primary px-2" value="Hae"></span> 
 										</div> <!-- ./input button -->
-							 </div> <!-- ./ input-group mb-2 mr-sm-2 mb-sm-0 -->
-								
+								</div> <!-- ./ input-group mb-2 mr-sm-2 mb-sm-0 -->
 						  </div> <!-- ./ form-group -->
 						</form> <!-- ./ lomakkeet -->
 							<!--  Virheviestit  -->
 							<!-- Asiakkaan nimi virheet -->  
-							<div class="form-group" style="padding-top:4%;">
+							<div class="form-group">
 								<div class="input-group">
 									<p>
 		                            <?php 
 		                            if (isset($_POST["tallenna"])) {
 		                            try {
 		                            	 global $rivit;
-		                            	 //echo 'dump '; var_dump($rivit);
-		                            	  	echo ((stripos($rivit[0], 'lisaa ok') !== FALSE)
+		                            	
+		                            	    
+		                            	  	echo ((!empty(stripos($rivit[0], 'lisaa ok') !== FALSE && !empty(stripos($rivit[1], 'linkkaus ok') !== FALSE && !empty($rivit[2] > 0))))
 								   			? '<h3 style="color:green"><i class="glyphicon glyphicon-ok">
 											   </i>Asiakastiedot on päivitetty onnistuneesti</h3>'
-								   			: '<h3 style="color:red"><i class="glyphicon glyphicon-remove">
-								   			   </i>Päivitys epäonnistui</h3>');
+								   			: (!empty($rivit[2] == 0 && $syottoVirhe === FALSE) ?
+		                            	  		'<h3 style="color:green"><i class="glyphicon glyphicon-exclamation-sign">
+								   			   	</i>Tietoja ei päivitetty, koska tiedot olivat jo ennallaan</h3>'
+								   					: '<h3 style="color:red"><i class="glyphicon glyphicon-remove">
+								   			   		</i>Päivitys epäonnistui</h3>' ));
 		                            } 	catch (Exception $error) {
 
 											print($error->getMessage());
@@ -686,18 +763,22 @@ if (isset($_GET["kirjauduUlos"])) {
 		                            }
 
 		                            echo (($syottoVirhe === TRUE) 
-		                            ? '<span style="color:red";>' .$muokkaa->getVirhe($asiakkaanNimiVirhe). '</span>'
+		                            ? '<span style="color:red">' .$muokkaa->getVirhe($asiakkaanNimiVirhe). '</span>'
 									: '&nbsp;');?>
+									
+												
+							
 		                            </p>
+		                             
 	                            </div>
                             </div>
                             
                             <!-- Sähköpostiosoite virheet -->
-							<div class="form-group" style="padding-top:4%;">
+							<div class="form-group" style="padding-top:2%;">
 								<div class="input-group">
 									<p>
 									<?php echo (($syottoVirhe === TRUE) 
-		                            ? '<span style="color:red";>' .$muokkaa->getVirhe($sahkopostiosoiteVirhe). '</span>'
+		                            ? '<span style="color:red">' .$muokkaa->getVirhe($sahkopostiosoiteVirhe). '</span>'
 									: '&nbsp;');?>
 		                            </p>
 	                            </div>
@@ -708,7 +789,7 @@ if (isset($_GET["kirjauduUlos"])) {
 								<div class="input-group">
 									<p>
 									<?php echo (($syottoVirhe === TRUE) 
-		                            ? '<span style="color:red";>' .$muokkaa->getVirhe($puhelinNumeroVirhe). '</span>'
+		                            ? '<span style="color:red">' .$muokkaa->getVirhe($puhelinNumeroVirhe). '</span>'
 									: '&nbsp;');?>
 		                          	</p>
 	                            </div>
@@ -719,7 +800,7 @@ if (isset($_GET["kirjauduUlos"])) {
 								<div class="input-group">
 									<p>
 									<?php echo (($syottoVirhe === TRUE) 
-		                            ? '<span style="color:red";>' .$muokkaa->getVirhe($asennusPaivamaaraVirhe). '</span>'
+		                            ? '<span style="color:red">' .$muokkaa->getVirhe($asennusPaivamaaraVirhe). '</span>'
 									: '<BR>&nbsp;');
 									 if (isset($_COOKIE["isDebug"])) {
 										echo ' paiva: '. $muokkaa->getPaiva().
@@ -737,7 +818,7 @@ if (isset($_GET["kirjauduUlos"])) {
 								<div class="input-group">
 									<p>
 									<?php echo (($syottoVirhe === TRUE) 
-		                            ? '<span style="color:red";>' .$muokkaa->getVirhe($levytilaVirhe). '</span>'
+		                            ? '<span style="color:red">' .$muokkaa->getVirhe($levytilaVirhe). '</span>'
 									: '&nbsp;');?>
 		                            </p>
 	                            </div>
@@ -748,7 +829,7 @@ if (isset($_GET["kirjauduUlos"])) {
 								<div class="input-group">
 									<p>
 									<?php echo (($syottoVirhe === TRUE)
-		                            ? '<span style="color:red";>' .$muokkaa->getVirhe($kayttoJarjestelmaVirhe). '</span>'
+		                            ? '<span style="color:red">' .$muokkaa->getVirhe($kayttoJarjestelmaVirhe). '</span>'
 									: '&nbsp;');?>
 		                            </p>
 	                            </div>
@@ -759,7 +840,7 @@ if (isset($_GET["kirjauduUlos"])) {
 								<div class="input-group">
 									<p>
 									<?php echo (($syottoVirhe === TRUE) 
-		                            ? '<span style="color:red";>' .$muokkaa->getVirhe($lisatietoaVirhe). '</span>'
+		                            ? '<span style="color:red">' .$muokkaa->getVirhe($lisatietoaVirhe). '</span>'
 									: '&nbsp;');?>
 		                        	</p>
 	                            </div>
@@ -810,6 +891,7 @@ $(document).ready(function(){
 	}); 
 }); 
 </script>
+
 
 </body>
 

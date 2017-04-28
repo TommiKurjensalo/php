@@ -34,7 +34,7 @@ class Muokkaa {
 	}
 	
 	// luokan attribuutit
-	private $muokkaaId = "";
+	private $lisaaId = "";
 	private $asiakkaanNimi = "";
 	private $sahkopostiosoite = "";
 	private $puhelinNumero = "";
@@ -43,7 +43,7 @@ class Muokkaa {
 	private $kuukausi = "";
 	private $vuosi = "";
 	private $levytila = "";
-	private $kayttoJarjestelma = "";
+	private $kayttoJarjestelmaId = "";
 	private $lisatietoa = "";
 	private $NykyHetki = "";
 	
@@ -59,9 +59,9 @@ class Muokkaa {
 	
 	
 	// Luokan konstruktori
-	public function __construct10($uusiId="", $uusiAsiakkaanNimi = "", $uusiSahkopostiosoite = "", $uusiPuhelinNumero = "", 
+	public function __construct11($uusiId="", $uusiAsiakkaanNimi = "", $uusiSahkopostiosoite = "", $uusiPuhelinNumero = "", 
 			$uusiPaiva = "", $uusiKuukausi = "", $uusiVuosi = "",
-			$uusiLevytila = "", $uusiKayttoJarjestelma = "", $uusiLisatietoa = "") 
+			$uusiLevytila = "", $uusikayttoJarjestelmaId = "", $uusiLisatietoa = "", $uusiNykyHetki = "") 
 		{
 
 		// trim poistaa tyhjät merkkijonon alusta ja lopusta
@@ -73,21 +73,38 @@ class Muokkaa {
 		$this->kuukausi = trim($uusiKuukausi);
 		$this->vuosi = trim($uusiVuosi);
 		$this->levytila = trim($uusiLevytila);
-		$this->kayttoJarjestelma = trim($uusiKayttoJarjestelma);
-		$this->lisatietoa = trim($uusiLisatietoa);		
+		$this->kayttoJarjestelmaId = trim($uusikayttoJarjestelmaId);
+		$this->lisatietoa = trim($uusiLisatietoa);
+		$this->NykyHetki = trim($uusiNykyHetki);		
 	}
 	
-	// Luokan konstruktori haeAsiakas toimintoa varten
+	// Luokan konstruktori
+	public function __construct10($uusiId="", $uusiAsiakkaanNimi = "", $uusiSahkopostiosoite = "", $uusiPuhelinNumero = "",
+			$uusiPaiva = "", $uusiKuukausi = "", $uusiVuosi = "",
+			$uusiLevytila = "", $uusikayttoJarjestelmaId = "", $uusiLisatietoa = "")
+	{
+	
+		// trim poistaa tyhjät merkkijonon alusta ja lopusta
+		$this->lisaaId = ($uusiId);
+		$this->asiakkaanNimi = trim($uusiAsiakkaanNimi);
+		$this->sahkopostiosoite = trim($uusiSahkopostiosoite);
+		$this->puhelinNumero = trim($uusiPuhelinNumero);
+		$this->paiva = trim($uusiPaiva);
+		$this->kuukausi = trim($uusiKuukausi);
+		$this->vuosi = trim($uusiVuosi);
+		$this->levytila = trim($uusiLevytila);
+		$this->kayttoJarjestelmaId = trim($uusikayttoJarjestelmaId);
+		$this->lisatietoa = trim($uusiLisatietoa);
+	}
+	
+	
+	// Luokan konstruktori haeAsiakkat toimintoa varten
 	public function __construct2($uusiId="", $uusiAsiakkaanNimi = "")
 		
 		{
 		// trim poistaa tyhjät merkkijonon alusta ja lopusta
 		$this->lisaaId = ($uusiId);
 		$this->asiakkaanNimi = trim($uusiAsiakkaanNimi);
-		$this->paiva = trim($uusiPaiva);
-		$this->kuukausi = trim($uusiKuukausi);
-		$this->vuosi = trim($uusiVuosi);
-		$this->kayttoJarjestelma = trim($uusiKayttoJarjestelma);
 	}
 	
 	// Muuttaa/asettaa lisaaId-attribuutin
@@ -258,6 +275,12 @@ class Muokkaa {
 		return $this->NykyHetki;
 	}
 	
+	// Asettaa nykyhetki-attribuutin
+	// Käytetään testaukseen
+	public function setNykyHetki($uusiNykyHetki) {
+		$this->NykyHetki = $uusiNykyHetki;
+	}
+	
 	public function checkAsennusPaivamaara($required) {
 	
 		
@@ -335,24 +358,24 @@ class Muokkaa {
 	
 	// *******************************************************
 	// Muuttaa/asettaa kayttoJarjestelmaId-attribuutin
-	public function setKayttoJarjestelmaId($uusiKayttoJarjestelma) {
-		$this->kayttoJarjestelma = $uusiKayttoJarjestelma;
+	public function setKayttoJarjestelmaId($uusikayttoJarjestelmaId) {
+		$this->kayttoJarjestelmaId = $uusikayttoJarjestelmaId;
 	}
 	
 	// Palauttaa kayttoJarjestelmaId-attribuutin
 	public function getKayttoJarjestelmaId() {
-		return $this->kayttoJarjestelma;
+		return $this->kayttoJarjestelmaId;
 	}
 	
-	public function checkKayttoJarjestelma($required) {
+	public function checkkayttoJarjestelmaId($required) {
 	
 		// Jos kenttä saa olla tyhjä ja se on tyhjä, ei ole virhettä
-		if ($required === FALSE && strlen($this->kayttoJarjestelma) == 0)
+		if ($required === FALSE && strlen($this->kayttoJarjestelmaId) == 0)
 			return 0;
 	
 		if ($required === TRUE) {
 			// Jos käyttöjärjestelmää ei ole valittu
-			if (strpos($this->kayttoJarjestelma, 'none') !==FALSE) 
+			if (strpos($this->kayttoJarjestelmaId, 'none') !==FALSE) 
 				return 12;
 		}
 		// Ei ollut virheitä
@@ -360,12 +383,12 @@ class Muokkaa {
 	}
 	
 	// *******************************************************
-	// Muuttaa/asettaa kayttoJarjestelma-attribuutin
+	// Muuttaa/asettaa kayttoJarjestelmaId-attribuutin
 	public function setLisatietoa($uusiLisatietoa) {
 		$this->lisatietoa = $uusiLisatietoa;
 	}
 	
-	// Palauttaa kayttoJarjestelma-attribuutin
+	// Palauttaa kayttoJarjestelmaId-attribuutin
 	public function getLisatietoa() {
 		return $this->lisatietoa;
 	}
@@ -395,7 +418,7 @@ class Muokkaa {
 	 *  Hae asiakkaat
 	 */
 	
-	public function haeAsiakaat() {
+	public function haeAsiakkaat() {
 	
 		// Muodostetaan SQL kyselylause
 		$sql = "SELECT l.lisaaId,l.asiakkaanNimi,l.sahkopostiosoite,l.puhelinNumero,
@@ -444,14 +467,16 @@ class Muokkaa {
 	
 		// debuggausta varten
 		if (isset($_COOKIE["isDebug"])) {
-			echo "var_dump: ".var_dump($tulos)."<br>";
-			echo "<br>".'"SELECT l.lisaaId,l.asiakkaanNimi,l.sahkopostiosoite,l.puhelinNumero,
-   				k.kayttoJarjestelmaId,l.asennusPaivamaara,l.levytila,l.lisatietoa
-				FROM lisaa_kayttojarjestelma lk
-				INNER JOIN lisaa l on l.lisaaId=lk.lisaaId
-				INNER JOIN kayttojarjestelma k on k.kayttoJarjestelmaId=lk.kayttoJarjestelmaId
-				ORDER BY lk.lisaaId ASC;';
-			echo '<br>';
+		//	echo "var_dump: ".var_dump($tulos)."<br>";
+			echo '<div style="padding-left:300px;">';
+				echo "<br>".'"SELECT l.lisaaId,l.asiakkaanNimi,l.sahkopostiosoite,l.puhelinNumero,
+	   				k.kayttoJarjestelmaId,l.asennusPaivamaara,l.levytila,l.lisatietoa
+					FROM lisaa_kayttojarjestelma lk
+					INNER JOIN lisaa l on l.lisaaId=lk.lisaaId
+					INNER JOIN kayttojarjestelma k on k.kayttoJarjestelmaId=lk.kayttoJarjestelmaId
+					ORDER BY lk.lisaaId ASC;';
+				echo '<br>';
+			echo '</div>';
 				
 		}
 		
@@ -468,22 +493,87 @@ public function muokkaaAsiakas($muokkaa) {
 
 	$tulos = array();
 	$data = array();
+	$where_r = array();
+	$test_data = array();
 	$table = 'lisaa';
-	$where = 'lisaaId=:lisaaId';
+	$test_where = "";
+	$where = "";
 	
 	// Tarkistetaan onko tieto syötetty ja jos on, niin laitetaan arvo arraylistaan
-	(!empty($muokkaa->getAsiakkaanNimi()) ? $data["asiakkaanNimi"]=":asiakkaanNimi" :'');
 	
-	(!empty($muokkaa->getSahkopostiosoite()) ? $data["sahkopostiosoite"]=":sahkopostiosoite" :'');
+	(!empty($muokkaa->getLisaaId()) ? $where="lisaaId=:lisaaId" : "");
 	
-	(!empty($muokkaa->getPuhelinNumero()) ? $data["puhelinNumero"]=":puhelinNumero" :'');
+	(!empty($muokkaa->getAsiakkaanNimi()) ? $data["asiakkaanNimi"]=":asiakkaanNimi" : "");
+		
+	(!empty($muokkaa->getSahkopostiosoite()) ? $data["sahkopostiosoite"]=":sahkopostiosoite" : "");
+
+	(!empty($muokkaa->getPuhelinNumero()) ? $data["puhelinNumero"]=":puhelinNumero" : "");
 	
-	((!empty($muokkaa->getPaiva()) && !empty($muokkaa->getKuukausi()) && !empty($muokkaa->getVuosi()))
-	? $data["asennusPaivamaara"]=":asennusPaivamaara" : ' ');
+	// Jos päivä, kuukausi ja vuosi on syötetty
+	// Luodaan asennusPaivamaara muuttuja
+	(!empty($muokkaa->getPaiva()) && !empty($muokkaa->getKuukausi()) && !empty($muokkaa->getVuosi())  		
+	? $data["asennusPaivamaara"]=":asennusPaivamaara" : "");		 
 	
-	(!empty($muokkaa->getLevytila()) ? $data["levytila"]=":levytila" :'');
 	
-	(!empty($muokkaa->getLisatietoa()) ? $data["lisatietoa"]=":lisatietoa" :'');
+	(!empty($muokkaa->getLevytila()) ? $data["levytila"]=":levytila" :"");
+	
+	(!empty($muokkaa->getLisatietoa()) ? $data["lisatietoa"]=":lisatietoa" :"");
+	
+	
+	
+if (isset($_COOKIE["isDebug"])) {
+	// *** testausta varten
+	// Tarkistetaan onko tieto syötetty ja jos on, niin laitetaan arvo arraylistaan
+	(!empty($muokkaa->getLisaaId()) ? $test_where='lisaaId='.$muokkaa->getLisaaId() : "");
+	
+	(!empty($muokkaa->getAsiakkaanNimi()) ? $test_data["asiakkaanNimi"]=$muokkaa->getAsiakkaanNimi() : "");
+	
+	(!empty($muokkaa->getSahkopostiosoite()) ? $test_data["sahkopostiosoite"]=$muokkaa->getSahkopostiosoite() : "");
+	
+	(!empty($muokkaa->getPuhelinNumero()) ? $test_data["puhelinNumero"]=$muokkaa->getPuhelinNumero() : "");
+	
+	// Kommentoitu pois, koska muuten kuukauden eteen tulee 2x etunolla, kun tuotanto ja testipuoli lisää sen
+/*	if (!empty($muokkaa->getPaiva()) && !empty($muokkaa->getKuukausi()) && !empty($muokkaa->getVuosi()) ) {
+		
+		if ($muokkaa->getKuukausi() < 10) {
+				
+			$muokkaa->setKuukausi('0'.$muokkaa->getKuukausi() );
+			// Luodaan pvm muuttuja, jossa on vuosi,kk ja päivä arvot muotoon vvvv-kk-pp
+			$asennusPaivamaara_test = $muokkaa->getVuosi().'-'.$muokkaa->getKuukausi().'-'.$muokkaa->getPaiva();
+			$test_data["asennusPaivamaara"]=$asennusPaivamaara_test;
+		} else {
+			// Luodaan pvm muuttuja, jossa on vuosi,kk ja päivä arvot muotoon vvvv-kk-pp
+			$asennusPaivamaara_test = $muokkaa->getVuosi().'-'.$muokkaa->getKuukausi().'-'.$muokkaa->getPaiva();
+			$test_data["asennusPaivamaara"]=$asennusPaivamaara_test;
+		}
+	}
+*/
+	
+	if (!empty($muokkaa->getPaiva()) && !empty($muokkaa->getKuukausi()) && !empty($muokkaa->getVuosi()) ) {
+		$asennusPaivamaara_test = $muokkaa->getVuosi().'-'.$muokkaa->getKuukausi().'-'.$muokkaa->getPaiva();
+		$test_data["asennusPaivamaara"]=$asennusPaivamaara_test;
+	}
+	
+	(!empty($muokkaa->getLevytila()) ? $test_data["levytila"]=$muokkaa->getLevytila() :"");
+	
+	(!empty($muokkaa->getLisatietoa()) ? $test_data["lisatietoa"]=$muokkaa->getLisatietoa() :"");
+	
+	// **** Testausta varten
+	// Funktio, jolla luodaan UPDATE sql lauseke saatujen syöttötietojen perusteella
+	function test_build_sql_update($table, $test_data, $test_where)
+	{
+		$cols = array();
+	
+		foreach($test_data as $key=>$val) {
+			$cols[] = "$key = \"$val\"" ;
+		}
+		$sql_test = "UPDATE $table SET " . implode(', ', $cols) . " WHERE $test_where;";
+	
+		return $sql_test;
+	}
+	
+	$sql_test = test_build_sql_update($table,$test_data,$test_where);
+} // Debug
 	
 	// Funktio, jolla luodaan UPDATE sql lauseke saatujen syöttötietojen perusteella
 		function build_sql_update($table, $data, $where)
@@ -491,77 +581,125 @@ public function muokkaaAsiakas($muokkaa) {
 			$cols = array();
 		
 			foreach($data as $key=>$val) {
-				$cols[] = "$key = $val";
+				//$cols[] = "$key = \"$val\"" ;
+				$cols[] = "$key = $val" ;
 			}
 			$sql = "UPDATE $table SET " . implode(', ', $cols) . " WHERE $where;";
 		
 			return $sql;
 		}
-		// Luodaan UPDATE sql lauseke
+		// Luodaan UPDATE sql lausekkeet
 		$sql_lisaa = build_sql_update($table,$data,$where);
-		
-		
+	
 		$sql_linkkaus = "UPDATE lisaa_kayttojarjestelma 
                          	SET kayttoJarjestelmaId=:kayttoJarjestelmaId WHERE lisaaId=:lisaaId;";
+		
+		// debuggausta varten
+		if (isset($_COOKIE["isDebug"])) {
+			echo '<div style="padding-left:300px;">';
+			echo "<br>sql_test: " .(isset($sql_test) ? $sql_test : 'undefined');
+			echo "<br>".(!empty($muokkaa->getLisatietoa()) ? "lisatietoa ei ole tyhjä" :"lisatietoa on tyhjä");
+			echo "<br>var_dump muokkaa: ";	 var_dump($muokkaa);
+			
+			echo "<br>var_dump sql_lisaa: "  .(isset($sql_lisaa) ? $sql_lisaa : 'undefined');
+			
+			echo "<br>sql_linkkaus: " .(isset($sql_linkkaus) ? $sql_linkkaus : 'undefined');
+			
+			echo "<br>asennusPaivamaara: " .(!empty($asennusPaivamaara) ? $asennusPaivamaara : 'undefined');
+			
+			echo '<br>data: '; var_dump($data);
+			echo '</div>';
+		}
 		
 		// Valmistellaan lauseet
 		$stmt_lisaa = Database :: prepare($sql_lisaa);
 		$stmt_linkkaus = Database :: prepare($sql_linkkaus);
 		
-		// Luodaan pvm muuttuja, jossa on vuosi,kk ja päivä arvot
-		$asennusPaivamaara = $muokkaa->getVuosi().'-'.$muokkaa->getKuukausi().'-'.$muokkaa->getPaiva();
+		// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
+		if (! $stmt_lisaa= Database :: prepare($sql_lisaa)) {
+			$virhe_lisaa = Database :: errorInfo();
+		
+			throw new PDOException($virhe_lisaa[2], $virhe_lisaa[1]);
+		}
+		
+		
+		
+		
+		// Jos lausetta ei ole onnistuneesti valmisteltu, annetaan virheilmoitus
+		if (! $stmt_linkkaus= Database :: prepare($sql_linkkaus)) {
+			$virhe_linkkaus = Database :: errorInfo();
+		
+			throw new PDOException($virhe_linkkaus[2], $virhe_linkkaus[1]);
+		}
+		
+	
 		
 		// Bindataan arvot sql lauseelle
-		$stmt_lisaa->bindValue(":asiakkaanNimi", utf8_decode($muokkaa->getAsiakkaanNimi()), PDO::PARAM_STR);
-		$stmt_lisaa->bindValue(":sahkopostiosoite", utf8_decode($muokkaa->getSahkopostiosoite()), PDO::PARAM_STR);
-		$stmt_lisaa->bindValue(":puhelinNumero", utf8_decode($muokkaa->getPuhelinNumero()), PDO::PARAM_STR);
-		$stmt_lisaa->bindValue(":asennusPaivamaara", utf8_decode($asennusPaivamaara), PDO::PARAM_STR);
-		$stmt_lisaa->bindValue(":levytila", utf8_decode($muokkaa->getLevytila()), PDO::PARAM_INT);
-		$stmt_lisaa->bindValue(":lisatietoa", utf8_decode($muokkaa->getLisatietoa()), PDO::PARAM_STR);
-		$stmt_lisaa->bindValue(":lisaaId", utf8_decode($muokkaa->getLisaaId()), PDO::PARAM_INT);
+		(!empty($muokkaa->getLisaaId()) ? $stmt_lisaa->bindValue(":lisaaId", $muokkaa->getLisaaId(), PDO::PARAM_INT)
+		:  $stmt_lisaa->bindValue(":lisaaId", "", PDO::PARAM_INT));
 		
-		// debuggausta varten
-		if (isset($_COOKIE["isDebug"])) {
-			echo "<br>var_dump muokkaa: ";	var_dump($muokkaa);
-			echo "<br>";
-			echo "var_dump sql_lisaa: "; var_dump($sql_lisaa);
-			echo "<br>";
-			echo "var_dump sql_linkkaus: "; var_dump($sql_linkkaus);			
-			echo '<br>';
-		}
+		(!empty($muokkaa->getAsiakkaanNimi()) ? $stmt_lisaa->bindValue(":asiakkaanNimi", $muokkaa->getAsiakkaanNimi(), PDO::PARAM_STR) 
+		: $stmt_lisaa->bindValue(":asiakkaanNimi", "", PDO::PARAM_STR));
+		
+		(!empty($muokkaa->getSahkopostiosoite()) ? $stmt_lisaa->bindValue(":sahkopostiosoite", utf8_decode($muokkaa->getSahkopostiosoite()), PDO::PARAM_STR) : "");
+		
+		(!empty($muokkaa->getPuhelinNumero()) ? $stmt_lisaa->bindValue(":puhelinNumero", utf8_decode($muokkaa->getPuhelinNumero()), PDO::PARAM_STR) : "");
+		
+		if (!empty($muokkaa->getPaiva()) && !empty($muokkaa->getKuukausi()) && !empty($muokkaa->getVuosi()) ) {
+		
+			// Jos kuukausi on alle 10, lisätään etunolla
+			if ($muokkaa->getKuukausi() < 10) {
+					// Lisätään etunolla
+					$muokkaa->setKuukausi('0'.$muokkaa->getKuukausi() );
+			} 
 			
-	
+			// Luodaan pvm muuttuja, jossa on vuosi,kk ja päivä arvot muotoon vvvv-kk-pp
+			$asennusPaivamaara = $muokkaa->getVuosi().'-'.$muokkaa->getKuukausi().'-'.$muokkaa->getPaiva();
+			$data["asennusPaivamaara"]=$asennusPaivamaara;
+			$stmt_lisaa->bindValue(":asennusPaivamaara", $asennusPaivamaara, PDO::PARAM_STR);
+		}
+		
+		(!empty($muokkaa->getLevytila()) ? $stmt_lisaa->bindValue(":levytila", utf8_decode($muokkaa->getLevytila()), PDO::PARAM_INT) :"");
+		
+		(!empty($muokkaa->getLisatietoa()) ? $stmt_lisaa->bindValue(":lisatietoa", utf8_decode($muokkaa->getLisatietoa()), PDO::PARAM_STR) :"");
+		
+		
+		
 		// Jos SQL kyselylausekkeen ajo epäonnistuu, näytetään virheviesti
-		if (! $stmt_lisaa->execute()) {
+		if (!$stmt_lisaa->execute()) {
 			$virhe_lisaa = $stmt_lisaa->errorInfo();
 			$tulos[] = $virhe_lisaa;
 
-	
+			
 			if ($virhe_lisaa[0] == "HY093") {
 				$virhe_lisaa[2] = "Invalid parameter";
 			}
-			throw new PDOException($virhe_lisaa[2], $virhe_lisaa[1]);
+
+			throw new PDOException(array_values($virhe_lisaa));
 		} else {
 			$tulos[] = "lisaa ok";
 		}
+
 		
 		// Bindataan arvot sql lauseelle
-		$stmt_linkkaus->bindValue(":kayttoJarjestelmaId", utf8_decode($muokkaa->getKayttoJarjestelmaId()), PDO::PARAM_STR);
-		$stmt_linkkaus->bindValue(":lisaaId", utf8_decode($muokkaa->getLisaaId()), PDO::PARAM_INT);
+		$stmt_linkkaus->bindValue(":kayttoJarjestelmaId", $muokkaa->getKayttoJarjestelmaId(), PDO::PARAM_INT);
+		$stmt_linkkaus->bindValue(":lisaaId", $muokkaa->getLisaaId(), PDO::PARAM_INT);
 		
 		// Jos SQL kyselylausekkeen ajo epäonnistuu, näytetään virheviesti
+
 		if (! $stmt_linkkaus->execute()) {
 			$virhe_linkkaus = $stmt_linkkaus->errorInfo();
 			$tulos[] = $virhe_linkkaus;
 		
-		
-			if ($virhe_lisaa[0] == "HY093") {
-				$virhe_lisaa[2] = "Invalid parameter";
+			if ($virhe_linkkaus[0] == "HY093") {
+				$virhe_linkkaus[2] = "Invalid parameter";
 			}
-			throw new PDOException($virhe_lisaa[2], $virhe_lisaa[1]);
+	
+			throw new PDOException(array_values($virhe_linkkaus));
 		} else {
-			$tulos[] = "lisaa ok";
+			$tulos[] = "linkkaus ok";
 		}
+		
 		
 		$this->lkm = $stmt_lisaa->rowCount() + $stmt_linkkaus->rowCount();
 		$tulos[] = $this->lkm;

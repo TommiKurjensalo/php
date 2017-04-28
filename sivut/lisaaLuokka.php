@@ -44,6 +44,7 @@ class Lisaa {
 	private $vuosi = "";
 	private $levytila = "";
 	private $kayttoJarjestelmaId = "";
+	private $kayttoJarjestelmaNimi = "";
 	private $lisatietoa = "";
 	private $NykyHetki = "";
 	
@@ -325,12 +326,22 @@ class Lisaa {
 	// *******************************************************
 	// Muuttaa/asettaa kayttoJarjestelmaId-attribuutin
 	public function setKayttoJarjestelmaId($uusiKayttoJarjestelmaId) {
-		$this->kayttoJarjestelma = $uusiKayttoJarjestelmaId;
+		$this->kayttoJarjestelmaId = $uusiKayttoJarjestelmaId;
 	}
 	
 	// Palauttaa kayttoJarjestelmaId-attribuutin
 	public function getKayttoJarjestelmaId() {
 		return $this->kayttoJarjestelmaId;
+	}
+	
+	// Muuttaa/asettaa kayttoJarjestelmaNimi-attribuutin
+	public function setKayttoJarjestelmaNimi($uusiKayttoJarjestelmaNimi) {
+		$this->kayttoJarjestelmaNimi = $uusiKayttoJarjestelmaNimi;
+	}
+	
+	// Palauttaa kayttoJarjestelmaNimi-attribuutin
+	public function getKayttoJarjestelmaNimi() {
+		return $this->kayttoJarjestelmaNimi;
 	}
 	
 	public function checkKayttoJarjestelma($required) {
@@ -434,6 +445,11 @@ class Lisaa {
 		? $stmt_lisaa->bindValue(":puhelinNumero", utf8_decode(""), PDO::PARAM_STR)
 		: $stmt_lisaa->bindValue(":puhelinNumero", utf8_decode($lisaa->getPuhelinNumero()), PDO::PARAM_STR));
 	
+		if (!empty($lisaa->getKuukausi()) && $lisaa->getKuukausi() < 10) {
+				// Lisätään etunolla
+				$lisaa->setKuukausi('0'.$lisaa->getKuukausi());
+		}
+		
 		// Jos päivä, kuukausi eikä vuosi kenttään ole syötetty arvoja, annetaan $asennusPaivamaara muuttujalle arvo null
 		(((strpos($lisaa->getPaiva(), 'none') !==FALSE) && (strpos($lisaa->getKuukausi(), 'none') !==FALSE) && (strpos($lisaa->getVuosi(), 'none') !==FALSE))
 		? $asennusPaivamaara = null
@@ -441,17 +457,22 @@ class Lisaa {
 	
 		// Jos päivä kenttään on annettu arvo, luodaan $asennusPaivamaara muuttujalle kyselylauseke
 		(((strpos($lisaa->getPaiva(), 'none') ===FALSE) && (strpos($lisaa->getKuukausi(), 'none') !==FALSE) && (strpos($lisaa->getVuosi(), 'none') !==FALSE))
-		? $asennusPaivamaara = '-'.$lisaa->getPaiva()
+		? $asennusPaivamaara = '1900-01-'.$lisaa->getPaiva()
 		: '');
 	
 		// Jos kuukausi kenttään on annettu arvo, luodaan $asennusPaivamaara muuttujalle kyselylauseke
 		(((strpos($lisaa->getPaiva(), 'none') !==FALSE) && (strpos($lisaa->getKuukausi(), 'none') ===FALSE) && (strpos($lisaa->getVuosi(), 'none') !==FALSE))
-		? $asennusPaivamaara = '-'.$lisaa->getKuukausi().'-'
+		? $asennusPaivamaara = '1900-'.$lisaa->getKuukausi().'-01'
 				: '');
 	
 		// Jos vuosi kenttään on annettu arvo, luodaan $asennusPaivamaara muuttujalle kyselylauseke
 		(((strpos($lisaa->getPaiva(), 'none') !==FALSE) && (strpos($lisaa->getKuukausi(), 'none') !==FALSE) && (strpos($lisaa->getVuosi(), 'none') ===FALSE))
-		? $asennusPaivamaara = $lisaa->getVuosi().'-'
+		? $asennusPaivamaara = $lisaa->getVuosi().'-01-01'
+				: '');
+		
+		// Jos vuosi,kk ja päivä kenttään on annettu arvo, luodaan $asennusPaivamaara muuttujalle kyselylauseke
+		(((strpos($lisaa->getPaiva(), 'none') ===FALSE) && (strpos($lisaa->getKuukausi(), 'none') ===FALSE) && (strpos($lisaa->getVuosi(), 'none') ===FALSE))
+		? $asennusPaivamaara = $lisaa->getVuosi().'-'.$lisaa->getKuukausi().'-'.$lisaa->getPaiva()
 				: '');
 	
 		// Jos $asennusPaivamaara on tyhjä tai null, annetaan kyselylausekeen arvoksi mitä tahansa ()
@@ -477,13 +498,15 @@ class Lisaa {
 		// debuggausta varten
 		
 		if (isset($_COOKIE["isDebug"])) {
-			echo "<br>var_dump: ".	var_dump($lisaa). "<br>";
+			echo '<div style="padding-left:300px;">';
+			echo "<br>".'$lisaa: : '. var_dump($lisaa). "<br>";
 			echo "INSERT INTO lisaa (lisaaId,asiakkaanNimi,sahkopostiosoite,puhelinNumero,
 					asennusPaivamaara,levytila,lisatietoa)
-					VALUE (:lisaaId,\"".$lisaa->getAsiakkaanNimi()."\",\"" .$lisaa->getSahkopostiosoite(). "\",\"" .$lisaa->getPuhelinNumero()."\",
+					VALUE (\"".$lisaa->getLisaaId()."\",\"".$lisaa->getAsiakkaanNimi()."\",\"" .$lisaa->getSahkopostiosoite(). "\",\"" .$lisaa->getPuhelinNumero()."\",
 					\"".$asennusPaivamaara."\",\"".$lisaa->getLevytila()."\",\"".$lisaa->getLisatietoa()."\");";
 				
 			echo '<br>';
+			echo '</div>';
 		}
 		
 		$tulos = array();
@@ -514,8 +537,10 @@ class Lisaa {
 		: $stmt_linkkaus->bindValue(":lisaaId", utf8_decode(Database::lastInsertId()), PDO::PARAM_INT));
 		
 		if (isset($_COOKIE["isDebug"])) {
-		echo "INSERT INTO lisaa_kayttojarjestelma (kayttoJarjestelmaId,lisaaId)
+			echo '<div style="padding-left:300px;">';
+			echo "INSERT INTO lisaa_kayttojarjestelma (kayttoJarjestelmaId,lisaaId)
                         VALUE (\"".$lisaa->getKayttoJarjestelmaId()."\",\"".Database::lastInsertId()."\");";
+			echo '</div>';
 		}		
 
 		
@@ -523,6 +548,7 @@ class Lisaa {
 		if (! $stmt_linkkaus->execute()) {
 			$virhe_linkkaus = $stmt_linkkaus->errorInfo();
 			$tulos[] = $virhe_linkkaus;
+			
 			if ($virhe_linkkaus[0] == "HY093") {
 				$virhe_linkkaus[2] = "Invalid parameter";
 			}
@@ -532,7 +558,7 @@ class Lisaa {
 			$tulos[] = "lisaa_kayttojarjestelma ok";
 		}
 		
-		$this->lkm = $stmt_lisaa->rowCount();
+		$this->lkm = $stmt_lisaa->rowCount() + $stmt_linkkaus->rowCount();
 		$tulos[] = $this->lkm;
 		
 		return $tulos;

@@ -25,7 +25,7 @@ session_start ();
 			echo "<br>";
 		}
 			
-
+		// Jos tunnus ja salasana on ok, niin jatketaan eteenpäin
 		if ($keijoTulos[0] == 1 && $keijoTulos[1] === true) {	
 			
 				// Jos käyttäjä valitsi muista minut, asetetaan cookie joka on voimassa 30päivää
@@ -55,7 +55,7 @@ session_start ();
 			$_SESSION['onKirjauduttu'] = true;
 			session_write_close ();
 			header('Location: index.php');
-			exit();
+			exit;
 		} else {
 			$_SESSION['onKirjauduttu'] = false;
 			$_SESSION['rivi0'] = $keijoTulos[0];
@@ -64,15 +64,16 @@ session_start ();
 			$_SESSION['message'] = "Virheellinen käyttäjätunnus tai salasana";
 			session_write_close ();
 			header('Location: index.php');		
-			exit();
+			exit;
 		}
 
 	} else {
 		$_SESSION['onKirjauduttu'] = false;
 		$_SESSION['message'] = "Käyttäjätunnus ja/tai salasana kenttä olivat tyhjiä";
-		header('Location: index.php');
 		session_write_close ();
-		exit();
+		header('Location: index.php');
+		
+		exit;
 	}
 	
 	session_write_close ();
@@ -81,7 +82,7 @@ session_start ();
 }  else {
 	
 	$now = time(); // Laitetaan nykyhetki muuttujaan
-	// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
+	// Tarkistetaan, että on sisäänkirjauduttu
 	if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true) {
 		
 		// Jos sessio on mennyt umpeen, muutetaan onKirjauduttu = false
@@ -91,7 +92,7 @@ session_start ();
 			$_SESSION['tervetuloa'] = "";
 		}
 			
-			// Tarkistetaan onko sessiota jo olemassa
+			// Tarkistetaan, että jos sessio messagea ei ole asetettu, alustetaan se.
 			if (!isset($_SESSION['message'])) {
 				$_SESSION['message'] = "";
 			}
@@ -99,7 +100,13 @@ session_start ();
 			// Kirjoitetaan session datat talteen	 
 			session_write_close ();
 	} else {
-		session_destroy();
+		
+		$_SESSION['onKirjauduttu'] = false;
+		$_SESSION['message'] = "Sessio aika on umpeutunut tai kirjauduit ulos";
+		$_SESSION['tervetuloa'] = "";
+		// Kirjoitetaan session datat talteen
+		session_write_close ();
+		
 		
 	}
 	
@@ -109,25 +116,17 @@ session_start ();
 if (isset($_GET["kirjauduUlos"])) {
 
 	session_start();
-	
-	if (isset($_SERVER['HTTP_COOKIE']))
-	{
-		$cookies = explode(';', $_SERVER['HTTP_COOKIE']);
-		foreach($cookies as $cookie)
-		{
-			$mainCookies = explode('=', $cookie);
-			$name = trim($mainCookies[0]);
-			setcookie($name, '', time()-1000);
-			setcookie($name, '', time()-1000, '/');
-		}
-	}
-	
-	// Poistetaan PHPSESSID selaimesta
-	if ( isset( $_COOKIE[session_name()] ) )
-	setcookie( session_name(), "", time()-3600, "/" );
 	// Tyhjennetään sessiot globaalisti
 	$_SESSION = array();
 
+	if (ini_get("session.use_cookies")) {
+		$params = session_get_cookie_params();
+		setcookie(session_name(), '', time() - 42000,
+				$params["path"], $params["domain"],
+				$params["secure"], $params["httponly"]
+		);
+	}
+	
 	// Tyhjennetään sessiot paikallisesti
 	session_destroy();
 	// Ohjataan takaisin etusivulle
@@ -166,6 +165,25 @@ if (isset($_GET["kirjauduUlos"])) {
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script type="text/javascript">
+		function GetClock(){
+		var d=new Date();
+		var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
+		if(nyear<1000) nyear+=1900;
+		var nhour=d.getHours(),nmin=d.getMinutes(),nsec=d.getSeconds();
+		if(nmin<=9) nmin="0"+nmin
+		if(nsec<=9) nsec="0"+nsec;
+		
+		document.getElementById('clockbox').innerHTML=""+ndate+"."+(nmonth+1)+"."+nyear+" "+nhour+":"+nmin+":"+nsec+"";
+		}
+		
+		window.onload=function(){
+		GetClock();
+		setInterval(GetClock,1000);
+		}
+		// http://www.webestools.com/scripts_tutorials-code-source-7-display-date-and-time-in-javascript-real-time-clock-javascript-date-time.html
+
+	</script>
 
 </head>
 
@@ -179,9 +197,18 @@ if (isset($_GET["kirjauduUlos"])) {
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <a class="navbar-brand" href="index.php">Notes for business</a>
-                
+             <div class="form-inline" style="font-size:1.2em; color:#F0F0F0; margin:0.7% 0 0 73%; width:30%">
+              <?php 
+              // Määritetään oletus aikavyöhyke ja maa-asetukset
+              date_default_timezone_set('Europe/Helsinki');
+              setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
+              
+              echo (isset($_SESSION['expire']) ? 'Sessio vanhenee: '. date("j.n.Y H:i:s ",$_SESSION['expire']) : '');
+              echo (!isset($_SESSION['expire']) ? '<div style="margin:0.7% 0 0 %; "> Pvm/klo: <span id="clockbox"></span></div>' : ' Pvm/klo: <span id="clockbox"></span>');
+              ?>
+                </div>
             </div>
-            
+  
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
@@ -190,8 +217,8 @@ if (isset($_GET["kirjauduUlos"])) {
                $now = time(); // Laitetaan nykyhetki muuttujaan
                 // Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
 
-                if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true)  {
-                	if ($now <= $_SESSION['expire']) {
+              if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true && $now <= $_SESSION['expire']) {
+                	
                     print '<li>
                         <a href="lisaa.php"> <i class="fa fa-fw fa-edit"></i> Lisää</a>
                     </li>
@@ -209,7 +236,7 @@ if (isset($_GET["kirjauduUlos"])) {
                 	</li>
 					';
                 } 
-                	}
+                	
                 	
                 ?>
                 
@@ -249,16 +276,21 @@ if (isset($_GET["kirjauduUlos"])) {
 	   		
 			
 		echo ((isset($_SESSION['tervetuloa']))
-				? '<h3 style="color:green; padding: 0 0 0 30%;"><b>'.$_SESSION['tervetuloa'].'</b></h3>'
+				? '<h3 style="color:green; padding: 0 0 0 30%;"><b>'.ucwords($_SESSION['tervetuloa']).'</b></h3>'
 				:'');
 		
 		if (isset($_COOKIE["isDebug"])) {
+			// Määritetään oletus aikavyöhyke ja maa-asetukset
+			date_default_timezone_set('Europe/Helsinki');
+			setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
+			
 			echo '<div style="color:white;">';
 			echo ((isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true) ? 'onKirjauduttu: true ':'onKirjauduttu: false ');
-			echo (isset($_SESSION['expire']) ? ' exp: ' .$now.'<=' .$_SESSION['expire'] :' exp: false ');
-			echo (isset($_SESSION['start']) && ($_SESSION['start'] <= $_SESSION['expire']) ? ' sessio expired ' :' sessio valid ');
-			echo ' rivi0: ' .(isset($_SESSION['rivi0']) ? $_SESSION['rivi0']:' false ');
-			echo ' rivi1: ' .(isset($_SESSION['rivi1']) ? (is_bool($_SESSION['rivi1'] === true) ? $_SESSION['rivi1'] : ' false ') :' false ') ;
+			echo "<br>".(isset($_SESSION['expire']) ? ' exp: ' .date("j.n.Y H:i:s ",$now).'<= ' .date("j.n.Y H:i:s ",$_SESSION['expire']). 
+					'started: '.date("j.n.Y H:i:s ",$_SESSION['start']) :' exp: false ');
+			echo "<br>".(isset($_SESSION['start']) && ($now >= $_SESSION['expire']) ? ' sessio expired ' :' sessio valid ');
+			echo "<br>".' rivi0: ' .(isset($_SESSION['rivi0']) ? $_SESSION['rivi0']:' false ');
+			echo ' rivi1: ' .(isset($_SESSION['rivi1']) ? (($_SESSION['rivi1'] === true) ? $_SESSION['rivi1'] : ' false ') :' false ') ;
 			echo '</div>';
 		}  
 		print '</form>'."\n";
@@ -278,6 +310,7 @@ if (isset($_GET["kirjauduUlos"])) {
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+
 
 </body>
 

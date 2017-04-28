@@ -42,7 +42,8 @@ class Listaa {
 			$lisaa->setAsiakkaanNimi(utf8_encode($rivi->asiakkaanNimi));
 			$lisaa->setSahkopostiosoite(utf8_encode($rivi->sahkopostiosoite));
 			$lisaa->setPuhelinNumero(utf8_encode($rivi->puhelinNumero));
-			$lisaa->setKayttoJarjestelmaId(utf8_encode($rivi->kayttoJarjestelmaNimi));
+			$lisaa->setKayttoJarjestelmaId(utf8_encode($rivi->kayttoJarjestelmaId));
+			$lisaa->setKayttoJarjestelmaNimi(utf8_encode($rivi->kayttoJarjestelmaNimi));
 			$lisaa->setAsennusPaivamaara(utf8_encode($rivi->asennusPaivamaara));
 			$lisaa->setLevytila(utf8_encode($rivi->levytila));
 			$lisaa->setLisatietoa(utf8_encode($rivi->lisatietoa));
@@ -59,7 +60,7 @@ class Listaa {
 		
 		// Muodostetaan SQL kyselylause
 		$sql = "SELECT l.lisaaId,l.asiakkaanNimi,l.sahkopostiosoite,l.puhelinNumero,
-   				k.kayttoJarjestelmaNimi,l.asennusPaivamaara,l.levytila,l.lisatietoa
+   				k.kayttoJarjestelmaId, k.kayttoJarjestelmaNimi,l.asennusPaivamaara,l.levytila,l.lisatietoa
 				FROM lisaa_kayttojarjestelma lk
 				INNER JOIN lisaa l on l.lisaaId=lk.lisaaId
 				INNER JOIN kayttojarjestelma k on k.kayttoJarjestelmaId=lk.kayttoJarjestelmaId
@@ -126,7 +127,7 @@ class Listaa {
 			if (isset($_COOKIE["isDebug"])) {
 				echo "var_dump: ".var_dump($lisaa)."<br>";
 				echo "<br>".'"SELECT l.lisaaId,l.asiakkaanNimi,l.sahkopostiosoite,l.puhelinNumero,
-		   				k.kayttoJarjestelmaNimi,l.asennusPaivamaara,l.levytila,l.lisatietoa
+		   				k.kayttoJarjestelmaId,k.kayttoJarjestelmaNimi,l.asennusPaivamaara,l.levytila,l.lisatietoa
 						FROM lisaa_kayttojarjestelma lk
 						INNER JOIN lisaa l on l.lisaaId=lk.lisaaId
 						INNER JOIN kayttojarjestelma k on k.kayttoJarjestelmaId=lk.kayttoJarjestelmaId
@@ -157,7 +158,8 @@ class Listaa {
 			$lisaa->setAsiakkaanNimi(utf8_encode($rivi->asiakkaanNimi));
 			$lisaa->setSahkopostiosoite(utf8_encode($rivi->sahkopostiosoite));
 			$lisaa->setPuhelinNumero(utf8_encode($rivi->puhelinNumero));
-			$lisaa->setKayttoJarjestelmaId(utf8_encode($rivi->kayttoJarjestelmaNimi));
+			$lisaa->setKayttoJarjestelmaId(utf8_encode($rivi->kayttoJarjestelmaId));
+			$lisaa->setKayttoJarjestelmaNimi(utf8_encode($rivi->kayttoJarjestelmaNimi));
 			$lisaa->setAsennusPaivamaara(utf8_encode($rivi->asennusPaivamaara));
 			$lisaa->setLevytila(utf8_encode($rivi->levytila));
 			$lisaa->setLisatietoa(utf8_encode($rivi->lisatietoa));

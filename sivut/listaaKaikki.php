@@ -19,7 +19,7 @@ if (isset($_POST["hae"])) {
    		$_POST["paiva"],
    		$_POST["kuukausi"],
    		$_POST["vuosi"],
-   		$_POST["kayttoJarjestelma"]
+   		$_POST["kayttoJarjestelmaId"]
    		);
    
    // Haetaan mahdolliset virhekoodit
@@ -39,7 +39,7 @@ else {
 
 	$now = time(); // Laitetaan nykyhetki muuttujaan
 	// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
-	if (isset($_SESSION['onKirjauduttu']) && is_bool($_SESSION['onKirjauduttu'] === true) && $now <= $_SESSION['expire']) {
+	if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true && $now <= $_SESSION['expire']) {
 	
 		// Tehdään tyhjä olio
 		$lisaa = new Lisaa();
@@ -61,11 +61,18 @@ else {
 // Jos käyttäjä valitsi kirjaudu ulos
 if (isset($_GET["kirjauduUlos"])) {
 
-	// Poistetaan PHPSESSID selaimesta
-	if ( isset( $_COOKIE[session_name()] ) )
-	setcookie( session_name(), "", time()-3600, "/" );
+	session_start();
 	// Tyhjennetään sessiot globaalisti
 	$_SESSION = array();
+
+	if (ini_get("session.use_cookies")) {
+		$params = session_get_cookie_params();
+		setcookie(session_name(), '', time() - 42000,
+				$params["path"], $params["domain"],
+				$params["secure"], $params["httponly"]
+		);
+	}
+	
 	// Tyhjennetään sessiot paikallisesti
 	session_destroy();
 	// Ohjataan takaisin etusivulle
@@ -129,7 +136,25 @@ if (isset($_GET["kirjauduUlos"])) {
     }
 </style>
 
+    <script type="text/javascript">
+		function GetClock(){
+		var d=new Date();
+		var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
+		if(nyear<1000) nyear+=1900;
+		var nhour=d.getHours(),nmin=d.getMinutes(),nsec=d.getSeconds();
+		if(nmin<=9) nmin="0"+nmin
+		if(nsec<=9) nsec="0"+nsec;
+		
+		document.getElementById('clockbox').innerHTML=""+ndate+"."+(nmonth+1)+"."+nyear+" "+nhour+":"+nmin+":"+nsec+"";
+		}
+		
+		window.onload=function(){
+		GetClock();
+		setInterval(GetClock,1000);
+		}
+		// http://www.webestools.com/scripts_tutorials-code-source-7-display-date-and-time-in-javascript-real-time-clock-javascript-date-time.html
 
+	</script>
     
 </head>
 
@@ -142,7 +167,16 @@ if (isset($_GET["kirjauduUlos"])) {
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                  <a class="navbar-brand" href="index.php">Notes for business</a>
-                
+                     <div class="form-inline" style="font-size:1.2em; color:#F0F0F0; margin:0.7% 0 0 73%; width:30%">
+			              <?php 
+			              // Määritetään oletus aikavyöhyke ja maa-asetukset
+			              date_default_timezone_set('Europe/Helsinki');
+			              setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
+			              
+			              echo 'Sessio vanhenee: '. date("j.n.Y H:i:s ",$_SESSION['expire']) .
+			                	' Pvm/klo: <span id="clockbox"></span>';
+			              ?>
+               		 </div>  
             </div> <!-- ./ navbar-header -->
             
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -319,7 +353,7 @@ if (isset($_GET["kirjauduUlos"])) {
                                 
                                 		<span class="input-group-addon"><i class="glyphicon glyphicon-cog"></i></span>
 											
-								<select name="kayttoJarjestelma" class="form-control">
+								<select name="kayttoJarjestelmaId" class="form-control">
 							<?php 
 							echo '<option value="none"', ($lisaa->getKayttoJarjestelmaId() == 'none') 
 								? 'selected':'' ,'>Valitse käyttöjärjestelmä</option>';
@@ -427,7 +461,7 @@ if (isset($_GET["kirjauduUlos"])) {
 									    	print("<td>".utf8_encode($lisaa->getAsiakkaanNimi())."</td>");
 									    	print("<td>".utf8_encode($lisaa->getSahkopostiosoite())."</td>");
 									    	print("<td>".utf8_encode($lisaa->getPuhelinNumero())."</td>");
-									    	print("<td>".utf8_encode($lisaa->getKayttoJarjestelmaId())."</td>");
+									    	print("<td>".utf8_encode($lisaa->getKayttoJarjestelmaNimi())."</td>");
 									    	print("<td>".DateTime::createFromFormat('Y-m-d', $lisaa->getAsennusPaivamaara())->format('d.m.Y')."</td>");
 									    	print("<td>".utf8_encode($lisaa->getLevytila())."</td>");
 									    	print("<td>".$lisaa->getLisatietoa()."</td>");

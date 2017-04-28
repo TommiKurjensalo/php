@@ -1,3 +1,24 @@
+# 27.4.2017
+
+Saatu vihdoin ja viimein korjattua bugit, jotka vain kumuloitu toisiinsa aivan liian pitkälle.
+
+Nyt toimii, ainakin käytännön mukaan logout jokaiselta sivulta, cookiet ja virheilmoituksia ei tule.
+Oikeastaan kaikki mitkä vähän jumitteli, on nyt korjattuna.
+
+Lisätty kello yläkulmaan ja tieto, koska sessio vanhenee.
+
+Aikaa meni 6 tuntia.
+
+# 26.4.2017
+
+Kun aloin korjaamaan bugeja, alkoi vikoja löytymään vähän sieltä sun täältä. Sessiot ja cookiet ei toiminut oikein, eikä muokkaa sivu.
+Ei meinaa tajuta kuinka sessiot ja cookiet oikeesti toimivat ja kuinka niitä voi poistaa.
+
+Sql update käskyn luominen dynaamisesti meinaisi aiheuttaa harmaita hiuksia. Ei tahtonut toimia sitten millään, 
+vaan aina herjasi, että  Invalid parameter number: parameter was not defined.
+
+Tapellessani meni 10 tuntia. 
+
 # 25.4.2017
 
 SE ON TÄMÄ TÄSSÄ ! SIVU ON TARPEEKSI VALMIS JA VOIMAT ON LOPPU !

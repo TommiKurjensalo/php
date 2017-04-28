@@ -9,100 +9,113 @@ if (isset($_POST["tallenna"])) {
 	
 	// Viedään muodostimelle kenttien arvot	
 		if (isset($_POST["debug"])) {
-			$asetukset = true;
+			$v_debug = true;
 			
 			// Kirjoitetaan session tiedot talteen
-			$_SESSION ["asetukset"] = true;
+			$_SESSION ["s_debug"] = $v_debug;
 			session_write_close ();
 			
 			// Asetetaan cookie, koska debug haluttiin päälle
 			setcookie("isDebug", $_POST["debug"], time() +86400, "/"); // 86400 = 1 day
 			
-			echo (isset($_COOKIE["isDebug"]) ? "<br><div style='padding-left:300px;'> Cookies are enabled </div>" : ''); 
+		//	echo "<br><div style='padding-left:300px;'> Cookies on päällä </div>"; 
 			
+			// Debug tulostus otetaan pois päältä
 		} else {
-				echo (isset($_COOKIE["isDebug"]) ? "<br><div style='padding-left:300px;'>  if isset post debug else tuhotaan " : '');
-				echo (isset($_COOKIE["isDebug"]) ? "<br> Cookies are disabled" :''). "</div>";
-			
 				// Tuhotaan cookie, koska käyttäjä niin halusi
 				setcookie("isDebug", "", time() - 3600, "/");
-					
+			
+			//	echo "<br><div style='padding-left:300px;'>if else isset COOKIE[isDebug] ". (!isset($_COOKIE["isDebug"]) ? "false" : "true");
+			//	echo (!isset($_COOKIE["isDebug"]) ? "<br> Cookies are disabled" :''). "</div>";
 				
-				// $_SESSION = array ();
+
+				$v_debug = false;
+				// Kirjoitetaan session tiedot talteen
+				$_SESSION ["s_debug"] = $v_debug;
+				session_write_close ();
 				
-					if (isset ( $_COOKIE["isDebug"] )) {
-						setcookie ("isDebug", "", time () - 100, '/' );
-					}
-				
-				//session_unset();
-				$asetukset = false;
 				
 				
 		}
-
+		// Jos debug on päällä, tulostetaan tietoja
 		if (isset($_COOKIE["isDebug"])) {
-		echo "<div style='padding-left:300px;'>";
-		echo "post debug: ".(isset($_POST["debug"]) 
-				? $_POST["debug"] : 'notSet') ."  tallenna painike valittu </div>";
+			echo "<div style='padding-left:300px;'>";
+			echo "POST[debug]: ".(isset($_POST["debug"]) 
+					? $_POST["debug"] : 'pois päältä') ."</div>";
 				
-		echo (isset($_COOKIE["isDebug"]) 
-			? "<div style='padding-left:300px;'>if cookie debug sisältö: " .(isset($_COOKIE["isDebug"]) 
-				? $_COOKIE["isDebug"] :'false'). "</div>" : '</div>');
-	}
+		echo "<div style='padding-left:300px;'>if COOKIE[isDebug] sisältö: " .(isset($_COOKIE["isDebug"]) && !empty($_COOKIE["isDebug"]) 
+			? 'true</div>' : 'false</div>');
+		}
 
-	
-} elseif (isset ( $_POST ["debug"] )) {
-	if (isset ( $_SESSION ["asetukset"] )) {
-		echo (isset($_COOKIE["isDebug"]) ? "<div style='padding-left:300px;'> elseif isset post&session </div>" :'');
-		//$_SESSION = array ();
-
-		//if (isset ( $_COOKIE [session_name ()] )) {
-		//	setcookie ( session_name (), '', time () - 100, '/' );
-		//}
-
-		//session_unset();
-	}
-		
-} else {
-	
-	// Tehdään false muuttuja
-	$asetukset = false;
-	
-	$now = time(); // Laitetaan nykyhetki muuttujaan
-	// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
-	if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true && $now <= $_SESSION['expire']) {
-	
-		
-		if (isset ($_COOKIE["isDebug"] )) {
-			if (isset ( $_SESSION ["asetukset"] )) {
-				echo (isset($_COOKIE["isDebug"]) ? "<div style='padding-left:300px;'><br>else isset session asetukset sisältö: " .$_SESSION ["asetukset"]. "</div>" :'');
-				$asetukset = true;
+	// Jos debug on asetettu päällä ja sessio asetukset on olemassa, nollataan sessio debug
+	// koska ei ole painettu tallenna valintaa
+	}/* elseif (isset ( $_POST ["debug"] )) {
+		if (isset ( $_SESSION ["s_debug"] )) {
+			echo (isset($_COOKIE["isDebug"]) ? "<div style='padding-left:300px;'> elseif isset post&session </div>" :'');
+			$_SESSION["s_debug"] = array ();
+			session_write_close ();
 			}
 		
+			// Tullaan sivulle
+		} */
+		else {
 			
-			echo (isset($_COOKIE["isDebug"]) ?
-					"<div style='padding-left:300px;'>" .
-					" else isset cookie debug sisältö: " .$_COOKIE["isDebug"]. "</div>":'');
-		
-		} 
-	
-	} else {
-	
-		header('Location: asetukset.php');
-		exit;
 			
-	}
-	
-}
+			$now = time(); // Laitetaan nykyhetki muuttujaan
+			// Tarkistetaan, että on sisäänkirjauduttu ja sessioaika ei ole vielä mennyt umpeen
+			if (isset($_SESSION['onKirjauduttu']) && $_SESSION['onKirjauduttu'] === true && $now <= $_SESSION['expire']) {
+				
+				// Jos cookiesta löytyy tieto, että debug tulostus on päällä
+				// Laitetaan arvo myös paikalliselle muuttujalle
+				if (isset($_COOKIE["isDebug"]) && !empty($_COOKIE["isDebug"])) {
+					$v_debug = true;
+					$_SESSION["s_debug"] = $v_debug;
+					session_write_close();
+				} 
+				// Muuten laitetaan arvo falseksi
+				else {
+					$v_debug = false;
+					$_SESSION["s_debug"] = $v_debug;
+					session_write_close();
+				}
+				
+
+			
+				// Debug varten
+				if (isset($_COOKIE["isDebug"])) {
+					if (isset($_SESSION["s_debug"]) && !empty($_SESSION["s_debug"])) {
+						echo  "<div style='padding-left:300px;'><br>else isset SESSION[s_debug] sisältö: ".$_SESSION["s_debug"]." </div>";
+					}
+						
+					echo (isset($_COOKIE["isDebug"]) ?
+							"<div style='padding-left:300px;'>" .
+							" else isset COOKIE[isDebug] sisältö: " .$_COOKIE["isDebug"]. "</div>":'');
+				} 
+			
+					} else {
+					
+						header('Location: index.php');
+						exit;
+							
+					}
+			
+		}
 
 // Jos käyttäjä valitsi kirjaudu ulos
 if (isset($_GET["kirjauduUlos"])) {
 
-	// Poistetaan PHPSESSID selaimesta
-	if ( isset( $_COOKIE[session_name()] ) )
-		setcookie( session_name(), "", time()-3600, "/" );
+	session_start();
 	// Tyhjennetään sessiot globaalisti
 	$_SESSION = array();
+
+	if (ini_get("session.use_cookies")) {
+		$params = session_get_cookie_params();
+		setcookie(session_name(), '', time() - 42000,
+				$params["path"], $params["domain"],
+				$params["secure"], $params["httponly"]
+		);
+	}
+	
 	// Tyhjennetään sessiot paikallisesti
 	session_destroy();
 	// Ohjataan takaisin etusivulle
@@ -142,7 +155,27 @@ if (isset($_GET["kirjauduUlos"])) {
     <![endif]-->
 
 </head>
+    <script src="js/bootstrap.min.js"></script>
 
+        <script type="text/javascript">
+		function GetClock(){
+		var d=new Date();
+		var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
+		if(nyear<1000) nyear+=1900;
+		var nhour=d.getHours(),nmin=d.getMinutes(),nsec=d.getSeconds();
+		if(nmin<=9) nmin="0"+nmin
+		if(nsec<=9) nsec="0"+nsec;
+		
+		document.getElementById('clockbox').innerHTML=""+ndate+"."+(nmonth+1)+"."+nyear+" "+nhour+":"+nmin+":"+nsec+"";
+		}
+		
+		window.onload=function(){
+		GetClock();
+		setInterval(GetClock,1000);
+		}
+		// http://www.webestools.com/scripts_tutorials-code-source-7-display-date-and-time-in-javascript-real-time-clock-javascript-date-time.html
+
+	</script>
 <body>
 
     <div id="wrapper">
@@ -152,7 +185,16 @@ if (isset($_GET["kirjauduUlos"])) {
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                  <a class="navbar-brand" href="index.php">Notes for business</a>
-                
+                      <div class="form-inline" style="font-size:1.2em; color:#F0F0F0; margin:0.7% 0 0 73%; width:30%">
+			              <?php 
+			              // Määritetään oletus aikavyöhyke ja maa-asetukset
+			              date_default_timezone_set('Europe/Helsinki');
+			              setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
+			              
+			              echo 'Sessio vanhenee: '. date("j.n.Y H:i:s ",$_SESSION['expire']) .
+			                	' Pvm/klo: <span id="clockbox"></span>';
+			              ?>
+               		 </div>
             </div>
             
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -207,62 +249,63 @@ if (isset($_GET["kirjauduUlos"])) {
                 </div>
                 <!-- /.row -->
 
-                <div class="row">
-                    <div class="col-lg-2">
+                <div class="row"> <!-- row -->
 
-                        <form class="form-inline" role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
 
+                  <form class="form-inline" role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+                    <div class="col-lg-2"> <!-- col-lg-2 - debug tulostus -->
                             <div class="form-check form-check-inline">
   							  <label class="form-check-label"> Debug tulostus päälle?
 	                                	<input name="debug" type="checkbox" class="form-check-input" value="true"
-	                                	<?php echo (($asetukset ===true) ? ' checked' : ''); ?> /> Kyllä</label>
-	                                </div>
+	                                	<?php echo ((!empty($v_debug) && $v_debug === true) ? ' checked' : ''); ?> /> Kyllä/Ei</label>
+	                        </div> <!-- ./ form-check -->
 
-                          	<div class="form-group">
-                          		
+	                        <!--  Tallenna painike  -->
+                          	<div class="form-group"> 		
                             		<input name="tallenna" type="submit" class="btn btn-primary px-2" value="Tallenna"/>                        
 							</div> <!-- ./form-group -->
 						 
 						 
 					</div> <!-- ./col-lg-2 - debug tulostus -->
 					
-						<div class="col-lg-2"> <!-- luo testi asiakkaita -->
+					<div class="col-lg-2"> <!-- luo testi asiakkaita -->
 						<label>Luodaanko 10kpl testiasiakkaita?</label>
 							<?php
-							if (isset($_POST["luoTestiAsiakkaita"])) {
-							try {
-							
-								$asiakas = new Asetukset();
-								$rivit = $asiakas->lisaaTestiAsiakkaita();
-							
-							echo ((stripos($rivit[0], 'lisaa ok') !== FALSE && stripos($rivit[1], 
-			                      'lisaa_kayttojarjestelma ok') !== FALSE)
-			                       ? '<h3 style="color:green"><i class="glyphicon glyphicon-ok">
-			                       </i> Testi asiakkaat on lisätty onnistuneesti!' 
-									: '<h3>Lisäys epäonnistui</h3>');
-							} catch (Exception $error) {
-		
-								print($error->getMessage());
-								echo "<br>";
+							// Jos luodaan testiasiakkaita, luodaan asiakas olio jolla viedään tiedot kantaan
+								if (isset($_POST["luoTestiAsiakkaita"])) {
+									try {
+									
+										$asiakas = new Asetukset();
+										$rivit = $asiakas->lisaaTestiAsiakkaita();
+									
+										echo ((stripos($rivit[0], 'lisaa ok') !== FALSE && stripos($rivit[1], 
+					                      'lisaa_kayttojarjestelma ok') !== FALSE)
+					                       ? '<h3 style="color:green"><i class="glyphicon glyphicon-ok">
+					                       </i> Testi asiakkaat on lisätty onnistuneesti!' 
+											: '<h3>Lisäys epäonnistui</h3>');
+									} catch (Exception $error) {
+				
+										print($error->getMessage());
+										echo "<br>";
+										}
 								}
-							}
 							?>
-							
-							<div class="form-group">
-                 					<input name="luoTestiAsiakkaita" type="submit" class="btn btn-primary px-2" value="Kyllä"/> 
-							</div> <!-- ./form-group -->
-							
+								<!-- luo testi asiakkaat painike -->
+								<div class="form-group">
+	                 					<input name="luoTestiAsiakkaita" type="submit" class="btn btn-primary px-2" value="Kyllä"/> 
+								</div> <!-- ./form-group -->
+								
 						</div> <!-- ./col-lg-2 - luo testi asiakkaita -->
+					</form>		
                             
-                    </form>
-                </div>
-                <!-- /.row -->
+                </div> <!-- /.row -->
+                
 
-            </div>
-            <!-- /.container-fluid -->
+            </div> <!-- /.container-fluid -->
+            
 
-        </div>
-        <!-- /#page-wrapper -->
+        </div>  <!-- /#page-wrapper -->
+       
 
     </div>
     <!-- /#wrapper -->
@@ -271,7 +314,6 @@ if (isset($_GET["kirjauduUlos"])) {
     <script src="js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
 
 </body>
 
