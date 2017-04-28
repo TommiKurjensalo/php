@@ -61,7 +61,7 @@ else {
 // Jos käyttäjä valitsi kirjaudu ulos
 if (isset($_GET["kirjauduUlos"])) {
 
-	session_start();
+
 	// Tyhjennetään sessiot globaalisti
 	$_SESSION = array();
 

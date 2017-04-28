@@ -16,8 +16,6 @@ session_start ();
 		
 		// Lähetetään tunnus ja salasana keijoLuokalle, joka tarkistaa tunnukset tietokannasta
 		$keijoTulos = $kantakasittely->keijollaOnKovaKasi($_POST["keijoNimi"], $_POST["keijoKovaKasi"]);
-		//	print '<div style="padding-left:300px;">$keijoTulos: ' .var_dump($keijoTulos). '</div>';
-		
 
 		} catch (Exception $error) {
 		
@@ -115,7 +113,7 @@ session_start ();
 // Jos käyttäjä valitsi kirjaudu ulos
 if (isset($_GET["kirjauduUlos"])) {
 
-	session_start();
+
 	// Tyhjennetään sessiot globaalisti
 	$_SESSION = array();
 
@@ -204,7 +202,7 @@ if (isset($_GET["kirjauduUlos"])) {
               setlocale(LC_ALL, array('fi_FI.UTF-8','fi_FI@euro','fi_FI','finnish'));
               
               echo (isset($_SESSION['expire']) ? 'Sessio vanhenee: '. date("j.n.Y H:i:s ",$_SESSION['expire']) : '');
-              echo (!isset($_SESSION['expire']) ? '<div style="margin:0.7% 0 0 %; "> Pvm/klo: <span id="clockbox"></span></div>' : ' Pvm/klo: <span id="clockbox"></span>');
+              echo (!isset($_SESSION['expire']) ? '<div style="margin:0.7% 0 0 55%; "> Pvm/klo: <span id="clockbox"></span></div>' : ' Pvm/klo: <span id="clockbox"></span>');
               ?>
                 </div>
             </div>
